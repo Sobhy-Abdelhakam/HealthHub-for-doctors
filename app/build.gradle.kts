@@ -75,4 +75,7 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
 
+    // Splash API
+    implementation(libs.androidx.core.splashscreen)
+
 }
