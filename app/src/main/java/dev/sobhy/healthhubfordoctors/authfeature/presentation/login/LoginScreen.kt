@@ -21,6 +21,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
     val viewModel = viewModel<LoginViewModel>()
-    val state = viewModel.state
+//    val state = viewModel.state
+    val state by viewModel.loginState.collectAsState()
 
     // lambda for each event to reduce recomposition
     val loginButtonLambda =
