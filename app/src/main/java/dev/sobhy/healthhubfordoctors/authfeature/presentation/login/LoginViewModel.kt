@@ -1,7 +1,9 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dev.sobhy.healthhubfordoctors.authfeature.data.repository.AuthRepositoryImpl
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.LoginUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidateEmail
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidatePassword
@@ -16,15 +18,29 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     private val validateEmail: ValidateEmail = ValidateEmail(),
     private val validatePassword: ValidatePassword = ValidatePassword(),
-    private val loginUseCase: LoginUseCase,
+    private val loginUseCase: LoginUseCase = LoginUseCase(AuthRepositoryImpl()),
 ) : ViewModel() {
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
     fun onEvent(event: LoginUiEvent) {
         when (event) {
-            is LoginUiEvent.EmailChanged -> _loginState.update { it.copy(email = event.email) }
-            is LoginUiEvent.PasswordChanged -> _loginState.update { it.copy(password = event.password) }
+            is LoginUiEvent.EmailChanged ->
+                _loginState.update {
+                    it.copy(
+                        email = event.email,
+                        emailError = null,
+                    )
+                }
+
+            is LoginUiEvent.PasswordChanged ->
+                _loginState.update {
+                    it.copy(
+                        password = event.password,
+                        passwordError = null,
+                    )
+                }
+
             LoginUiEvent.Login -> login()
         }
     }
@@ -49,11 +65,19 @@ class LoginViewModel(
                     _loginState.value =
                         when (result) {
                             is Resource.Loading ->
-                                loginState.value.copy(isLoading = true)
+                                loginState.value.copy(isLoading = true, error = null)
+
                             is Resource.Error ->
                                 loginState.value.copy(isLoading = false, error = result.message)
-                            is Resource.Success ->
-                                loginState.value.copy(isLoading = false, isSuccess = true)
+
+                            is Resource.Success -> {
+                                Log.d("login", "login: success")
+                                loginState.value.copy(
+                                    isLoading = false,
+                                    isSuccess = true,
+                                    error = null,
+                                )
+                            }
                         }
                 }
         }

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +45,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
     val viewModel = viewModel<LoginViewModel>()
-//    val state = viewModel.state
     val state by viewModel.loginState.collectAsState()
 
     // lambda for each event to reduce recomposition
@@ -68,6 +69,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier.padding(18.dp),
     ) {
         item {
@@ -96,7 +98,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             Row {
                 Spacer(modifier = Modifier.weight(1f))
                 TextButton(onClick = { /*TODO*/ }) {
-                    Text(text = "Forgot password?")
+                    Text(text = "Forgot password?", textDecoration = TextDecoration.Underline)
                 }
             }
         }
@@ -104,7 +106,25 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             Button(
                 onClick = loginButtonLambda,
                 modifier = Modifier.fillMaxWidth(),
-            ) { Text(text = "Login") }
+                shape = MaterialTheme.shapes.extraLarge,
+                enabled = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading,
+            ) {
+                Text(
+                    text = "Login",
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(vertical = 4.dp),
+                )
+            }
+        }
+        if (state.isLoading) {
+            item {
+                CircularProgressIndicator()
+            }
+        }
+        state.error?.let {
+            item {
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
         }
         item {
             Spacer(modifier = Modifier.height(32.dp))

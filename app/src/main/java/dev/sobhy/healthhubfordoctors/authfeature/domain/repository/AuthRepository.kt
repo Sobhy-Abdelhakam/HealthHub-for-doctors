@@ -5,7 +5,7 @@ import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {
-    suspend fun login(
+    fun login(
         email: String,
         password: String,
     ): Flow<Resource<AuthResult>>
