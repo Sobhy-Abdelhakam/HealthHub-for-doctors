@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation (libs.androidx.lifecycle.viewmodel.compose)
     // navigation
     implementation(libs.androidx.navigation.compose)
 
@@ -82,5 +83,8 @@ dependencies {
     // Firebase
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.auth)
+
+    // material icons
+    implementation(libs.androidx.material.icons.extended)
 
 }
