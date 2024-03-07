@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import dev.sobhy.healthhubfordoctors.authfeature.presentation.login.LoginScreen
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +23,7 @@ class MainActivity : ComponentActivity() {
             HealthHubForDoctorsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
-                        Text(text = "Hello World")
+                        LoginScreen(modifier = Modifier.fillMaxSize())
                     }
                 }
             }
