@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357453844668",
+    "project_id": "healthhub-27610",
+    "storage_bucket": "healthhub-27610.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357453844668:android:211dc6a284380f316c00b9",
+        "android_client_info": {
+          "package_name": "dev.sobhy.healthhubfordoctors"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDH6OAUDnhEUfV8dcRoWgvrJ2jmj9r_sBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
