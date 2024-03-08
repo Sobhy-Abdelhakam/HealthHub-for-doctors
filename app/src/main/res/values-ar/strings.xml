@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_back">مرحبا بعودتك</string>
+    <string name="login_to_your_account">قم بتسجيل الدخول</string>
+    <string name="forgot_password">نسيت الرقم السري</string>
+    <string name="login">دخول</string>
+    <string name="don_t_have_an_account">ليس لديك حساب؟</string>
+    <string name="sign_up">تسجيل</string>
+    <string name="enter_password">الرقم السري</string>
+    <string name="email">الإيميل</string>
+</resources>
