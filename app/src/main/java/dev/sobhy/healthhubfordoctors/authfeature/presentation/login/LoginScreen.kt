@@ -30,6 +30,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -39,8 +40,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.sobhy.healthhubfordoctors.R
 
 @Composable
 fun LoginScreen(modifier: Modifier = Modifier) {
@@ -73,8 +74,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         modifier = modifier.padding(18.dp),
     ) {
         item {
-            Text(text = "Welcome Back", fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text(text = "Login to your account", fontSize = 16.sp, fontWeight = FontWeight.Normal)
+            Text(text = stringResource(R.string.welcome_back), style = MaterialTheme.typography.headlineLarge)
+            Text(text = stringResource(R.string.login_to_your_account), style = MaterialTheme.typography.titleMedium)
         }
         item {
             Spacer(modifier = Modifier.height(32.dp))
@@ -98,7 +99,7 @@ fun LoginScreen(modifier: Modifier = Modifier) {
             Row {
                 Spacer(modifier = Modifier.weight(1f))
                 TextButton(onClick = { /*TODO*/ }) {
-                    Text(text = "Forgot password?", textDecoration = TextDecoration.Underline)
+                    Text(text = stringResource(R.string.forgot_password), textDecoration = TextDecoration.Underline)
                 }
             }
         }
@@ -110,8 +111,8 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 enabled = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading,
             ) {
                 Text(
-                    text = "Login",
-                    fontSize = 18.sp,
+                    text = stringResource(R.string.login),
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(vertical = 4.dp),
                 )
             }
@@ -135,9 +136,9 @@ fun LoginScreen(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Text(text = "Don't have an account?")
+                Text(text = stringResource(R.string.don_t_have_an_account))
                 TextButton(onClick = { /*TODO*/ }) {
-                    Text(text = "Sign up", fontWeight = FontWeight.Bold)
+                    Text(text = stringResource(R.string.sign_up), fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -159,7 +160,7 @@ fun PasswordTextField(
         modifier =
             Modifier
                 .fillMaxWidth(),
-        label = { Text(text = "Enter password") },
+        label = { Text(text = stringResource(R.string.enter_password)) },
         singleLine = true,
         visualTransformation =
             if (showPassword) {
@@ -213,7 +214,7 @@ fun EmailTextField(
         modifier =
             Modifier
                 .fillMaxWidth(),
-        label = { Text(text = "email") },
+        label = { Text(text = stringResource(R.string.email)) },
         placeholder = { Text(text = "example@gmail.com") },
         singleLine = true,
         isError = emailError != null,
