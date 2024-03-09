@@ -7,7 +7,7 @@ sealed class RegisterUiEvent {
 
     data class PhoneNumberChange(val phoneNumber: String) : RegisterUiEvent()
 
-    data class GenderChange(val gender: Boolean) : RegisterUiEvent()
+    data class GenderChange(val gender: String) : RegisterUiEvent()
 
     data class DOBChange(val dateOfBirth: String) : RegisterUiEvent()
 
