@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowLeft
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -16,7 +17,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import dev.sobhy.healthhubfordoctors.R
 
 @Composable
 fun ProfessionalInformation(
@@ -34,7 +38,7 @@ fun ProfessionalInformation(
     ) {
         item {
             Text(
-                text = "Professional Information",
+                text = stringResource(R.string.professional_information),
                 style = MaterialTheme.typography.headlineSmall,
             )
         }
@@ -47,7 +51,7 @@ fun ProfessionalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "specialization")
+                    Text(text = stringResource(R.string.specialization))
                 },
             )
         }
@@ -60,19 +64,28 @@ fun ProfessionalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "professional title")
+                    Text(text = stringResource(R.string.professional_title))
                 },
             )
         }
         item {
+            val currentLanguage = LocalConfiguration.current.locale.language
             Row(modifier = Modifier.padding(16.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     enabled = specialization.isNotEmpty() && professionalTitle.isNotEmpty(),
                     onClick = onNextClick,
                 ) {
-                    Text(text = "Next")
-                    Icon(imageVector = Icons.Default.KeyboardDoubleArrowRight, contentDescription = null)
+                    Text(text = stringResource(R.string.next))
+                    Icon(
+                        imageVector =
+                            if (currentLanguage == "ar") {
+                                Icons.Default.KeyboardDoubleArrowLeft
+                            } else {
+                                Icons.Default.KeyboardDoubleArrowRight
+                            },
+                        contentDescription = null,
+                    )
                 }
             }
         }

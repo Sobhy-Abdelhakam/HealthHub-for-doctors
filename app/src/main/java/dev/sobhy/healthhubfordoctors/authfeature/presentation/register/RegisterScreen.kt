@@ -21,8 +21,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +39,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Create account",
+                        text = stringResource(R.string.create_account),
                         style = MaterialTheme.typography.headlineLarge,
                     )
                 },
@@ -46,7 +48,10 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         bottomBar = {
             BottomAppBar {
                 StepIndicator(
-                    modifier = Modifier.weight(1f).align(Alignment.Bottom),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .align(Alignment.Bottom),
                     currentStep = currentStep,
                     totalSteps = 3,
                     onStepClick = { currentStep = it },
@@ -111,6 +116,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                             .fillMaxSize(),
                     password = state.password,
                     onPasswordChange = { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) },
+                    onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
                 )
             }
         }

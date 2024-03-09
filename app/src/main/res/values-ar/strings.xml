@@ -8,4 +8,19 @@
     <string name="sign_up">تسجيل</string>
     <string name="enter_password">الرقم السري</string>
     <string name="email">الإيميل</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="personal_information">المعلومات الشخصية</string>
+    <string name="name">الإسم</string>
+    <string name="phone_number">رقم التليفون</string>
+    <string name="gender">النوع:</string>
+    <string name="male">ذكر</string>
+    <string name="female">أنثى</string>
+    <string name="data_of_birth">تاريخ الميلاد</string>
+    <string name="next">التالي</string>
+    <string name="confirm">تأكيد</string>
+    <string name="cancel">إلغاء</string>
+    <string name="professional_information">المعلومات المهنية</string>
+    <string name="specialization">التخصص</string>
+    <string name="professional_title">المسمى الوظيفي</string>
+    <string name="register">تسجيل</string>
 </resources>

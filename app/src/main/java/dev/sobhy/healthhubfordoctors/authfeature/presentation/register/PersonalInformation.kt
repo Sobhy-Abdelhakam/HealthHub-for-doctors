@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowLeft
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.DatePicker
@@ -30,10 +31,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import dev.sobhy.healthhubfordoctors.R
 import java.time.Year
+
+private const val s = "phone number"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -60,7 +66,7 @@ fun PersonalInformation(
     ) {
         item {
             Text(
-                text = "Personal Information",
+                text = stringResource(R.string.personal_information),
                 style = MaterialTheme.typography.headlineSmall,
             )
         }
@@ -73,7 +79,7 @@ fun PersonalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "name")
+                    Text(text = stringResource(R.string.name))
                 },
                 singleLine = true,
                 keyboardOptions =
@@ -92,7 +98,7 @@ fun PersonalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "email")
+                    Text(text = stringResource(R.string.email))
                 },
                 singleLine = true,
                 keyboardOptions =
@@ -111,7 +117,7 @@ fun PersonalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "phone number")
+                    Text(text = stringResource(R.string.phone_number))
                 },
                 singleLine = true,
                 keyboardOptions =
@@ -133,7 +139,7 @@ fun PersonalInformation(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                Text(text = "gender:")
+                Text(text = stringResource(R.string.gender))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     modifier =
@@ -145,7 +151,7 @@ fun PersonalInformation(
                         selected = gender == "Male",
                         onClick = { onGenderChange("Male") },
                     )
-                    Text(text = "Male")
+                    Text(text = stringResource(R.string.male))
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -158,7 +164,7 @@ fun PersonalInformation(
                         selected = gender == "Female",
                         onClick = { onGenderChange("Female") },
                     )
-                    Text(text = "Female")
+                    Text(text = stringResource(R.string.female))
                 }
             }
         }
@@ -176,7 +182,7 @@ fun PersonalInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
                 label = {
-                    Text(text = "data of birth")
+                    Text(text = stringResource(R.string.data_of_birth))
                 },
                 singleLine = true,
                 readOnly = true,
@@ -193,15 +199,21 @@ fun PersonalInformation(
             )
         }
         item {
+            val currentLanguage = LocalConfiguration.current.locale.language
             Row(modifier = Modifier.padding(16.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
                     enabled = name.isNotEmpty() && email.isNotEmpty() && phoneNumber.isNotEmpty() && gender.isNotEmpty() && date.isNotEmpty(),
                     onClick = onNextClick,
                 ) {
-                    Text(text = "Next")
+                    Text(text = stringResource(R.string.next))
                     Icon(
-                        imageVector = Icons.Default.KeyboardDoubleArrowRight,
+                        imageVector =
+                            if (currentLanguage == "ar") {
+                                Icons.Default.KeyboardDoubleArrowLeft
+                            } else {
+                                Icons.Default.KeyboardDoubleArrowRight
+                            },
                         contentDescription = null,
                     )
                 }
@@ -223,12 +235,12 @@ fun PersonalInformation(
                     },
                     enabled = datePickerState.selectedDateMillis != null,
                 ) {
-                    Text(text = "Confirm")
+                    Text(text = stringResource(R.string.confirm))
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDatePicker = false }) {
-                    Text(text = "Cancel")
+                    Text(text = stringResource(R.string.cancel))
                 }
             },
         ) {
