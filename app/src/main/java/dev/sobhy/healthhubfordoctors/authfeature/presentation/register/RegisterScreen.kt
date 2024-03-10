@@ -32,7 +32,42 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
     val viewModel = viewModel<RegisterViewModel>()
     val state by viewModel.registerState.collectAsState()
 
+    // lambda remembers for each event
+    val nameChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.NameChange(it)) }
+        }
+    val emailChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.EmailChange(it)) }
+        }
+    val phoneNumberChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.PhoneNumberChange(it)) }
+        }
+    val genderChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.GenderChange(it)) }
+        }
+    val dateChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.DOBChange(it)) }
+        }
+    val specializationChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.SpecializationChange(it)) }
+        }
+    val professionalTitleChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.ProfessionalTitleChange(it)) }
+        }
+    val passwordChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) }
+        }
+
     var currentStep by remember { mutableIntStateOf(1) }
+
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -63,22 +98,21 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
             1 -> {
                 PersonalInformation(
                     name = state.name,
-                    onNameChange = { viewModel.onEvent(RegisterUiEvent.NameChange(it)) },
+                    onNameChange = nameChange,
                     email = state.email,
-                    onEmailChange = { viewModel.onEvent(RegisterUiEvent.EmailChange(it)) },
+                    onEmailChange = emailChange,
                     phoneNumber = state.phone,
-                    onPhoneNumberChange = { viewModel.onEvent(RegisterUiEvent.PhoneNumberChange(it)) },
+                    onPhoneNumberChange = phoneNumberChange,
                     gender = state.gender,
-                    onGenderChange = { viewModel.onEvent(RegisterUiEvent.GenderChange(it)) },
+                    onGenderChange = genderChange,
                     date = state.dateOfBirth,
-                    onDateChange = { viewModel.onEvent(RegisterUiEvent.DOBChange(it)) },
+                    onDateChange = dateChange,
                     modifier =
                         Modifier
                             .padding(paddingValue)
                             .fillMaxSize(),
-                ) {
-                    currentStep++
-                }
+                    onNextClick = { currentStep++ },
+                )
             }
 
             2 -> {
@@ -88,24 +122,11 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                             .padding(paddingValue)
                             .fillMaxSize(),
                     specialization = state.specialization,
-                    onSpecializationChange = {
-                        viewModel.onEvent(
-                            RegisterUiEvent.SpecializationChange(
-                                it,
-                            ),
-                        )
-                    },
+                    onSpecializationChange = specializationChange,
                     professionalTitle = state.professionalTitle,
-                    onProfessionalTitleChange = {
-                        viewModel.onEvent(
-                            RegisterUiEvent.ProfessionalTitleChange(
-                                it,
-                            ),
-                        )
-                    },
-                ) {
-                    currentStep++
-                }
+                    onProfessionalTitleChange = professionalTitleChange,
+                    onNextClick = { currentStep++ },
+                )
             }
 
             3 -> {
@@ -115,7 +136,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                             .padding(paddingValue)
                             .fillMaxSize(),
                     password = state.password,
-                    onPasswordChange = { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) },
+                    onPasswordChange = passwordChange,
                     onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
                 )
             }

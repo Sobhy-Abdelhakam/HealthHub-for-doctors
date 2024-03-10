@@ -18,6 +18,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -38,8 +39,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.sobhy.healthhubfordoctors.R
 import java.time.Year
-
-private const val s = "phone number"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -187,14 +186,12 @@ fun PersonalInformation(
                 singleLine = true,
                 readOnly = true,
                 trailingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.CalendarMonth,
-                        contentDescription = "Calendar Icon",
-                        modifier =
-                            Modifier.clickable {
-                                showDatePicker = true
-                            },
-                    )
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(
+                            imageVector = Icons.Default.CalendarMonth,
+                            contentDescription = "Calendar Icon",
+                        )
+                    }
                 },
             )
         }

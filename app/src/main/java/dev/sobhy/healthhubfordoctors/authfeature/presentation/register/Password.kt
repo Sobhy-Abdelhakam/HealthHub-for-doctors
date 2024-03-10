@@ -28,7 +28,7 @@ fun SecurityInformation(
         verticalArrangement = Arrangement.Center,
     ) {
         item {
-            Text(text = "Security Information", style = MaterialTheme.typography.headlineSmall)
+            Text(text = stringResource(R.string.security_information), style = MaterialTheme.typography.headlineSmall)
         }
         item {
             TextField(
@@ -47,7 +47,10 @@ fun SecurityInformation(
             Button(
                 enabled = password.isNotBlank(),
                 onClick = onRegisterClick,
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             ) {
                 Text(text = stringResource(R.string.register))
             }
