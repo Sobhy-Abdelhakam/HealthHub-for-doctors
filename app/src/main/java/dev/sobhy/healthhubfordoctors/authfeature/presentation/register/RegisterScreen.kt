@@ -97,15 +97,15 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         when (currentStep) {
             1 -> {
                 PersonalInformation(
-                    name = state.name,
+                    name = { state.name },
                     onNameChange = nameChange,
-                    email = state.email,
+                    email = { state.email },
                     onEmailChange = emailChange,
-                    phoneNumber = state.phone,
+                    phoneNumber = { state.phone },
                     onPhoneNumberChange = phoneNumberChange,
-                    gender = state.gender,
+                    gender = { state.gender },
                     onGenderChange = genderChange,
-                    date = state.dateOfBirth,
+                    date = { state.dateOfBirth },
                     onDateChange = dateChange,
                     modifier =
                         Modifier
@@ -121,9 +121,9 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .padding(paddingValue)
                             .fillMaxSize(),
-                    specialization = state.specialization,
+                    specialization = { state.specialization },
                     onSpecializationChange = specializationChange,
-                    professionalTitle = state.professionalTitle,
+                    professionalTitle = { state.professionalTitle },
                     onProfessionalTitleChange = professionalTitleChange,
                     onNextClick = { currentStep++ },
                 )
@@ -135,7 +135,7 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .padding(paddingValue)
                             .fillMaxSize(),
-                    password = state.password,
+                    password = { state.password },
                     onPasswordChange = passwordChange,
                     onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
                 )

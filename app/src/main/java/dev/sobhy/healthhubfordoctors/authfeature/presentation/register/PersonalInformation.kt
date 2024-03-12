@@ -26,6 +26,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,15 +45,15 @@ import java.time.Year
 @Composable
 fun PersonalInformation(
     modifier: Modifier = Modifier,
-    name: String,
+    name: () -> String,
     onNameChange: (String) -> Unit,
-    email: String,
+    email: () -> String,
     onEmailChange: (String) -> Unit,
-    phoneNumber: String,
+    phoneNumber: () -> String,
     onPhoneNumberChange: (String) -> Unit,
-    gender: String,
+    gender: () -> String,
     onGenderChange: (String) -> Unit,
-    date: String,
+    date: () -> String,
     onDateChange: (String) -> Unit,
     onNextClick: () -> Unit,
 ) {
@@ -71,7 +72,7 @@ fun PersonalInformation(
         }
         item {
             TextField(
-                value = name,
+                value = name(),
                 onValueChange = onNameChange,
                 modifier =
                     Modifier
@@ -90,7 +91,7 @@ fun PersonalInformation(
         }
         item {
             TextField(
-                value = email,
+                value = email(),
                 onValueChange = onEmailChange,
                 modifier =
                     Modifier
@@ -109,7 +110,7 @@ fun PersonalInformation(
         }
         item {
             TextField(
-                value = phoneNumber,
+                value = phoneNumber(),
                 onValueChange = onPhoneNumberChange,
                 modifier =
                     Modifier
@@ -147,7 +148,7 @@ fun PersonalInformation(
                         },
                 ) {
                     RadioButton(
-                        selected = gender == "Male",
+                        selected = gender() == "Male",
                         onClick = { onGenderChange("Male") },
                     )
                     Text(text = stringResource(R.string.male))
@@ -160,7 +161,7 @@ fun PersonalInformation(
                         },
                 ) {
                     RadioButton(
-                        selected = gender == "Female",
+                        selected = gender() == "Female",
                         onClick = { onGenderChange("Female") },
                     )
                     Text(text = stringResource(R.string.female))
@@ -170,10 +171,10 @@ fun PersonalInformation(
         item {
             TextField(
                 value =
-                    if (date.isEmpty()) {
+                    if (date().isEmpty()) {
                         ""
                     } else {
-                        DateFormat.format("dd/MM/yyyy", date.toLong()).toString()
+                        DateFormat.format("dd/MM/yyyy", date().toLong()).toString()
                     },
                 onValueChange = onDateChange,
                 modifier =
@@ -197,10 +198,15 @@ fun PersonalInformation(
         }
         item {
             val currentLanguage = LocalConfiguration.current.locale.language
+            val buttonEnabled by remember {
+                derivedStateOf {
+                    name().isNotEmpty() && email().isNotEmpty() && phoneNumber().isNotEmpty() && gender().isNotEmpty() && date().isNotEmpty()
+                }
+            }
             Row(modifier = Modifier.padding(16.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    enabled = name.isNotEmpty() && email.isNotEmpty() && phoneNumber.isNotEmpty() && gender.isNotEmpty() && date.isNotEmpty(),
+                    enabled = buttonEnabled,
                     onClick = onNextClick,
                 ) {
                     Text(text = stringResource(R.string.next))

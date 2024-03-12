@@ -15,6 +15,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -25,9 +28,9 @@ import dev.sobhy.healthhubfordoctors.R
 @Composable
 fun ProfessionalInformation(
     modifier: Modifier = Modifier,
-    specialization: String,
+    specialization: () -> String,
     onSpecializationChange: (String) -> Unit,
-    professionalTitle: String,
+    professionalTitle: () -> String,
     onProfessionalTitleChange: (String) -> Unit,
     onNextClick: () -> Unit,
 ) {
@@ -44,7 +47,7 @@ fun ProfessionalInformation(
         }
         item {
             TextField(
-                value = specialization,
+                value = specialization(),
                 onValueChange = onSpecializationChange,
                 modifier =
                     Modifier
@@ -57,7 +60,7 @@ fun ProfessionalInformation(
         }
         item {
             TextField(
-                value = professionalTitle,
+                value = professionalTitle(),
                 onValueChange = onProfessionalTitleChange,
                 modifier =
                     Modifier
@@ -70,10 +73,15 @@ fun ProfessionalInformation(
         }
         item {
             val currentLanguage = LocalConfiguration.current.locale.language
+            val buttonEnabled by remember {
+                derivedStateOf {
+                    specialization().isNotEmpty() && professionalTitle().isNotEmpty()
+                }
+            }
             Row(modifier = Modifier.padding(16.dp)) {
                 Spacer(modifier = Modifier.weight(1f))
                 Button(
-                    enabled = specialization.isNotEmpty() && professionalTitle.isNotEmpty(),
+                    enabled = buttonEnabled,
                     onClick = onNextClick,
                 ) {
                     Text(text = stringResource(R.string.next))
