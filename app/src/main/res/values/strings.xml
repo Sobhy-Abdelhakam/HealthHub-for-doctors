@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HealthHub For Doctors</string>
+    <string name="app_name" translatable="false">HealthHub For Doctors</string>
     <string name="welcome_back">Welcome Back</string>
     <string name="login_to_your_account">Login to your account</string>
     <string name="forgot_password">Forgot password?</string>
@@ -8,4 +8,20 @@
     <string name="sign_up">Sign up</string>
     <string name="enter_password">Enter password</string>
     <string name="email">email</string>
+    <string name="create_account">Create account</string>
+    <string name="personal_information">Personal Information</string>
+    <string name="name">name</string>
+    <string name="phone_number">phone number</string>
+    <string name="gender">gender:</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="data_of_birth">data of birth</string>
+    <string name="next">Next</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="professional_information">Professional Information</string>
+    <string name="specialization">specialization</string>
+    <string name="professional_title">professional title</string>
+    <string name="register">Register</string>
+    <string name="security_information">Security Information</string>
 </resources>
