@@ -46,6 +46,7 @@ import dev.sobhy.healthhubfordoctors.R
 fun LoginScreen(
     modifier: Modifier = Modifier,
     onNavigateToRegister: () -> Unit,
+    onNavigateToHome: () -> Unit,
 ) {
     val viewModel = viewModel<LoginViewModel>()
     val state by viewModel.loginState.collectAsState()
@@ -69,6 +70,10 @@ fun LoginScreen(
                 viewModel.onEvent(LoginUiEvent.PasswordChanged(it))
             }
         }
+    if (state.isSuccess) {
+        onNavigateToHome()
+        return
+    }
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,

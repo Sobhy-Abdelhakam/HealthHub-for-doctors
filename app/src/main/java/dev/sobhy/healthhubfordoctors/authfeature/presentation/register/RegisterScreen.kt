@@ -1,22 +1,29 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -28,7 +35,11 @@ import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier) {
+fun RegisterScreen(
+    modifier: Modifier = Modifier,
+    onNavigateUp: () -> Unit,
+    onNavigateToHome: () -> Unit,
+) {
     val viewModel = viewModel<RegisterViewModel>()
     val state by viewModel.registerState.collectAsState()
 
@@ -65,6 +76,36 @@ fun RegisterScreen(modifier: Modifier = Modifier) {
         remember<(String) -> Unit> {
             { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) }
         }
+
+    if (state.success) {
+        onNavigateToHome()
+        return
+    }
+
+    val fillAnyField by remember {
+        derivedStateOf {
+            state.name.isNotBlank() ||
+                state.email.isNotBlank() ||
+                state.phone.isNotBlank() ||
+                state.gender.isNotBlank() ||
+                state.dateOfBirth.isNotBlank()
+        }
+    }
+
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+    BackHandler {
+        if (fillAnyField) {
+            showConfirmationDialog = true
+        } else {
+            onNavigateUp()
+        }
+    }
+    if (showConfirmationDialog) {
+        ConfirmationDialog(
+            onNavigateUp = onNavigateUp,
+            dismissDialog = { showConfirmationDialog = false },
+        )
+    }
 
     var currentStep by remember { mutableIntStateOf(1) }
 
@@ -173,4 +214,42 @@ fun StepIndicator(
                     },
         )
     }
+}
+
+@Composable
+fun ConfirmationDialog(
+    onNavigateUp: () -> Unit,
+    dismissDialog: () -> Unit,
+) {
+    AlertDialog(
+        title = {
+            Text(
+                text = stringResource(R.string.are_you_sure),
+            )
+        },
+        text = {
+            Text(
+                text = stringResource(R.string.alert_dialog_text),
+            )
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    dismissDialog()
+                    onNavigateUp()
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = stringResource(R.string.yes_go_back))
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = dismissDialog,
+            ) {
+                Text(text = stringResource(R.string.no_stay_here))
+            }
+        },
+        onDismissRequest = {},
+    )
 }

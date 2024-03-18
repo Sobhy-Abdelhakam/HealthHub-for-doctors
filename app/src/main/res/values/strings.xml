@@ -24,4 +24,8 @@
     <string name="professional_title">professional title</string>
     <string name="register">Register</string>
     <string name="security_information">Security Information</string>
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="alert_dialog_text">If you go back, you will lose all the information you have entered.</string>
+    <string name="yes_go_back">Yes, Go Back</string>
+    <string name="no_stay_here">No, Stay Here</string>
 </resources>

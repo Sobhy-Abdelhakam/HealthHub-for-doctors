@@ -24,4 +24,8 @@
     <string name="professional_title">المسمى الوظيفي</string>
     <string name="register">تسجيل</string>
     <string name="security_information">معلومات الأمن</string>
+    <string name="are_you_sure">هل أنت متأكد</string>
+    <string name="alert_dialog_text">إذا قمت بالعودة للخلف، ستفقد جميع المعلومات التي أدخلتها</string>
+    <string name="yes_go_back">نعم، أريد العودة</string>
+    <string name="no_stay_here">لا، أريد البقاء</string>
 </resources>
