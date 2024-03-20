@@ -40,14 +40,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.RegisterScreenDestination
 
+@RootNavGraph(start = true)
+@Destination
 @Composable
-fun LoginScreen(
-    modifier: Modifier = Modifier,
-    onNavigateToRegister: () -> Unit,
-    onNavigateToHome: () -> Unit,
-) {
+fun LoginScreen(destinationsNavigator: DestinationsNavigator) {
     val viewModel = viewModel<LoginViewModel>()
     val state by viewModel.loginState.collectAsState()
 
@@ -70,15 +72,15 @@ fun LoginScreen(
                 viewModel.onEvent(LoginUiEvent.PasswordChanged(it))
             }
         }
-    if (state.isSuccess) {
-        onNavigateToHome()
-        return
-    }
+//    if (state.isSuccess) {
+//        onNavigateToHome()
+//        return
+//    }
 
     LazyColumn(
         verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(18.dp),
+        modifier = Modifier.padding(18.dp),
     ) {
         item {
             Text(text = stringResource(R.string.welcome_back), style = MaterialTheme.typography.headlineLarge)
@@ -144,7 +146,9 @@ fun LoginScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(text = stringResource(R.string.don_t_have_an_account))
-                TextButton(onClick = onNavigateToRegister) {
+                TextButton(onClick = {
+                    destinationsNavigator.navigate(RegisterScreenDestination)
+                }) {
                     Text(text = stringResource(R.string.sign_up), fontWeight = FontWeight.Bold)
                 }
             }

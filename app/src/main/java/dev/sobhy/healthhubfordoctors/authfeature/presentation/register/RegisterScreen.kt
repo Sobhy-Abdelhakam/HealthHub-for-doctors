@@ -31,15 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
-fun RegisterScreen(
-    modifier: Modifier = Modifier,
-    onNavigateUp: () -> Unit,
-    onNavigateToHome: () -> Unit,
-) {
+fun RegisterScreen(destinationsNavigator: DestinationsNavigator) {
     val viewModel = viewModel<RegisterViewModel>()
     val state by viewModel.registerState.collectAsState()
 
@@ -77,10 +76,10 @@ fun RegisterScreen(
             { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) }
         }
 
-    if (state.success) {
-        onNavigateToHome()
-        return
-    }
+//    if (state.success) {
+//        onNavigateToHome()
+//        return
+//    }
 
     val fillAnyField by remember {
         derivedStateOf {
@@ -97,12 +96,12 @@ fun RegisterScreen(
         if (fillAnyField) {
             showConfirmationDialog = true
         } else {
-            onNavigateUp()
+            destinationsNavigator.navigateUp()
         }
     }
     if (showConfirmationDialog) {
         ConfirmationDialog(
-            onNavigateUp = onNavigateUp,
+            onNavigateUp = destinationsNavigator::navigateUp,
             dismissDialog = { showConfirmationDialog = false },
         )
     }
@@ -110,7 +109,6 @@ fun RegisterScreen(
     var currentStep by remember { mutableIntStateOf(1) }
 
     Scaffold(
-        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = {
