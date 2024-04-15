@@ -13,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -28,6 +30,7 @@ import dev.sobhy.healthhubfordoctors.R
 @Composable
 fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
     val viewModel = viewModel<FPasswordViewModel>()
+    val state by viewModel.forgetPasswordState.collectAsState()
 
     Scaffold(
         topBar = {
@@ -65,9 +68,21 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 label = {
                     Text(text = stringResource(id = R.string.email))
                 },
+                singleLine = true,
+                isError = state.emailError != null,
+                supportingText = {
+                    state.emailError?.let { emailError ->
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = emailError,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.End,
+                        )
+                    }
+                },
             )
             Button(
-                onClick = { /*TODO*/ },
+                onClick = viewModel::sendEmail,
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -76,6 +91,14 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = stringResource(R.string.send),
                     style = MaterialTheme.typography.titleLarge,
+                )
+            }
+
+            state.error?.let { error ->
+                Text(
+                    text = error,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.error,
                 )
             }
         }
