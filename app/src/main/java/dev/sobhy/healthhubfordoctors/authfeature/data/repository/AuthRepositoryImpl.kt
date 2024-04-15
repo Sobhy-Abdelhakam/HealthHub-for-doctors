@@ -20,4 +20,8 @@ class AuthRepositoryImpl : AuthRepository {
     override fun logout(): Flow<Resource<Unit>> {
         TODO("Not yet implemented")
     }
+
+    override fun forgetPassword(email: String): Flow<Resource<Unit>> {
+        TODO("Not yet implemented")
+    }
 }

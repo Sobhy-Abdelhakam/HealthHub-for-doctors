@@ -44,6 +44,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.ForgetPasswordScreenDestination
 import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.RegisterScreenDestination
 
 @RootNavGraph(start = true)
@@ -107,8 +108,13 @@ fun LoginScreen(destinationsNavigator: DestinationsNavigator) {
         item {
             Row {
                 Spacer(modifier = Modifier.weight(1f))
-                TextButton(onClick = { /*TODO*/ }) {
-                    Text(text = stringResource(R.string.forgot_password), textDecoration = TextDecoration.Underline)
+                TextButton(onClick = {
+                    destinationsNavigator.navigate(ForgetPasswordScreenDestination)
+                }) {
+                    Text(
+                        text = stringResource(R.string.forgot_password),
+                        textDecoration = TextDecoration.Underline,
+                    )
                 }
             }
         }
