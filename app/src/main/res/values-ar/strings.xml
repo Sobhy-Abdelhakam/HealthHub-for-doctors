@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="welcome_back">مرحبا بعودتك</string>
+    <string name="login_to_your_account">قم بتسجيل الدخول</string>
+    <string name="forgot_password">نسيت الرقم السري</string>
+    <string name="login">دخول</string>
+    <string name="don_t_have_an_account">ليس لديك حساب؟</string>
+    <string name="sign_up">تسجيل</string>
+    <string name="enter_password">الرقم السري</string>
+    <string name="email">الإيميل</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="personal_information">المعلومات الشخصية</string>
+    <string name="name">الإسم</string>
+    <string name="phone_number">رقم التليفون</string>
+    <string name="gender">النوع:</string>
+    <string name="male">ذكر</string>
+    <string name="female">أنثى</string>
+    <string name="data_of_birth">تاريخ الميلاد</string>
+    <string name="next">التالي</string>
+    <string name="confirm">تأكيد</string>
+    <string name="cancel">إلغاء</string>
+    <string name="professional_information">المعلومات المهنية</string>
+    <string name="specialization">التخصص</string>
+    <string name="professional_title">المسمى الوظيفي</string>
+    <string name="register">تسجيل</string>
+    <string name="security_information">معلومات الأمن</string>
+    <string name="are_you_sure">هل أنت متأكد</string>
+    <string name="alert_dialog_text">إذا قمت بالعودة للخلف، ستفقد جميع المعلومات التي أدخلتها</string>
+    <string name="yes_go_back">نعم، أريد العودة</string>
+    <string name="no_stay_here">لا، أريد البقاء</string>
+    <string name="forget_password_text">أدخل البريد الإلكتروني المسجل لدينا لتتمكن من تغيير كلمة المرور الخاصة بك</string>
+    <string name="send">إرسل</string>
+</resources>
