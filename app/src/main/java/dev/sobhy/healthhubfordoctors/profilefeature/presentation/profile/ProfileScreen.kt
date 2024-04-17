@@ -18,6 +18,8 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.House
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
@@ -156,6 +158,7 @@ fun ProfileScreen() {
                         }
                     },
                 ) {
+                    Icon(imageVector = Icons.Default.Info, contentDescription = null)
                     Text(text = "Personal Info")
                 }
                 Tab(
@@ -166,6 +169,7 @@ fun ProfileScreen() {
                         }
                     },
                 ) {
+                    Icon(imageVector = Icons.Default.House, contentDescription = null)
                     Text(text = "Clinic Info")
                 }
             }
@@ -194,11 +198,16 @@ fun PersonalInfo(modifier: Modifier = Modifier) {
             Text(text = "Birthday: ")
             Text(text = "25 October 2000", fontWeight = FontWeight.Bold)
         }
-
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+        Text(
+            text = "Education",
+            style = MaterialTheme.typography.titleMedium,
+        )
         Row {
             Text(text = "Medical Speciality: ")
             Text(text = "Hematology", fontWeight = FontWeight.Bold)
         }
+
         Row {
             Text(text = "Education: ")
             Text(
@@ -207,9 +216,28 @@ fun PersonalInfo(modifier: Modifier = Modifier) {
             )
         }
 
-        Column {
-            Text(text = "Experience:")
-            Text(text = "Contact Information:")
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+        Text(text = "Experience:")
+        Text(text = "Contact Information:")
+
+        HorizontalDivider(modifier = Modifier.padding(8.dp))
+
+        Text(
+            text = "Contact Info",
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Row {
+            Text(text = "Phone: ")
+            Text(text = "01121015492", fontWeight = FontWeight.Bold)
+        }
+        Row {
+            Text(text = "Email: ")
+            Text(text = "sobhy.abdelhakam@gmail.com", fontWeight = FontWeight.Bold)
+        }
+        Row {
+            Text(text = "WhatsApp: ")
+            Text(text = "01121015492", fontWeight = FontWeight.Bold)
         }
     }
 }
