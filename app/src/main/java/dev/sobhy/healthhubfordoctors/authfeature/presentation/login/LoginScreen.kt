@@ -44,8 +44,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
-import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.ForgetPasswordScreenDestination
-import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.RegisterScreenDestination
+import dev.sobhy.healthhubfordoctors.destinations.ForgetPasswordScreenDestination
+import dev.sobhy.healthhubfordoctors.destinations.RegisterScreenDestination
 
 @RootNavGraph(start = true)
 @Destination

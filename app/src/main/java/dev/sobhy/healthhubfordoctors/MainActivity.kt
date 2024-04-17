@@ -10,7 +10,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ramcosta.composedestinations.DestinationsNavHost
-import dev.sobhy.healthhubfordoctors.authfeature.presentation.NavGraphs
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
 
 class MainActivity : ComponentActivity() {
