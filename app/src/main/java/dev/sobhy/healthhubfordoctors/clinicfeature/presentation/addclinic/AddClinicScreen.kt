@@ -44,7 +44,9 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                 },
                 actions = {
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            viewModel.onEvent(AddClinicUiEvent.SaveClinic)
+                        },
                         modifier = Modifier.padding(8.dp),
                     ) {
                         Text(text = "Save")
@@ -96,7 +98,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
             item {
                 Text(
                     text = "Availability",
-                    style = MaterialTheme.typography.titleLarge,
+                    style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp),
                 )
             }

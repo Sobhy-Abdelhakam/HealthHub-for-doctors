@@ -29,6 +29,7 @@ class AddClinicViewModel : ViewModel() {
             is AddClinicUiEvent.UpdateSwitchState -> updateSwitchState(event.newState, event.day)
             is AddClinicUiEvent.UpdateFrom -> updateFromText(event.fromText, event.day)
             is AddClinicUiEvent.UpdateTo -> updateToText(event.toText, event.day)
+            AddClinicUiEvent.SaveClinic -> TODO()
         }
     }
 

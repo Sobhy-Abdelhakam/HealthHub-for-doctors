@@ -10,12 +10,6 @@ data class AddClinicState(
     val availability: Availability = Availability(),
 )
 
-data class DayState(
-    val isSwitchOn: Boolean = false,
-    val from: LocalTime = LocalTime.now(),
-    val to: LocalTime = LocalTime.now(),
-)
-
 data class Availability(
     val dayAvailable: Map<DayOfWeek, DayState> =
         mapOf(
@@ -27,4 +21,10 @@ data class Availability(
             DayOfWeek.SATURDAY to DayState(),
             DayOfWeek.SUNDAY to DayState(),
         ),
+)
+
+data class DayState(
+    val isSwitchOn: Boolean = false,
+    val from: LocalTime = LocalTime.of(6, 0),
+    val to: LocalTime = LocalTime.of(6, 0),
 )
