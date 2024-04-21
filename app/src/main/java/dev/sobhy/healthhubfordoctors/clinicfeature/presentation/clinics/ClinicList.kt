@@ -1,26 +1,28 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.clinics
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.destinations.AddClinicScreenDestination
@@ -32,42 +34,44 @@ fun ClinicListScreen(
     navigator: DestinationsNavigator,
     modifier: Modifier = Modifier,
 ) {
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text(text = "Clinics", style = MaterialTheme.typography.displayMedium)
-                },
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
+    val viewModel: ClinicsViewModel = viewModel()
+    Box(modifier = modifier.fillMaxSize()) {
+        FloatingActionButton(
+            onClick = {
                 navigator.navigate(AddClinicScreenDestination)
-            }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+            },
+            modifier = Modifier.align(Alignment.BottomEnd).padding(32.dp),
+        ) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+        }
+
+        if (viewModel.clinics.isEmpty()) {
+            Text(
+                text = "No Clinics",
+                style = MaterialTheme.typography.displayMedium,
+                modifier = Modifier.align(Alignment.Center),
+            )
+        } else {
+            LazyColumn {
+                items(viewModel.clinics.size) {
+                    ClinicDetailsItem()
+                }
             }
-        },
-    ) {
-        ClinicDetailsItem(modifier = Modifier.padding(it))
+        }
     }
 }
 
 @Composable
 fun ClinicDetailsItem(modifier: Modifier = Modifier) {
-    Box(
+    Card(
         modifier =
             modifier
-                .padding(8.dp)
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .padding(8.dp),
+                .wrapContentHeight()
+                .padding(16.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
     ) {
-        Icon(
-            imageVector = Icons.Default.MoreHoriz,
-            contentDescription = "Manage",
-            modifier = Modifier.align(Alignment.TopEnd),
-        )
-        Column {
+        Column(modifier = Modifier.padding(8.dp)) {
             Text(text = "Clinic Name", style = MaterialTheme.typography.headlineSmall)
             Text(text = "Clinic Number")
             Text(text = "Clinic Address")
@@ -77,11 +81,11 @@ fun ClinicDetailsItem(modifier: Modifier = Modifier) {
             ) {
                 Row {
                     Text(text = "Examination: ")
-                    Text(text = "150 EGP")
+                    Text(text = "150 EGP", style = MaterialTheme.typography.titleMedium)
                 }
                 Row {
                     Text(text = "Follow_up: ")
-                    Text(text = "90 EGP")
+                    Text(text = "90 EGP", style = MaterialTheme.typography.titleMedium)
                 }
             }
         }
