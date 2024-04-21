@@ -21,10 +21,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import dev.sobhy.healthhubfordoctors.R
 import dev.sobhy.healthhubfordoctors.destinations.AddClinicScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,14 +42,17 @@ fun ClinicListScreen(
             onClick = {
                 navigator.navigate(AddClinicScreenDestination)
             },
-            modifier = Modifier.align(Alignment.BottomEnd).padding(32.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(32.dp),
         ) {
             Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
         }
 
         if (viewModel.clinics.isEmpty()) {
             Text(
-                text = "No Clinics",
+                text = stringResource(R.string.no_clinics),
                 style = MaterialTheme.typography.displayMedium,
                 modifier = Modifier.align(Alignment.Center),
             )
@@ -80,11 +85,11 @@ fun ClinicDetailsItem(modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row {
-                    Text(text = "Examination: ")
+                    Text(text = stringResource(R.string.examination))
                     Text(text = "150 EGP", style = MaterialTheme.typography.titleMedium)
                 }
                 Row {
-                    Text(text = "Follow_up: ")
+                    Text(text = stringResource(R.string.follow_up))
                     Text(text = "90 EGP", style = MaterialTheme.typography.titleMedium)
                 }
             }

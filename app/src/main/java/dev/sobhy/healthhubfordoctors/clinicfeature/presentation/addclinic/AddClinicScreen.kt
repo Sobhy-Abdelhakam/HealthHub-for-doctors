@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,12 +25,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
 
@@ -54,7 +55,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = "Add Clinic", style = MaterialTheme.typography.displayMedium)
+                    Text(text = stringResource(R.string.add_clinic), style = MaterialTheme.typography.displayMedium)
                 },
                 actions = {
                     Button(
@@ -64,7 +65,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         modifier = Modifier.padding(8.dp),
                         enabled = saveBtnEnable,
                     ) {
-                        Text(text = "Save")
+                        Text(text = stringResource(R.string.save))
                     }
                 },
             )
@@ -76,7 +77,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                     value = state.clinicName,
                     onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicNameChange(it)) },
                     label = {
-                        Text(text = "Clinic Name")
+                        Text(text = stringResource(R.string.clinic_name))
                     },
                     modifier =
                         Modifier
@@ -94,7 +95,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                     value = state.clinicAddress,
                     onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(it)) },
                     label = {
-                        Text(text = "Clinic Address")
+                        Text(text = stringResource(R.string.clinic_address))
                     },
                     modifier =
                         Modifier
@@ -112,7 +113,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                     value = state.clinicNumber,
                     onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicPhoneChange(it)) },
                     label = {
-                        Text(text = "phone number")
+                        Text(text = stringResource(R.string.phone_number_optional))
                     },
                     modifier =
                         Modifier
@@ -138,7 +139,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         )
                     },
                     label = {
-                        Text(text = "Examination (EGP)")
+                        Text(text = stringResource(R.string.examination_egp))
                     },
                     modifier =
                         Modifier
@@ -165,7 +166,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         )
                     },
                     label = {
-                        Text(text = "Follow Up (EGP)")
+                        Text(text = stringResource(R.string.follow_up_egp))
                     },
                     modifier =
                         Modifier
@@ -181,7 +182,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
             }
             item {
                 Text(
-                    text = "Availability",
+                    text = stringResource(R.string.availability),
                     style = MaterialTheme.typography.titleMedium,
                     modifier = Modifier.padding(16.dp),
                 )
@@ -261,8 +262,8 @@ fun TimePickers(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TimePicker("From", onFromChange, dayState.from)
-            TimePicker("To", onToChange, dayState.to)
+            TimePicker(stringResource(R.string.from), onFromChange, dayState.from)
+            TimePicker(stringResource(R.string.to), onToChange, dayState.to)
         }
     }
 }
@@ -292,6 +293,5 @@ fun TimePicker(
             modifier = Modifier.padding(4.dp),
         )
         onTimeChange(LocalTime.of(timePickerState.hour, timePickerState.minute))
-        Log.e("time: ", "${time.hour}:${time.minute}")
     }
 }
