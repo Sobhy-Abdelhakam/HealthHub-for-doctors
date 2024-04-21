@@ -1,8 +1,10 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.clinics
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
@@ -69,6 +71,19 @@ fun ClinicDetailsItem(modifier: Modifier = Modifier) {
             Text(text = "Clinic Name", style = MaterialTheme.typography.headlineSmall)
             Text(text = "Clinic Number")
             Text(text = "Clinic Address")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+            ) {
+                Row {
+                    Text(text = "Examination: ")
+                    Text(text = "150 EGP")
+                }
+                Row {
+                    Text(text = "Follow_up: ")
+                    Text(text = "90 EGP")
+                }
+            }
         }
     }
 }
