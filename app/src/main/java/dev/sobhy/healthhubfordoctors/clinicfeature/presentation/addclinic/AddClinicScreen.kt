@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -20,9 +21,12 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -36,6 +40,12 @@ import java.time.LocalTime
 fun AddClinicScreen(modifier: Modifier = Modifier) {
     val viewModel: AddClinicViewModel = viewModel()
     val state by viewModel.addClinicState.collectAsState()
+
+    val saveBtnEnable by remember {
+        derivedStateOf {
+            state.clinicName.isNotBlank() && state.clinicAddress.isNotBlank()
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -48,6 +58,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                             viewModel.onEvent(AddClinicUiEvent.SaveClinic)
                         },
                         modifier = Modifier.padding(8.dp),
+                        enabled = saveBtnEnable,
                     ) {
                         Text(text = "Save")
                     }
@@ -67,6 +78,11 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
             item {
@@ -80,6 +96,11 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
             item {
@@ -93,6 +114,11 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                         Modifier
                             .fillMaxWidth()
                             .padding(16.dp),
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
             item {
