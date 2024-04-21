@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,7 +44,10 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
 
     val saveBtnEnable by remember {
         derivedStateOf {
-            state.clinicName.isNotBlank() && state.clinicAddress.isNotBlank()
+            state.clinicName.isNotBlank() &&
+                state.clinicAddress.isNotBlank() &&
+                state.examination.isNotBlank() &&
+                state.followUp.isNotBlank()
         }
     }
     Scaffold(
@@ -117,6 +121,60 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                     singleLine = true,
                     keyboardOptions =
                         KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+            item {
+                OutlinedTextField(
+                    value = state.examination,
+                    onValueChange = {
+                        viewModel.onEvent(
+                            AddClinicUiEvent.ExaminationChange(
+                                it.filter { symbol ->
+                                    symbol.isDigit()
+                                },
+                            ),
+                        )
+                    },
+                    label = {
+                        Text(text = "Examination (EGP)")
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+            item {
+                OutlinedTextField(
+                    value = state.followUp,
+                    onValueChange = {
+                        viewModel.onEvent(
+                            AddClinicUiEvent.FollowUpChange(
+                                it.filter { symbol ->
+                                    symbol.isDigit()
+                                },
+                            ),
+                        )
+                    },
+                    label = {
+                        Text(text = "Follow Up (EGP)")
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                    singleLine = true,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next,
                         ),
                 )

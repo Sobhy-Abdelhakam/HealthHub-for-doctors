@@ -10,6 +10,10 @@ sealed class AddClinicUiEvent() {
 
     data class ClinicAddressChange(val address: String) : AddClinicUiEvent()
 
+    data class ExaminationChange(val examination: String) : AddClinicUiEvent()
+
+    data class FollowUpChange(val followUp: String) : AddClinicUiEvent()
+
     data class UpdateSwitchState(val day: DayOfWeek, val newState: Boolean) : AddClinicUiEvent()
 
     data class UpdateFrom(val day: DayOfWeek, val fromText: LocalTime) : AddClinicUiEvent()

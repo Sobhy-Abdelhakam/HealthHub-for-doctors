@@ -25,7 +25,14 @@ class AddClinicViewModel : ViewModel() {
                 _addClinicState.update {
                     it.copy(clinicAddress = event.address)
                 }
-
+            is AddClinicUiEvent.ExaminationChange ->
+                _addClinicState.update {
+                    it.copy(examination = event.examination)
+                }
+            is AddClinicUiEvent.FollowUpChange ->
+                _addClinicState.update {
+                    it.copy(followUp = event.followUp)
+                }
             is AddClinicUiEvent.UpdateSwitchState -> updateSwitchState(event.newState, event.day)
             is AddClinicUiEvent.UpdateFrom -> updateFromText(event.fromText, event.day)
             is AddClinicUiEvent.UpdateTo -> updateToText(event.toText, event.day)

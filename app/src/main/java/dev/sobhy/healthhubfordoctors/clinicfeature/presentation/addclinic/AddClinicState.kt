@@ -7,6 +7,8 @@ data class AddClinicState(
     val clinicName: String = "",
     val clinicNumber: String = "",
     val clinicAddress: String = "",
+    val examination: String = "",
+    val followUp: String = "",
     val availability: Availability = Availability(),
 )
 
