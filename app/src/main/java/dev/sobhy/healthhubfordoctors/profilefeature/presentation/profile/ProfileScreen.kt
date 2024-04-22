@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -57,243 +58,210 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.sobhy.healthhubfordoctors.R
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalFoundationApi::class)
 @Destination
 @Composable
 fun ProfileScreen() {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
     ) {
         item {
-            Column(
+            var imageUri by remember { mutableStateOf<Uri?>(null) }
+            rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent(),
+                onResult = {
+                    it?.let {
+                        imageUri = it
+                    }
+                },
+            )
+            PhotoNameSpecialityRateSection(
+                imageUri = imageUri,
+                imageChanged = { imageUri = it },
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+            )
+        }
+        item {
+            ViewsBookingNumberSection(
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-            ) {
-                var showBottomSheet by remember { mutableStateOf(false) }
-                var imageUri by remember { mutableStateOf<Uri?>(null) }
-                val galleryLauncher =
-                    rememberLauncherForActivityResult(
-                        contract = ActivityResultContracts.GetContent(),
-                        onResult = {
-                            it?.let {
-                                imageUri = it
-                            }
-                        },
-                    )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(Modifier.size(120.dp)) {
-                        Image(
-                            painter =
-                                if (imageUri == null) {
-                                    painterResource(id = R.drawable.doctor)
-                                } else {
-                                    rememberAsyncImagePainter(imageUri)
-                                },
-                            contentDescription = null,
-                            modifier =
-                                Modifier
-                                    .size(120.dp)
-                                    .fillMaxSize()
-                                    .clip(CircleShape)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.primaryContainer,
-                                        shape = CircleShape,
-                                    ),
-                            contentScale = ContentScale.Crop,
-                        )
-                        IconButton(
-                            onClick = {
-                                showBottomSheet = true
-//                                galleryLauncher.launch("image/*")
-                            },
-                            modifier =
-                                Modifier
-                                    .align(Alignment.BottomEnd)
-                                    .size(45.dp),
-                            colors =
-                                IconButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.background,
-                                    contentColor = MaterialTheme.colorScheme.primary,
-                                    disabledContainerColor = MaterialTheme.colorScheme.background,
-                                    disabledContentColor = MaterialTheme.colorScheme.primary,
-                                ),
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.AddCircle,
-                                contentDescription = "Add Photo",
-                                tint = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
-                    }
-                    if (showBottomSheet) {
-                        ModalBottomSheet(
-                            onDismissRequest = { showBottomSheet = false },
-                        ) {
-                            Text(
-                                text = "Profile photo",
-                                style = MaterialTheme.typography.titleLarge,
-                                modifier = Modifier.padding(16.dp),
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.SpaceAround,
-                            ) {
-                                IconButton(
-                                    onClick = {
-                                        galleryLauncher.launch("image/*")
-                                        showBottomSheet = false
-                                    },
-                                    modifier =
-                                        Modifier
-                                            .padding(4.dp)
-                                            .size(70.dp)
-                                            .border(
-                                                width = 1.dp,
-                                                color = Color.Gray,
-                                                shape = CircleShape,
-                                            ),
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.CameraAlt,
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.primary,
-                                    )
-                                }
-                                IconButton(
-                                    onClick = {
-                                        imageUri = null
-                                        showBottomSheet = false
-                                    },
-                                    modifier =
-                                        Modifier
-                                            .padding(4.dp)
-                                            .size(70.dp)
-                                            .border(
-                                                width = 1.dp,
-                                                color = Color.Gray,
-                                                shape = CircleShape,
-                                            ),
-                                    colors =
-                                        IconButtonColors(
-                                            containerColor = MaterialTheme.colorScheme.errorContainer,
-                                            contentColor = MaterialTheme.colorScheme.error,
-                                            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                                            disabledContentColor = MaterialTheme.colorScheme.secondary,
-                                        ),
-                                    enabled = imageUri != null,
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = null,
-                                    )
-                                }
-                            }
-                        }
-                    }
-
-                    Column(modifier = Modifier.padding(start = 16.dp)) {
-                        Text(
-                            text = "Sobhy Abdel Hakam",
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold,
-                        )
-                        Text(
-                            text = "Female Doctor",
-                            style = MaterialTheme.typography.titleMedium,
-                        )
-                        Row {
-                            repeat(5) {
-                                Icon(
-                                    imageVector = Icons.Default.Star,
-                                    contentDescription = null,
-                                    tint = if (it < 3) Color.Yellow else Color.Gray,
-                                    modifier = Modifier.padding(2.dp),
-                                )
-                            }
-                        }
-                    }
-                }
-
-                Card(
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                ) {
-                    Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(IntrinsicSize.Min),
-                        horizontalArrangement = Arrangement.SpaceAround,
-                    ) {
-                        Column {
-                            Text(
-                                text = "0",
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                            )
-                            Text(text = "Profile Views", modifier = Modifier.padding(8.dp))
-                        }
-                        VerticalDivider()
-                        Column {
-                            Text(
-                                text = "0",
-                                modifier = Modifier.align(Alignment.CenterHorizontally),
-                            )
-                            Text(text = "Bookings", modifier = Modifier.padding(8.dp))
-                        }
-                    }
-                }
-
-                Text(
-                    text = "this is text show you my bio, it is the string about me",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(top = 16.dp),
-                )
-            }
+                        .padding(8.dp),
+            )
         }
         item {
-            HorizontalDivider(modifier = Modifier.padding(8.dp))
+            Text(
+                text = "this is text show you my bio, it is the string about me",
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(8.dp),
+            )
+        }
+        item {
+            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         }
         item {
             val state = rememberPagerState { 2 }
             val coroutineScope = rememberCoroutineScope()
-            TabRow(selectedTabIndex = state.currentPage) {
-                Tab(
-                    selected = state.currentPage == 0,
-                    onClick = {
-                        coroutineScope.launch {
-                            state.animateScrollToPage(0)
-                        }
-                    },
-                ) {
-                    Icon(imageVector = Icons.Default.Info, contentDescription = null)
-                    Text(text = "Personal Info")
+            TapRowSection(state, coroutineScope)
+            HorizontalPagerSection(state)
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PhotoNameSpecialityRateSection(
+    imageUri: Uri?,
+    imageChanged: (Uri?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val galleryLauncher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent(),
+            onResult = {
+                it?.let {
+                    imageChanged(it)
                 }
-                Tab(
-                    selected = state.currentPage == 1,
-                    onClick = {
-                        coroutineScope.launch {
-                            state.animateScrollToPage(1)
-                        }
+            },
+        )
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(Modifier.size(120.dp)) {
+            Image(
+                painter =
+                    if (imageUri == null) {
+                        painterResource(id = R.drawable.doctor)
+                    } else {
+                        rememberAsyncImagePainter(imageUri)
                     },
+                contentDescription = null,
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .fillMaxSize()
+                        .clip(CircleShape)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.primaryContainer,
+                            shape = CircleShape,
+                        ),
+                contentScale = ContentScale.Crop,
+            )
+            IconButton(
+                onClick = {
+                    showBottomSheet = true
+//                                galleryLauncher.launch("image/*")
+                },
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(45.dp),
+                colors =
+                    IconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.background,
+                        contentColor = MaterialTheme.colorScheme.primary,
+                        disabledContainerColor = MaterialTheme.colorScheme.background,
+                        disabledContentColor = MaterialTheme.colorScheme.primary,
+                    ),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddCircle,
+                    contentDescription = "Add Photo",
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
+        if (showBottomSheet) {
+            ModalBottomSheet(
+                onDismissRequest = { showBottomSheet = false },
+            ) {
+                Text(
+                    text = "Profile photo",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.padding(16.dp),
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround,
                 ) {
-                    Icon(imageVector = Icons.Default.House, contentDescription = null)
-                    Text(text = "Clinic Info")
+                    IconButton(
+                        onClick = {
+                            galleryLauncher.launch("image/*")
+                            showBottomSheet = false
+                        },
+                        modifier =
+                            Modifier
+                                .padding(4.dp)
+                                .size(70.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Gray,
+                                    shape = CircleShape,
+                                ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.CameraAlt,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
+                    }
+                    IconButton(
+                        onClick = {
+                            imageChanged(null)
+                            showBottomSheet = false
+                        },
+                        modifier =
+                            Modifier
+                                .padding(4.dp)
+                                .size(70.dp)
+                                .border(
+                                    width = 1.dp,
+                                    color = Color.Gray,
+                                    shape = CircleShape,
+                                ),
+                        colors =
+                            IconButtonColors(
+                                containerColor = MaterialTheme.colorScheme.errorContainer,
+                                contentColor = MaterialTheme.colorScheme.error,
+                                disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                disabledContentColor = MaterialTheme.colorScheme.secondary,
+                            ),
+                        enabled = imageUri != null,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
-            HorizontalPager(state = state) {
-                when (it) {
-                    0 -> PersonalInfo(modifier = Modifier.fillMaxSize())
-                    1 -> ClinicInfo(modifier = Modifier.fillMaxSize())
+        }
+
+        Column(modifier = Modifier.padding(start = 16.dp)) {
+            Text(
+                text = "Sobhy Abdel Hakam",
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Bold,
+            )
+            Text(
+                text = "Female Doctor",
+                style = MaterialTheme.typography.titleMedium,
+            )
+            Row {
+                repeat(5) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = if (it < 3) Color.Yellow else Color.Gray,
+                        modifier = Modifier.padding(2.dp),
+                    )
                 }
             }
         }
@@ -301,8 +269,82 @@ fun ProfileScreen() {
 }
 
 @Composable
+private fun ViewsBookingNumberSection(modifier: Modifier = Modifier) {
+    Card(
+        modifier = modifier,
+    ) {
+        Row(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
+            horizontalArrangement = Arrangement.SpaceAround,
+        ) {
+            Column {
+                Text(
+                    text = "0",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
+                Text(text = "Profile Views", modifier = Modifier.padding(8.dp))
+            }
+            VerticalDivider()
+            Column {
+                Text(
+                    text = "0",
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                )
+                Text(text = "Bookings", modifier = Modifier.padding(8.dp))
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun TapRowSection(
+    state: PagerState,
+    coroutineScope: CoroutineScope,
+) {
+    TabRow(selectedTabIndex = state.currentPage) {
+        Tab(
+            selected = state.currentPage == 0,
+            onClick = {
+                coroutineScope.launch {
+                    state.animateScrollToPage(0)
+                }
+            },
+        ) {
+            Icon(imageVector = Icons.Default.Info, contentDescription = null)
+            Text(text = "Personal Info")
+        }
+        Tab(
+            selected = state.currentPage == 1,
+            onClick = {
+                coroutineScope.launch {
+                    state.animateScrollToPage(1)
+                }
+            },
+        ) {
+            Icon(imageVector = Icons.Default.House, contentDescription = null)
+            Text(text = "Clinic Info")
+        }
+    }
+}
+
+@Composable
+@OptIn(ExperimentalFoundationApi::class)
+private fun HorizontalPagerSection(state: PagerState) {
+    HorizontalPager(state = state) {
+        when (it) {
+            0 -> PersonalInfo(modifier = Modifier.fillMaxSize())
+            1 -> ClinicInfo(modifier = Modifier.fillMaxSize())
+        }
+    }
+}
+
+@Composable
 fun PersonalInfo(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(8.dp)) {
         Text(
             text = "Basic info",
             style = MaterialTheme.typography.titleMedium,
@@ -315,7 +357,7 @@ fun PersonalInfo(modifier: Modifier = Modifier) {
             Text(text = "Birthday: ")
             Text(text = "25 October 2000", fontWeight = FontWeight.Bold)
         }
-        HorizontalDivider(modifier = Modifier.padding(8.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         Text(
             text = "Education",
             style = MaterialTheme.typography.titleMedium,
@@ -333,12 +375,12 @@ fun PersonalInfo(modifier: Modifier = Modifier) {
             )
         }
 
-        HorizontalDivider(modifier = Modifier.padding(8.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
         Text(text = "Experience:")
         Text(text = "Contact Information:")
 
-        HorizontalDivider(modifier = Modifier.padding(8.dp))
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
         Text(
             text = "Contact Info",
@@ -361,7 +403,7 @@ fun PersonalInfo(modifier: Modifier = Modifier) {
 
 @Composable
 fun ClinicInfo(modifier: Modifier = Modifier) {
-    Column(modifier = modifier.padding(16.dp)) {
+    Column(modifier = modifier.padding(8.dp)) {
         Text(text = "Clinic Name:")
         Text(text = "Clinic Number:")
         Text(text = "Clinic Photos:")
