@@ -23,15 +23,19 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
@@ -55,7 +59,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import dev.sobhy.healthhubfordoctors.R
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Destination
 @Composable
 fun ProfileScreen() {
@@ -69,20 +73,21 @@ fun ProfileScreen() {
                         .fillMaxWidth()
                         .padding(16.dp),
             ) {
+                var showBottomSheet by remember { mutableStateOf(false) }
+                var imageUri by remember { mutableStateOf<Uri?>(null) }
+                val galleryLauncher =
+                    rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent(),
+                        onResult = {
+                            it?.let {
+                                imageUri = it
+                            }
+                        },
+                    )
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(Modifier.size(120.dp)) {
-                        var imageUri by remember { mutableStateOf<Uri?>(null) }
-                        val galleryLauncher =
-                            rememberLauncherForActivityResult(
-                                contract = ActivityResultContracts.GetContent(),
-                                onResult = {
-                                    it?.let {
-                                        imageUri = it
-                                    }
-                                },
-                            )
                         Image(
                             painter =
                                 if (imageUri == null) {
@@ -105,9 +110,13 @@ fun ProfileScreen() {
                         )
                         IconButton(
                             onClick = {
-                                galleryLauncher.launch("image/*")
+                                showBottomSheet = true
+//                                galleryLauncher.launch("image/*")
                             },
-                            modifier = Modifier.align(Alignment.BottomEnd).size(45.dp),
+                            modifier =
+                                Modifier
+                                    .align(Alignment.BottomEnd)
+                                    .size(45.dp),
                             colors =
                                 IconButtonColors(
                                     containerColor = MaterialTheme.colorScheme.background,
@@ -122,6 +131,71 @@ fun ProfileScreen() {
                                 tint = MaterialTheme.colorScheme.primary,
                                 modifier = Modifier.fillMaxSize(),
                             )
+                        }
+                    }
+                    if (showBottomSheet) {
+                        ModalBottomSheet(
+                            onDismissRequest = { showBottomSheet = false },
+                        ) {
+                            Text(
+                                text = "Profile photo",
+                                style = MaterialTheme.typography.titleLarge,
+                                modifier = Modifier.padding(16.dp),
+                            )
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceAround,
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        galleryLauncher.launch("image/*")
+                                        showBottomSheet = false
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .padding(4.dp)
+                                            .size(70.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.Gray,
+                                                shape = CircleShape,
+                                            ),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.CameraAlt,
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.primary,
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {
+                                        imageUri = null
+                                        showBottomSheet = false
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .padding(4.dp)
+                                            .size(70.dp)
+                                            .border(
+                                                width = 1.dp,
+                                                color = Color.Gray,
+                                                shape = CircleShape,
+                                            ),
+                                    colors =
+                                        IconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.errorContainer,
+                                            contentColor = MaterialTheme.colorScheme.error,
+                                            disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                                            disabledContentColor = MaterialTheme.colorScheme.secondary,
+                                        ),
+                                    enabled = imageUri != null,
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
                         }
                     }
 
