@@ -1,8 +1,12 @@
 package dev.sobhy.healthhubfordoctors.profilefeature.presentation.profile
 
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,13 +29,19 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +50,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.sobhy.healthhubfordoctors.R
 import kotlinx.coroutines.launch
@@ -62,30 +73,56 @@ fun ProfileScreen() {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Box(Modifier.size(120.dp)) {
+                        var imageUri by remember { mutableStateOf<Uri?>(null) }
+                        val galleryLauncher =
+                            rememberLauncherForActivityResult(
+                                contract = ActivityResultContracts.GetContent(),
+                                onResult = {
+                                    it?.let {
+                                        imageUri = it
+                                    }
+                                },
+                            )
                         Image(
-                            painter = painterResource(id = R.drawable.profile_pic),
+                            painter =
+                                if (imageUri == null) {
+                                    painterResource(id = R.drawable.doctor)
+                                } else {
+                                    rememberAsyncImagePainter(imageUri)
+                                },
                             contentDescription = null,
                             modifier =
                                 Modifier
                                     .size(120.dp)
                                     .fillMaxSize()
-                                    .clip(CircleShape),
-                            contentScale = ContentScale.Crop,
-                        )
-
-                        Icon(
-                            imageVector = Icons.Default.AddCircle,
-                            contentDescription = "Add Photo",
-                            tint = MaterialTheme.colorScheme.primary,
-                            modifier =
-                                Modifier
-                                    .size(40.dp)
-                                    .align(Alignment.BottomEnd)
-                                    .background(
-                                        color = MaterialTheme.colorScheme.background,
+                                    .clip(CircleShape)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.primaryContainer,
                                         shape = CircleShape,
                                     ),
+                            contentScale = ContentScale.Crop,
                         )
+                        IconButton(
+                            onClick = {
+                                galleryLauncher.launch("image/*")
+                            },
+                            modifier = Modifier.align(Alignment.BottomEnd).size(45.dp),
+                            colors =
+                                IconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.background,
+                                    contentColor = MaterialTheme.colorScheme.primary,
+                                    disabledContainerColor = MaterialTheme.colorScheme.background,
+                                    disabledContentColor = MaterialTheme.colorScheme.primary,
+                                ),
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.AddCircle,
+                                contentDescription = "Add Photo",
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.fillMaxSize(),
+                            )
+                        }
                     }
 
                     Column(modifier = Modifier.padding(start = 16.dp)) {

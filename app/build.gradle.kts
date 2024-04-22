@@ -88,7 +88,9 @@ dependencies {
 
     // material icons
     implementation(libs.androidx.material.icons.extended)
-
+    // compose destinations
     implementation(libs.core)
     ksp(libs.ksp)
+    // coil
+    implementation(libs.coil.compose)
 }
