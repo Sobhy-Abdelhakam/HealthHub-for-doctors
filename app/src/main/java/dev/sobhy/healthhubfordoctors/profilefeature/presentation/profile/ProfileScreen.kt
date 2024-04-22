@@ -2,6 +2,7 @@ package dev.sobhy.healthhubfordoctors.profilefeature.presentation.profile
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,14 +72,19 @@ fun ProfileScreen() {
                                     .clip(CircleShape),
                             contentScale = ContentScale.Crop,
                         )
+
                         Icon(
                             imageVector = Icons.Default.AddCircle,
-                            contentDescription = null,
+                            contentDescription = "Add Photo",
                             tint = MaterialTheme.colorScheme.primary,
                             modifier =
                                 Modifier
                                     .size(40.dp)
-                                    .align(Alignment.BottomEnd),
+                                    .align(Alignment.BottomEnd)
+                                    .background(
+                                        color = MaterialTheme.colorScheme.background,
+                                        shape = CircleShape,
+                                    ),
                         )
                     }
 
