@@ -5,7 +5,6 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,6 +41,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +55,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.sobhy.healthhubfordoctors.R
@@ -65,23 +66,32 @@ import kotlinx.coroutines.launch
 @Destination
 @Composable
 fun ProfileScreen() {
+    val viewModel: ProfileViewModel = viewModel()
+    val state by viewModel.uiState.collectAsState()
     LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         item {
-            var imageUri by remember { mutableStateOf<Uri?>(null) }
             rememberLauncherForActivityResult(
                 contract = ActivityResultContracts.GetContent(),
                 onResult = {
                     it?.let {
-                        imageUri = it
+                        viewModel.onEvent(ProfileUiEvent.ChangeProfileImage(it))
                     }
                 },
             )
             PhotoNameSpecialityRateSection(
-                imageUri = imageUri,
-                imageChanged = { imageUri = it },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                imageUri = state.image,
+                imageChanged = {
+                    viewModel.onEvent(ProfileUiEvent.ChangeProfileImage(it))
+                },
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
             )
         }
         item {
