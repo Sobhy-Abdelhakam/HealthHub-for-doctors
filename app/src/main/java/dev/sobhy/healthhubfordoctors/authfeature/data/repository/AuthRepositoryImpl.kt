@@ -81,7 +81,13 @@ class AuthRepositoryImpl(
         TODO("Not yet implemented")
     }
 
-    override suspend fun forgetPassword(email: String): Flow<Resource<Unit>> {
-        TODO("Not yet implemented")
+    override suspend fun forgetPassword(email: String): Flow<Resource<String>> {
+        return flow {
+            emit(Resource.Loading())
+            val temp = auth.passwordReset(email)
+            emit(Resource.Success("Password reset link sent to your email"))
+        }.catch {
+            emit(Resource.Error(it.message ?: "An error occurred"))
+        }
     }
 }

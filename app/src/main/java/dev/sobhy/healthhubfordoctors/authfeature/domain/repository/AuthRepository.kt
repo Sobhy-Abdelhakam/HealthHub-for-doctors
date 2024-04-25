@@ -15,5 +15,5 @@ interface AuthRepository {
 
     suspend fun logout(): Flow<Resource<Unit>>
 
-    suspend fun forgetPassword(email: String): Flow<Resource<Unit>>
+    suspend fun forgetPassword(email: String): Flow<Resource<String>>
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -82,16 +83,21 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 },
             )
             Button(
+                enabled = !state.isLoading,
                 onClick = viewModel::sendEmail,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.send),
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                if (state.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    Text(
+                        text = stringResource(R.string.send),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             }
 
             state.error?.let { error ->
@@ -99,6 +105,13 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                     text = error,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
+                )
+            }
+            state.success?.let { success ->
+                Text(
+                    text = success,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }

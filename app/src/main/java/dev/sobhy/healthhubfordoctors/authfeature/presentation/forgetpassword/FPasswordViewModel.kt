@@ -63,7 +63,7 @@ class FPasswordViewModel(
                         is Resource.Success ->
                             forgetPasswordState.value.copy(
                                 isLoading = false,
-                                isSuccess = true,
+                                success = result.data.toString(),
                                 error = null,
                             )
                     }
