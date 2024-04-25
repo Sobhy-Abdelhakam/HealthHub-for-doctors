@@ -5,7 +5,7 @@ data class UserData(
     val email: String,
     val phone: String,
     val gender: String,
-    val dateOfBirth: String,
+    val dateOfBirth: Long,
     val specialization: String,
     val professionalTitle: String,
 )

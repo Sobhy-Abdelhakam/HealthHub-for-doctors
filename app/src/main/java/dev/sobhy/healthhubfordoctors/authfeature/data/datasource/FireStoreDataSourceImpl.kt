@@ -11,7 +11,7 @@ class FireStoreDataSourceImpl(
         user: FirebaseUser,
         userData: UserDetailsModel,
     ) {
-        val userRef = fireStore.collection("users").document(user.uid)
-        val temp = userRef.set(userData)
+        val userRef = fireStore.collection("doctors").document(user.uid)
+        userRef.set(userData)
     }
 }

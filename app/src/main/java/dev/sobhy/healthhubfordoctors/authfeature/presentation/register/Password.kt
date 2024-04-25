@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -23,8 +24,9 @@ fun SecurityInformation(
     modifier: Modifier = Modifier,
     password: () -> String,
     onPasswordChange: (String) -> Unit,
-    isLoading: Boolean,
+    isLoading: () -> Boolean,
     onRegisterClick: () -> Unit,
+    errorText: @Composable () -> Unit,
 ) {
     LazyColumn(
         modifier = modifier,
@@ -49,7 +51,7 @@ fun SecurityInformation(
         }
         item {
             val buttonEnabled by remember {
-                derivedStateOf { password().isNotBlank() && !isLoading }
+                derivedStateOf { password().isNotBlank() && !isLoading() }
             }
             Button(
                 enabled = buttonEnabled,
@@ -59,8 +61,14 @@ fun SecurityInformation(
                         .fillMaxWidth()
                         .padding(16.dp),
             ) {
-                Text(text = stringResource(R.string.register))
+//                Text(text = stringResource(R.string.register))
+                if (isLoading()) {
+                    CircularProgressIndicator()
+                } else {
+                    Text(text = stringResource(R.string.register))
+                }
             }
+            errorText()
         }
     }
 }

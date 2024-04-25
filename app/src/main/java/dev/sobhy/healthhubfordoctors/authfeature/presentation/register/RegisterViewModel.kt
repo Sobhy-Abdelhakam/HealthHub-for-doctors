@@ -50,7 +50,7 @@ class RegisterViewModel(
                 email = registerState.value.email,
                 password = registerState.value.password,
                 phone = registerState.value.phone,
-                dateOfBirth = registerState.value.dateOfBirth,
+                dateOfBirth = registerState.value.dateOfBirth.toLong(),
                 gender = registerState.value.gender,
                 professionalTitle = registerState.value.professionalTitle,
                 specialization = registerState.value.specialization,

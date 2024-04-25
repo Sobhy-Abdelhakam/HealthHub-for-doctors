@@ -12,7 +12,7 @@ class RegisterUseCase(private val authRepository: AuthRepository) {
         email: String,
         phone: String,
         gender: String,
-        dateOfBirth: String,
+        dateOfBirth: Long,
         specialization: String,
         professionalTitle: String,
         password: String,
