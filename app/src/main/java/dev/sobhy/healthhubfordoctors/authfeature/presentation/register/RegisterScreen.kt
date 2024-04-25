@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.LoginScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
@@ -76,10 +77,10 @@ fun RegisterScreen(destinationsNavigator: DestinationsNavigator) {
             { viewModel.onEvent(RegisterUiEvent.PasswordChange(it)) }
         }
 
-//    if (state.success) {
-//        onNavigateToHome()
-//        return
-//    }
+    if (state.success) {
+        destinationsNavigator.navigate(LoginScreenDestination)
+        return
+    }
 
     val fillAnyField by remember {
         derivedStateOf {

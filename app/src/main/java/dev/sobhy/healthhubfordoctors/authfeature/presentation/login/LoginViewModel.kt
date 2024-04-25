@@ -64,14 +64,18 @@ class LoginViewModel(
                 .collectLatest { result ->
                     _loginState.value =
                         when (result) {
-                            is Resource.Loading ->
+                            is Resource.Loading -> {
+                                Log.d("loading", "loading..")
                                 loginState.value.copy(isLoading = true, error = null)
+                            }
 
-                            is Resource.Error ->
+                            is Resource.Error -> {
+                                Log.d("error", result.message.toString())
                                 loginState.value.copy(isLoading = false, error = result.message)
+                            }
 
                             is Resource.Success -> {
-                                Log.d("login", "login: success")
+                                Log.d("user", result.data.toString())
                                 loginState.value.copy(
                                     isLoading = false,
                                     isSuccess = true,

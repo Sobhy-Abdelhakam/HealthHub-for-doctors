@@ -8,4 +8,6 @@ interface FireStoreDataSource {
         user: FirebaseUser,
         userData: UserDetailsModel,
     )
+
+    suspend fun getUserData(user: FirebaseUser): UserDetailsModel?
 }

@@ -58,7 +58,7 @@ fun LoginScreen(destinationsNavigator: DestinationsNavigator) {
     val loginButtonLambda =
         remember {
             {
-//                viewModel.onEvent(LoginUiEvent.Login)
+                viewModel.onEvent(LoginUiEvent.Login)
             }
         }
     val emailChanged =
