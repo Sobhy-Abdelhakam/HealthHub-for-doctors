@@ -1,5 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.sobhy.healthhubfordoctors.authfeature.data.repository.AuthRepositoryImpl
@@ -55,21 +56,27 @@ class RegisterViewModel(
                 specialization = registerState.value.specialization,
             ).collect { result ->
                 when (result) {
-                    is Resource.Loading ->
+                    is Resource.Loading -> {
                         _registerState.value =
                             registerState.value.copy(isLoading = true)
+                        Log.d("loading", "loading..")
+                    }
 
-                    is Resource.Error ->
+                    is Resource.Error -> {
                         _registerState.value =
                             registerState.value.copy(isLoading = false, error = result.message)
+                        Log.e("error", result.message.toString())
+                    }
 
-                    is Resource.Success ->
+                    is Resource.Success -> {
                         _registerState.value =
                             registerState.value.copy(
                                 isLoading = false,
                                 success = true,
                                 error = null,
                             )
+                        Log.d("user", result.data.toString())
+                    }
                 }
             }
         }

@@ -1,6 +1,6 @@
-package dev.sobhy.healthhubfordoctors.authfeature.data.remote
+package dev.sobhy.healthhubfordoctors.authfeature.domain.model
 
-data class RegisterRequest(
+data class UserData(
     val name: String,
     val email: String,
     val phone: String,
@@ -8,5 +8,4 @@ data class RegisterRequest(
     val dateOfBirth: String,
     val specialization: String,
     val professionalTitle: String,
-    val password: String,
 )

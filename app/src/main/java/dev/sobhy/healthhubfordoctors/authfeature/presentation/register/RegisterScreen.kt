@@ -176,6 +176,7 @@ fun RegisterScreen(destinationsNavigator: DestinationsNavigator) {
                             .fillMaxSize(),
                     password = { state.password },
                     onPasswordChange = passwordChange,
+                    isLoading = state.isLoading,
                     onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
                 )
             }

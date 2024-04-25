@@ -23,6 +23,7 @@ fun SecurityInformation(
     modifier: Modifier = Modifier,
     password: () -> String,
     onPasswordChange: (String) -> Unit,
+    isLoading: Boolean,
     onRegisterClick: () -> Unit,
 ) {
     LazyColumn(
@@ -48,7 +49,7 @@ fun SecurityInformation(
         }
         item {
             val buttonEnabled by remember {
-                derivedStateOf { password().isNotBlank() }
+                derivedStateOf { password().isNotBlank() && !isLoading }
             }
             Button(
                 enabled = buttonEnabled,
