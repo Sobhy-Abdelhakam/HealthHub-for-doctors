@@ -29,7 +29,7 @@ import dev.sobhy.healthhubfordoctors.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination
 @Composable
-fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
+fun ForgetPasswordScreen() {
     val viewModel = viewModel<FPasswordViewModel>()
     val state by viewModel.forgetPasswordState.collectAsState()
 
