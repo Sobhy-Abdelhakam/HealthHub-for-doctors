@@ -93,4 +93,6 @@ dependencies {
 
     implementation(libs.core)
     ksp(libs.ksp)
+
+    implementation(libs.androidx.datastore.preferences)
 }
