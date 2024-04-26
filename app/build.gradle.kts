@@ -5,6 +5,8 @@ plugins {
     id("com.google.gms.google-services")
 
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
+    kotlin("kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -95,4 +97,10 @@ dependencies {
     ksp(libs.ksp)
 
     implementation(libs.androidx.datastore.preferences)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.android.compiler)
+}
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

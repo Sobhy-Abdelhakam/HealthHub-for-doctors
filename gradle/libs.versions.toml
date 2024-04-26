@@ -5,6 +5,8 @@ coreSplashscreenVersion = "1.1.0-alpha02"
 datastorePreferences = "1.1.0"
 firebaseAuth = "22.3.1"
 firebaseBom = "32.7.3"
+hiltAndroid = "2.44"
+hiltAndroidCompiler = "2.44"
 kotlin = "1.9.0"
 coreKtx = "1.12.0"
 junit = "4.13.2"
@@ -29,6 +31,8 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 core = { module = "io.github.raamcosta.compose-destinations:core", version.ref = "core" }
 firebase-auth = { module = "com.google.firebase:firebase-auth", version.ref = "firebaseAuth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hiltAndroidCompiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
