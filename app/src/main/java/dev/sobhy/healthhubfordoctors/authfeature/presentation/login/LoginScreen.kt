@@ -15,12 +15,15 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -40,7 +43,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -48,6 +50,7 @@ import dev.sobhy.healthhubfordoctors.R
 import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.ForgetPasswordScreenDestination
 import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.RegisterScreenDestination
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RootNavGraph(start = true)
 @Destination
 @Composable
@@ -81,84 +84,99 @@ fun LoginScreen(
 //        return
 //    }
 
-    LazyColumn(
-        verticalArrangement = Arrangement.SpaceEvenly,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.padding(18.dp),
-    ) {
-        item {
-            Text(text = stringResource(R.string.welcome_back), style = MaterialTheme.typography.headlineLarge)
-            Text(text = stringResource(R.string.login_to_your_account), style = MaterialTheme.typography.titleMedium)
-        }
-        item {
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-        item {
-            EmailTextField(
-                email = state.email,
-                onEmailChange = emailChanged,
-                emailError = state.emailError,
-            )
-        }
-        item {
-            PasswordTextField(
-                password = state.password,
-                onPasswordChange = passwordChanged,
-                passwordError = state.passwordError,
-                onDoneClick = loginButtonLambda,
-            )
-        }
-        item {
-            Row {
-                Spacer(modifier = Modifier.weight(1f))
-                TextButton(onClick = {
-                    destinationsNavigator.navigate(ForgetPasswordScreenDestination)
-                }) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
                     Text(
-                        text = stringResource(R.string.forgot_password),
-                        textDecoration = TextDecoration.Underline,
+                        text = stringResource(R.string.welcome_back),
+                        style = MaterialTheme.typography.headlineLarge,
+                    )
+                },
+            )
+        },
+    ) { paddingValues ->
+        LazyColumn(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(paddingValues).padding(18.dp),
+        ) {
+            item {
+                Text(
+                    text = stringResource(R.string.login_to_your_account),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+            }
+            item {
+                Spacer(modifier = Modifier.height(32.dp))
+            }
+            item {
+                EmailTextField(
+                    email = state.email,
+                    onEmailChange = emailChanged,
+                    emailError = state.emailError,
+                )
+            }
+            item {
+                PasswordTextField(
+                    password = state.password,
+                    onPasswordChange = passwordChanged,
+                    passwordError = state.passwordError,
+                    onDoneClick = loginButtonLambda,
+                )
+            }
+            item {
+                Row {
+                    Spacer(modifier = Modifier.weight(1f))
+                    TextButton(onClick = {
+                        destinationsNavigator.navigate(ForgetPasswordScreenDestination)
+                    }) {
+                        Text(
+                            text = stringResource(R.string.forgot_password),
+                            textDecoration = TextDecoration.Underline,
+                        )
+                    }
+                }
+            }
+            item {
+                Button(
+                    onClick = loginButtonLambda,
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = MaterialTheme.shapes.extraLarge,
+                    enabled = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading,
+                ) {
+                    Text(
+                        text = stringResource(R.string.login),
+                        style = MaterialTheme.typography.titleLarge,
+                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
             }
-        }
-        item {
-            Button(
-                onClick = loginButtonLambda,
-                modifier = Modifier.fillMaxWidth(),
-                shape = MaterialTheme.shapes.extraLarge,
-                enabled = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading,
-            ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(vertical = 4.dp),
-                )
+            if (state.isLoading) {
+                item {
+                    CircularProgressIndicator()
+                }
             }
-        }
-        if (state.isLoading) {
+            state.error?.let {
+                item {
+                    Text(text = it, color = MaterialTheme.colorScheme.error)
+                }
+            }
             item {
-                CircularProgressIndicator()
+                Spacer(modifier = Modifier.height(32.dp))
             }
-        }
-        state.error?.let {
             item {
-                Text(text = it, color = MaterialTheme.colorScheme.error)
-            }
-        }
-        item {
-            Spacer(modifier = Modifier.height(32.dp))
-        }
-        item {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Text(text = stringResource(R.string.don_t_have_an_account))
-                TextButton(onClick = {
-                    destinationsNavigator.navigate(RegisterScreenDestination)
-                }) {
-                    Text(text = stringResource(R.string.sign_up), fontWeight = FontWeight.Bold)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(text = stringResource(R.string.don_t_have_an_account))
+                    TextButton(onClick = {
+                        destinationsNavigator.navigate(RegisterScreenDestination)
+                    }) {
+                        Text(text = stringResource(R.string.sign_up), fontWeight = FontWeight.Bold)
+                    }
                 }
             }
         }

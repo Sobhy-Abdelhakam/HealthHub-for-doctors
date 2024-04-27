@@ -4,13 +4,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -31,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
@@ -122,73 +121,62 @@ fun RegisterScreen(
                 },
             )
         },
-        bottomBar = {
-            BottomAppBar {
+    ) { paddingValue ->
+        Box(modifier = Modifier.padding(paddingValue).fillMaxSize()) {
+            when (currentStep) {
+                1 -> {
+                    PersonalInformation(
+                        name = { state.name },
+                        onNameChange = nameChange,
+                        email = { state.email },
+                        onEmailChange = emailChange,
+                        phoneNumber = { state.phone },
+                        onPhoneNumberChange = phoneNumberChange,
+                        gender = { state.gender },
+                        onGenderChange = genderChange,
+                        date = { state.dateOfBirth },
+                        onDateChange = dateChange,
+                        onNextClick = { currentStep++ },
+                    )
+                }
+
+                2 -> {
+                    ProfessionalInformation(
+                        specialization = { state.specialization },
+                        onSpecializationChange = specializationChange,
+                        professionalTitle = { state.professionalTitle },
+                        onProfessionalTitleChange = professionalTitleChange,
+                        onNextClick = { currentStep++ },
+                    )
+                }
+
+                3 -> {
+                    SecurityInformation(
+                        password = { state.password },
+                        onPasswordChange = passwordChange,
+                        isLoading = { state.isLoading },
+                        onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
+                    ) {
+                        state.error?.let {
+                            Text(
+                                text = it,
+                                color = MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
+                }
+            }
+            Row(
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter),
+            ) {
                 StepIndicator(
-                    modifier =
-                        Modifier
-                            .weight(1f)
-                            .align(Alignment.Bottom),
+                    modifier = Modifier.weight(1f),
                     currentStep = currentStep,
                     totalSteps = 3,
                     onStepClick = { currentStep = it },
                 )
-            }
-        },
-    ) { paddingValue ->
-        when (currentStep) {
-            1 -> {
-                PersonalInformation(
-                    name = { state.name },
-                    onNameChange = nameChange,
-                    email = { state.email },
-                    onEmailChange = emailChange,
-                    phoneNumber = { state.phone },
-                    onPhoneNumberChange = phoneNumberChange,
-                    gender = { state.gender },
-                    onGenderChange = genderChange,
-                    date = { state.dateOfBirth },
-                    onDateChange = dateChange,
-                    modifier =
-                        Modifier
-                            .padding(paddingValue)
-                            .fillMaxSize(),
-                    onNextClick = { currentStep++ },
-                )
-            }
-
-            2 -> {
-                ProfessionalInformation(
-                    modifier =
-                        Modifier
-                            .padding(paddingValue)
-                            .fillMaxSize(),
-                    specialization = { state.specialization },
-                    onSpecializationChange = specializationChange,
-                    professionalTitle = { state.professionalTitle },
-                    onProfessionalTitleChange = professionalTitleChange,
-                    onNextClick = { currentStep++ },
-                )
-            }
-
-            3 -> {
-                SecurityInformation(
-                    modifier =
-                        Modifier
-                            .padding(paddingValue)
-                            .fillMaxSize(),
-                    password = { state.password },
-                    onPasswordChange = passwordChange,
-                    isLoading = { state.isLoading },
-                    onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
-                ) {
-                    state.error?.let {
-                        Text(
-                            text = it,
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                }
             }
         }
     }

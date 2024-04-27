@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import dev.sobhy.healthhubfordoctors.R
 
@@ -57,7 +56,7 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
                 text = stringResource(R.string.forget_password_text),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(18.dp),
             )
             OutlinedTextField(
                 value = viewModel.email,
@@ -65,7 +64,7 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(18.dp),
                 label = {
                     Text(text = stringResource(id = R.string.email))
                 },
@@ -88,7 +87,7 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(18.dp),
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator()
