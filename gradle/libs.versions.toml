@@ -4,7 +4,7 @@ core = "1.9.63"
 coreSplashscreenVersion = "1.1.0-alpha02"
 datastorePreferences = "1.1.0"
 firebaseAuth = "22.3.1"
-firebaseBom = "32.7.3"
+firebaseBom = "32.8.1"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 hiltNavigationCompose = "1.2.0"
@@ -19,7 +19,7 @@ activityCompose = "1.9.0"
 composeBom = "2024.04.01"
 lifecycleViewmodelCompose = "2.7.0"
 navigationCompose = "2.7.7"
-firebaseFirestoreKtx = "24.4.1"
+firebaseFirestoreKtx = "24.11.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
