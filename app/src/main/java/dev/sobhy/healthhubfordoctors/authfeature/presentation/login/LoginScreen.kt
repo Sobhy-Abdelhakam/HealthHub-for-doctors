@@ -39,6 +39,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootNavGraph
@@ -50,8 +51,10 @@ import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.Regis
 @RootNavGraph(start = true)
 @Destination
 @Composable
-fun LoginScreen(destinationsNavigator: DestinationsNavigator) {
-    val viewModel = viewModel<LoginViewModel>()
+fun LoginScreen(
+    destinationsNavigator: DestinationsNavigator,
+    viewModel: LoginViewModel = hiltViewModel(),
+) {
     val state by viewModel.loginState.collectAsState()
 
     // lambda for each event to reduce recomposition

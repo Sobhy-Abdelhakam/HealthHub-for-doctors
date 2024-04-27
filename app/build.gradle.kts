@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
-
     id("com.google.devtools.ksp") version "1.9.0-1.0.13"
     kotlin("kapt")
     id("com.google.dagger.hilt.android")
@@ -99,6 +98,7 @@ dependencies {
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }
 // Allow references to generated code
 kapt {

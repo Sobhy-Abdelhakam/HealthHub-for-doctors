@@ -1,4 +1,4 @@
-package dev.sobhy.healthhubfordoctors.authfeature.data.repository
+package dev.sobhy.healthhubfordoctors.core.repository
 
 import kotlinx.coroutines.flow.Flow
 

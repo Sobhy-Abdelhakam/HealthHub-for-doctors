@@ -1,6 +1,6 @@
-package dev.sobhy.healthhubfordoctors.authfeature.data.repository
+package dev.sobhy.healthhubfordoctors.core.repository
 
-import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.datastore.AuthPreferencesState
+import dev.sobhy.healthhubfordoctors.core.datasource.AuthPreferencesState
 import kotlinx.coroutines.flow.Flow
 
 class AuthPreferencesRepositoryImpl(

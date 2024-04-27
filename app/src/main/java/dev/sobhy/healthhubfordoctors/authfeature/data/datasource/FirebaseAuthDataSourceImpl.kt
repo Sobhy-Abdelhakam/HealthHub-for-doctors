@@ -6,7 +6,7 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.tasks.await
 
 class FirebaseAuthDataSourceImpl(
-    private val firebaseAuth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val firebaseAuth: FirebaseAuth,
 ) : FirebaseAuthDataSource {
     override suspend fun signUpWithEmailPassword(
         email: String,

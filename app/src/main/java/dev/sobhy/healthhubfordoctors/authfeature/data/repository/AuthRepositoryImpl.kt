@@ -1,9 +1,7 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FireStoreDataSource
-import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FireStoreDataSourceImpl
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
-import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSourceImpl
 import dev.sobhy.healthhubfordoctors.authfeature.data.models.UserDetailsModel
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
@@ -13,8 +11,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class AuthRepositoryImpl(
-    private val auth: FirebaseAuthDataSource = FirebaseAuthDataSourceImpl(),
-    private val firestore: FireStoreDataSource = FireStoreDataSourceImpl(),
+    private val auth: FirebaseAuthDataSource,
+    private val firestore: FireStoreDataSource,
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<UserDetailsModel>> {
         return flow {
@@ -78,7 +76,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun logout(): Flow<Resource<Unit>> {
-        TODO("Not yet implemented")
+        return flow {
+            emit(Resource.Loading())
+            auth.signOut()
+            emit(Resource.Success(Unit))
+        }.catch {
+            emit(Resource.Error(it.message ?: "An error occurred"))
+        }
     }
 
     override suspend fun forgetPassword(email: String): Flow<Resource<String>> {

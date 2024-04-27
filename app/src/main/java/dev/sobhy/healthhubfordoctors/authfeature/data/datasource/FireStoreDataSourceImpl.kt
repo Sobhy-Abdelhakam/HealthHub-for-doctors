@@ -6,7 +6,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.data.models.UserDetailsModel
 import kotlinx.coroutines.tasks.await
 
 class FireStoreDataSourceImpl(
-    private val fireStore: FirebaseFirestore = FirebaseFirestore.getInstance(),
+    private val fireStore: FirebaseFirestore,
 ) : FireStoreDataSource {
     override suspend fun saveUserData(
         user: FirebaseUser,
