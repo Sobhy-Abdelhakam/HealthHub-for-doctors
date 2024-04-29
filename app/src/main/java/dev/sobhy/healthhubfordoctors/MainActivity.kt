@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
 
@@ -24,6 +25,7 @@ class MainActivity : ComponentActivity() {
             HealthHubForDoctorsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     DestinationsNavHost(
+                        startRoute = LoginScreenDestination,
                         navGraph = NavGraphs.root,
                         modifier = Modifier.padding(innerPadding),
                     )
