@@ -44,15 +44,14 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ForgetPasswordScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
-import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.ForgetPasswordScreenDestination
-import dev.sobhy.healthhubfordoctors.authfeature.presentation.destinations.RegisterScreenDestination
 
 @OptIn(ExperimentalMaterial3Api::class)
-@RootNavGraph(start = true)
-@Destination
+@Destination<RootGraph>(start = true)
 @Composable
 fun LoginScreen(
     destinationsNavigator: DestinationsNavigator,

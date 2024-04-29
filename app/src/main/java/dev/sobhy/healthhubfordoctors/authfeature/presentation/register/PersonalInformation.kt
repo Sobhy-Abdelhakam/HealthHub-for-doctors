@@ -83,7 +83,7 @@ fun PersonalInformation(
                 },
                 singleLine = true,
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
+                    KeyboardOptions(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
                     ),
@@ -102,7 +102,7 @@ fun PersonalInformation(
                 },
                 singleLine = true,
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
+                    KeyboardOptions(
                         keyboardType = KeyboardType.Email,
                         imeAction = ImeAction.Next,
                     ),
@@ -111,7 +111,9 @@ fun PersonalInformation(
         item {
             TextField(
                 value = phoneNumber(),
-                onValueChange = onPhoneNumberChange,
+                onValueChange = { newText ->
+                    onPhoneNumberChange(newText.filter { it.isDigit() })
+                },
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -121,7 +123,7 @@ fun PersonalInformation(
                 },
                 singleLine = true,
                 keyboardOptions =
-                    KeyboardOptions.Default.copy(
+                    KeyboardOptions(
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
                     ),
