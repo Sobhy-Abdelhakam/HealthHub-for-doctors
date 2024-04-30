@@ -3,6 +3,7 @@ package dev.sobhy.healthhubfordoctors.authfeature.data.models
 import android.os.Parcelable
 import androidx.annotation.Keep
 import kotlinx.parcelize.Parcelize
+import java.time.LocalDate
 
 @Keep
 @Parcelize
@@ -13,7 +14,7 @@ data class UserDetailsModel(
     val email: String? = null,
     val phone: String? = null,
     val gender: String? = null,
-    val dateOfBirth: Long? = null,
+    val dateOfBirth: LocalDate? = null,
     val specialization: String? = null,
     val professionalTitle: String? = null,
     val rate: Int? = null,

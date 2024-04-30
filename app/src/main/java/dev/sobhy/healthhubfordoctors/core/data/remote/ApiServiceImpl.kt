@@ -19,7 +19,7 @@ class ApiServiceImpl(
         return flow {
             emit(Resource.Loading())
             val result =
-                httpClient.post("/doctors") {
+                httpClient.post("doctors") {
                     contentType(ContentType.Application.Json)
                     body = doctor
                 }

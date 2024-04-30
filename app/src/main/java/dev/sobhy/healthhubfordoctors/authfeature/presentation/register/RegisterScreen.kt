@@ -35,6 +35,7 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
+import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
@@ -63,7 +64,7 @@ fun RegisterScreen(
             { viewModel.onEvent(RegisterUiEvent.GenderChange(it)) }
         }
     val dateChange =
-        remember<(String) -> Unit> {
+        remember<(LocalDate) -> Unit> {
             { viewModel.onEvent(RegisterUiEvent.DOBChange(it)) }
         }
     val specializationChange =
@@ -90,7 +91,7 @@ fun RegisterScreen(
                 state.email.isNotBlank() ||
                 state.phone.isNotBlank() ||
                 state.gender.isNotBlank() ||
-                state.dateOfBirth.isNotBlank()
+                state.dateOfBirth != LocalDate.of(1000, 1, 1)
         }
     }
 

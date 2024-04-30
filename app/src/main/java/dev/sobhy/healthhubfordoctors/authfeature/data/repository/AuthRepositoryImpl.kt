@@ -1,10 +1,14 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
+import android.util.Log
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FireStoreDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.models.UserDetailsModel
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
+import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
+import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
+import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -13,6 +17,7 @@ import kotlinx.coroutines.flow.flow
 class AuthRepositoryImpl(
     private val auth: FirebaseAuthDataSource,
     private val firestore: FireStoreDataSource,
+    private val apiService: ApiService,
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<UserDetailsModel>> {
         return flow {
@@ -39,6 +44,19 @@ class AuthRepositoryImpl(
             // save user details to firestore
             firestore.saveUserData(result.user!!, userDetails)
             auth.sendEmailVerification(result.user!!)
+            // send user data to api
+            val doctorRequest =
+                DoctorRequest(
+                    name = registerRequest.name,
+                    email = registerRequest.email,
+                    phoneNumber = registerRequest.phone,
+                    dateOfBirth = registerRequest.dateOfBirth,
+                    gender = Gender.valueOf(registerRequest.gender),
+                    professionalTitle = registerRequest.professionalTitle,
+                    specialty = registerRequest.specialization,
+                )
+            val backendResult = apiService.addDoctor(doctorRequest)
+            Log.d("backendResult", "register: $backendResult")
             emit(Resource.Success(userDetails))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))

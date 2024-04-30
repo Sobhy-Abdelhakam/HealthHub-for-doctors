@@ -15,6 +15,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepositor
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ForgetPasswordUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.LoginUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.RegisterUseCase
+import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import javax.inject.Singleton
 
 @Module
@@ -48,8 +49,9 @@ object AuthModule {
     fun provideAuthRepository(
         authDataSource: FirebaseAuthDataSource,
         storeDataSource: FireStoreDataSource,
+        apiService: ApiService,
     ): AuthRepository {
-        return AuthRepositoryImpl(authDataSource, storeDataSource)
+        return AuthRepositoryImpl(authDataSource, storeDataSource, apiService)
     }
 
     @Provides

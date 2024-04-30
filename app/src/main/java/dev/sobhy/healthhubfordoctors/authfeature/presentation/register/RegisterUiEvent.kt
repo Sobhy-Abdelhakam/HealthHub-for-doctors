@@ -1,5 +1,7 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
+import java.time.LocalDate
+
 sealed class RegisterUiEvent {
     data class NameChange(val name: String) : RegisterUiEvent()
 
@@ -9,7 +11,7 @@ sealed class RegisterUiEvent {
 
     data class GenderChange(val gender: String) : RegisterUiEvent()
 
-    data class DOBChange(val dateOfBirth: String) : RegisterUiEvent()
+    data class DOBChange(val dateOfBirth: LocalDate) : RegisterUiEvent()
 
     data class SpecializationChange(val specialization: String) : RegisterUiEvent()
 

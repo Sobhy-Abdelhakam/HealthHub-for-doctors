@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
-import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -39,6 +38,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import dev.sobhy.healthhubfordoctors.R
+import java.time.LocalDate
 import java.time.Year
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -53,8 +53,8 @@ fun PersonalInformation(
     onPhoneNumberChange: (String) -> Unit,
     gender: () -> String,
     onGenderChange: (String) -> Unit,
-    date: () -> String,
-    onDateChange: (String) -> Unit,
+    date: () -> LocalDate,
+    onDateChange: (LocalDate) -> Unit,
     onNextClick: () -> Unit,
 ) {
     var showDatePicker by remember { mutableStateOf(false) }
@@ -173,12 +173,12 @@ fun PersonalInformation(
         item {
             TextField(
                 value =
-                    if (date().isEmpty()) {
+                    if (date().isEqual(LocalDate.of(1000, 1, 1))) {
                         ""
                     } else {
-                        DateFormat.format("dd/MM/yyyy", date().toLong()).toString()
+                        date().toString()
                     },
-                onValueChange = onDateChange,
+                onValueChange = {},
                 modifier =
                     Modifier
                         .fillMaxWidth()
@@ -202,7 +202,10 @@ fun PersonalInformation(
             val currentLanguage = LocalConfiguration.current.locale.language
             val buttonEnabled by remember {
                 derivedStateOf {
-                    name().isNotEmpty() && email().isNotEmpty() && phoneNumber().isNotEmpty() && gender().isNotEmpty() && date().isNotEmpty()
+                    name().isNotEmpty() && email().isNotEmpty() && phoneNumber().isNotEmpty() && gender().isNotEmpty() &&
+                        !date().isEqual(
+                            LocalDate.of(1000, 1, 1),
+                        )
                 }
             }
             Row(modifier = Modifier.padding(16.dp)) {
@@ -236,7 +239,9 @@ fun PersonalInformation(
                 TextButton(
                     onClick = {
                         showDatePicker = false
-                        onDateChange(datePickerState.selectedDateMillis.toString())
+                        val time = datePickerState.selectedDateMillis
+                        val convertDate = LocalDate.ofEpochDay(time!! / (1000 * 60 * 60 * 24))
+                        onDateChange(convertDate)
                     },
                     enabled = datePickerState.selectedDateMillis != null,
                 ) {
