@@ -5,11 +5,10 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiServiceImpl
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.android.Android
-import io.ktor.client.plugins.DefaultRequest
-import io.ktor.client.plugins.logging.Logging
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -17,25 +16,28 @@ import javax.inject.Singleton
 object ApiModule {
     @Provides
     @Singleton
-    fun provideHttpClient(): HttpClient {
-        return HttpClient(Android) {
-            install(Logging) {
-                level = io.ktor.client.plugins.logging.LogLevel.ALL
-                logger =
-                    object : io.ktor.client.plugins.logging.Logger {
-                        override fun log(message: String) {
-                            println(message)
-                        }
-                    }
-            }
-            install(DefaultRequest) {
-                url("http://127.0.0.1:8080/")
-            }
-        }
+    fun provideOkHttp(): OkHttpClient {
+        val logging =
+            HttpLoggingInterceptor()
+                .setLevel(HttpLoggingInterceptor.Level.BODY)
+        return OkHttpClient.Builder()
+            .addInterceptor(logging)
+            .build()
     }
 
     @Provides
-    fun provideApiService(httpClient: HttpClient): ApiService {
-        return ApiServiceImpl(httpClient)
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:8080/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
     }
 }

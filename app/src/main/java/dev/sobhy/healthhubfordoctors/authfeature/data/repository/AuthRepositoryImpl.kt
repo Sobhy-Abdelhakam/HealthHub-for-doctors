@@ -13,6 +13,7 @@ import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import java.time.format.DateTimeFormatter
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuthDataSource,
@@ -45,18 +46,21 @@ class AuthRepositoryImpl(
             firestore.saveUserData(result.user!!, userDetails)
             auth.sendEmailVerification(result.user!!)
             // send user data to api
+            val dateOfBirth = registerRequest.dateOfBirth // Replace with your LocalDate object
+            val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+            val dateOfBirthString = dateOfBirth.format(dateFormatter)
             val doctorRequest =
                 DoctorRequest(
                     name = registerRequest.name,
                     email = registerRequest.email,
                     phoneNumber = registerRequest.phone,
-                    dateOfBirth = registerRequest.dateOfBirth,
+                    dateOfBirth = dateOfBirthString,
                     gender = Gender.valueOf(registerRequest.gender),
                     professionalTitle = registerRequest.professionalTitle,
                     specialty = registerRequest.specialization,
                 )
-            val backendResult = apiService.addDoctor(doctorRequest)
-            Log.d("backendResult", "register: $backendResult")
+            Log.d("DoctorRequest", doctorRequest.toString())
+            apiService.addDoctor(doctorRequest)
             emit(Resource.Success(userDetails))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
