@@ -1,5 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -46,12 +47,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ForgetPasswordScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>(start = true)
+@Destination<RootGraph>
 @Composable
 fun LoginScreen(
     destinationsNavigator: DestinationsNavigator,
@@ -78,10 +80,10 @@ fun LoginScreen(
                 viewModel.onEvent(LoginUiEvent.PasswordChanged(it))
             }
         }
-//    if (state.isSuccess) {
-//        onNavigateToHome()
-//        return
-//    }
+    if (state.isSuccess) {
+        destinationsNavigator.navigate(MainScreenDestination)
+        Log.d("launch effict", "LoginScreen: ${state.isSuccess}")
+    }
 
     Scaffold(
         topBar = {

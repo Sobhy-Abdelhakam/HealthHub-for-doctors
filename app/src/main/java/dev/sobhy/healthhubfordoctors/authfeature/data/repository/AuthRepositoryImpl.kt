@@ -3,7 +3,6 @@ package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 import android.util.Log
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FireStoreDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
-import dev.sobhy.healthhubfordoctors.authfeature.data.models.UserDetailsModel
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
@@ -20,37 +19,25 @@ class AuthRepositoryImpl(
     private val firestore: FireStoreDataSource,
     private val apiService: ApiService,
 ) : AuthRepository {
-    override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<UserDetailsModel>> {
+    override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<String>> {
         return flow {
             emit(Resource.Loading())
-            val result =
+            // Firebase authentication
+            val authResult =
                 auth.signUpWithEmailPassword(registerRequest.email, registerRequest.password)
-            val userId = result.user?.uid
+            val userId = authResult.user?.uid
+            auth.sendEmailVerification(authResult.user!!)
             if (userId == null) {
                 emit(Resource.Error("User ID is null"))
                 return@flow
             }
-            val userDetails =
-                UserDetailsModel(
-                    id = userId,
-                    name = registerRequest.name,
-                    email = registerRequest.email,
-                    phone = registerRequest.phone,
-                    gender = registerRequest.gender,
-                    dateOfBirth = registerRequest.dateOfBirth,
-                    specialization = registerRequest.specialization,
-                    professionalTitle = registerRequest.professionalTitle,
-                    createdAt = System.currentTimeMillis(),
-                )
-            // save user details to firestore
-            firestore.saveUserData(result.user!!, userDetails)
-            auth.sendEmailVerification(result.user!!)
-            // send user data to api
+            // prepare data for API call
             val dateOfBirth = registerRequest.dateOfBirth // Replace with your LocalDate object
             val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
             val dateOfBirthString = dateOfBirth.format(dateFormatter)
             val doctorRequest =
                 DoctorRequest(
+                    uid = userId,
                     name = registerRequest.name,
                     email = registerRequest.email,
                     phoneNumber = registerRequest.phone,
@@ -60,8 +47,9 @@ class AuthRepositoryImpl(
                     specialty = registerRequest.specialization,
                 )
             Log.d("DoctorRequest", doctorRequest.toString())
+            // send data to API
             apiService.addDoctor(doctorRequest)
-            emit(Resource.Success(userDetails))
+            emit(Resource.Success("Registration successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
         }
@@ -70,7 +58,7 @@ class AuthRepositoryImpl(
     override suspend fun login(
         email: String,
         password: String,
-    ): Flow<Resource<UserDetailsModel>> {
+    ): Flow<Resource<String>> {
         return flow {
             emit(Resource.Loading())
             val loginResult = auth.signInWithEmailPassword(email, password)
@@ -86,12 +74,12 @@ class AuthRepositoryImpl(
             }
             // get user details from firestore
 
-            val userDetails = firestore.getUserData(loginResult.user!!)
-            if (userDetails == null) {
-                emit(Resource.Error("User details are null"))
-                return@flow
-            }
-            emit(Resource.Success(userDetails))
+//            val userDetails = firestore.getUserData(loginResult.user!!)
+//            if (userDetails == null) {
+//                emit(Resource.Error("User details are null"))
+//                return@flow
+//            }
+            emit(Resource.Success("login successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
         }

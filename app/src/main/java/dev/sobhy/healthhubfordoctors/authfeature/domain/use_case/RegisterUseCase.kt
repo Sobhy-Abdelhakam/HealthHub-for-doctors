@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.authfeature.domain.use_case
 
-import dev.sobhy.healthhubfordoctors.authfeature.data.models.UserDetailsModel
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 import dev.sobhy.healthhubfordoctors.core.util.Resource
@@ -17,7 +16,7 @@ class RegisterUseCase(private val authRepository: AuthRepository) {
         specialization: String,
         professionalTitle: String,
         password: String,
-    ): Flow<Resource<UserDetailsModel>> {
+    ): Flow<Resource<String>> {
         return authRepository.register(
             RegisterRequest(
                 name = name,

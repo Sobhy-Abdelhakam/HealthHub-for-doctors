@@ -1,6 +1,7 @@
 package dev.sobhy.healthhubfordoctors.authfeature.domain.model
 
 data class DoctorRequest(
+    val uid: String,
     val name: String = "",
     val email: String? = null,
     val phoneNumber: String? = null,
