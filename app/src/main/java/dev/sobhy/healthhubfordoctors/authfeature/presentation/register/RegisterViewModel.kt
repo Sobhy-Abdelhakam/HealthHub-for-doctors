@@ -7,8 +7,10 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.RegisterUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidatePassword
 import dev.sobhy.healthhubfordoctors.core.util.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -59,7 +61,7 @@ class RegisterViewModel
                 }
                 return
             }
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 registerUseCase(
                     name = registerState.value.name,
                     email = registerState.value.email,
@@ -69,7 +71,7 @@ class RegisterViewModel
                     gender = registerState.value.gender,
                     professionalTitle = registerState.value.professionalTitle,
                     specialization = registerState.value.specialization,
-                ).collect { result ->
+                ).collectLatest { result ->
                     when (result) {
                         is Resource.Loading -> {
                             _registerState.value =

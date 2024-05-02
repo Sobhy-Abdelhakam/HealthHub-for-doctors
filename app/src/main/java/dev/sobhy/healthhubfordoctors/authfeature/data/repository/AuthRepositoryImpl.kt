@@ -26,7 +26,6 @@ class AuthRepositoryImpl(
             val authResult =
                 auth.signUpWithEmailPassword(registerRequest.email, registerRequest.password)
             val userId = authResult.user?.uid
-            auth.sendEmailVerification(authResult.user!!)
             if (userId == null) {
                 emit(Resource.Error("User ID is null"))
                 return@flow
@@ -48,7 +47,14 @@ class AuthRepositoryImpl(
                 )
             Log.d("DoctorRequest", doctorRequest.toString())
             // send data to API
-            apiService.addDoctor(doctorRequest)
+            try {
+                apiService.addDoctor(doctorRequest)
+            } catch (e: Exception) {
+                authResult.user?.let { user -> auth.deleteAccount(user) }
+                emit(Resource.Error("Registration failed"))
+                return@flow
+            }
+            auth.sendEmailVerification(authResult.user!!)
             emit(Resource.Success("Registration successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
