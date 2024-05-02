@@ -5,7 +5,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface ApiService {
-    @POST("doctors")
+    @POST("doctor")
     suspend fun addDoctor(
         @Body doctorRequest: DoctorRequest,
     )

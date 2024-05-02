@@ -66,7 +66,7 @@ class RegisterViewModel
                     name = registerState.value.name,
                     email = registerState.value.email,
                     password = registerState.value.password,
-                    phone = registerState.value.phone,
+                    phone = "+20" + registerState.value.phone,
                     dateOfBirth = registerState.value.dateOfBirth,
                     gender = registerState.value.gender,
                     professionalTitle = registerState.value.professionalTitle,

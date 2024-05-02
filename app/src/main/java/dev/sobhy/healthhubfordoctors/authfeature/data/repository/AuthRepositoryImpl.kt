@@ -6,6 +6,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDat
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
+import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Specialty
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.util.Resource
@@ -31,20 +32,7 @@ class AuthRepositoryImpl(
                 return@flow
             }
             // prepare data for API call
-            val dateOfBirth = registerRequest.dateOfBirth // Replace with your LocalDate object
-            val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
-            val dateOfBirthString = dateOfBirth.format(dateFormatter)
-            val doctorRequest =
-                DoctorRequest(
-                    uid = userId,
-                    name = registerRequest.name,
-                    email = registerRequest.email,
-                    phoneNumber = registerRequest.phone,
-                    dateOfBirth = dateOfBirthString,
-                    gender = Gender.valueOf(registerRequest.gender),
-                    professionalTitle = registerRequest.professionalTitle,
-                    specialty = registerRequest.specialization,
-                )
+            val doctorRequest = createDoctorRequest(registerRequest, userId)
             Log.d("DoctorRequest", doctorRequest.toString())
             // send data to API
             try {
@@ -59,6 +47,25 @@ class AuthRepositoryImpl(
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
         }
+    }
+
+    private fun createDoctorRequest(
+        registerRequest: RegisterRequest,
+        userId: String,
+    ): DoctorRequest {
+        val dateOfBirth = registerRequest.dateOfBirth // Replace with your LocalDate object
+        val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
+        val dateOfBirthString = dateOfBirth.format(dateFormatter)
+        return DoctorRequest(
+            id = userId,
+            name = registerRequest.name,
+            email = registerRequest.email,
+            phoneNumber = registerRequest.phone,
+            birthDate = dateOfBirthString,
+            gender = Gender.valueOf(registerRequest.gender),
+            profTitle = registerRequest.professionalTitle,
+            specialty = Specialty(registerRequest.specialization),
+        )
     }
 
     override suspend fun login(
