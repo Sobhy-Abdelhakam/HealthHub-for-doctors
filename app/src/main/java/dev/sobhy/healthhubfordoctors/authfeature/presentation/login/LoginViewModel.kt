@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.LoginUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidateEmail
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidatePassword
-import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,20 +21,11 @@ class LoginViewModel
     @Inject
     constructor(
         private val loginUseCase: LoginUseCase,
-        private val authPreferences: AuthPreferencesRepository,
     ) : ViewModel() {
         private val validateEmail: ValidateEmail = ValidateEmail()
         private val validatePassword: ValidatePassword = ValidatePassword()
         private val _loginState = MutableStateFlow(LoginState())
         val loginState = _loginState.asStateFlow()
-
-        init {
-            viewModelScope.launch {
-                authPreferences.isLoggedIn().collectLatest {
-                    Log.d("loged in", it.toString())
-                }
-            }
-        }
 
         fun onEvent(event: LoginUiEvent) {
             when (event) {
@@ -89,7 +79,6 @@ class LoginViewModel
                                 }
 
                                 is Resource.Success -> {
-                                    authPreferences.saveLoginState(true)
                                     Log.d("user", result.data.toString())
                                     loginState.value.copy(
                                         isLoading = false,

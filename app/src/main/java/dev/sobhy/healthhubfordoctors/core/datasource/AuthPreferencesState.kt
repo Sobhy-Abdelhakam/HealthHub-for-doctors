@@ -8,17 +8,6 @@ import kotlinx.coroutines.flow.map
 class AuthPreferencesState(
     private val context: Context,
 ) {
-    val isUserLoggedIn: Flow<Boolean> =
-        context.dataStore.data.map { preferences ->
-            preferences[DataStoreKeys.IS_USER_LOGGED_IN] ?: false
-        }
-
-    suspend fun setIsUserLoggedIn(isLoggedIn: Boolean) {
-        context.dataStore.edit { preferences ->
-            preferences[DataStoreKeys.IS_USER_LOGGED_IN] = isLoggedIn
-        }
-    }
-
     val userToken: Flow<String?> =
         context.dataStore.data.map { preferences ->
             preferences[DataStoreKeys.authToken]
