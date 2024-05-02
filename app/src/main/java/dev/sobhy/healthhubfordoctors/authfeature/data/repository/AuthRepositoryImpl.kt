@@ -1,7 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
 import android.util.Log
-import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FireStoreDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
@@ -9,6 +8,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Specialty
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -17,8 +17,8 @@ import java.time.format.DateTimeFormatter
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuthDataSource,
-    private val firestore: FireStoreDataSource,
     private val apiService: ApiService,
+    private val authPreferences: AuthPreferencesRepository,
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<String>> {
         return flow {
@@ -85,13 +85,7 @@ class AuthRepositoryImpl(
                 emit(Resource.Error("Email is not verified"))
                 return@flow
             }
-            // get user details from firestore
-
-//            val userDetails = firestore.getUserData(loginResult.user!!)
-//            if (userDetails == null) {
-//                emit(Resource.Error("User details are null"))
-//                return@flow
-//            }
+            authPreferences.saveUserToken(userId)
             emit(Resource.Success("login successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
@@ -102,6 +96,7 @@ class AuthRepositoryImpl(
         return flow {
             emit(Resource.Loading())
             auth.signOut()
+            authPreferences.clearUserToken()
             emit(Resource.Success(Unit))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))

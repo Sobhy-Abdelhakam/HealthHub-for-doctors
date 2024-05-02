@@ -13,4 +13,16 @@ class AuthPreferencesRepositoryImpl(
     override suspend fun isLoggedIn(): Flow<Boolean> {
         return authPreferencesDataStore.isUserLoggedIn
     }
+
+    override suspend fun saveUserToken(token: String) {
+        authPreferencesDataStore.saveUserToken(token)
+    }
+
+    override suspend fun getUserToken(): Flow<String?> {
+        return authPreferencesDataStore.userToken
+    }
+
+    override suspend fun clearUserToken() {
+        authPreferencesDataStore.clearUserToken()
+    }
 }

@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
             val isLoggedIn = mainViewModel.isLoggedIn.collectAsState()
             runBlocking {
                 startDestination =
-                    if (isLoggedIn.value) {
+                    if (isLoggedIn.value != null) {
                         MainScreenDestination
                     } else {
                         LoginScreenDestination
