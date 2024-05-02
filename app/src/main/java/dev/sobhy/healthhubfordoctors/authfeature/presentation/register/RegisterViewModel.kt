@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.RegisterUseCase
+import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidatePassword
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +19,7 @@ class RegisterViewModel
     constructor(
         private val registerUseCase: RegisterUseCase,
     ) : ViewModel() {
+        private val validatePassword: ValidatePassword = ValidatePassword()
         private val _registerState = MutableStateFlow(RegisterState())
         val registerState = _registerState.asStateFlow()
 
@@ -48,6 +50,15 @@ class RegisterViewModel
         }
 
         fun register() {
+            val passwordResult = validatePassword.execute(registerState.value.password)
+            if (!passwordResult.successful) {
+                _registerState.update {
+                    it.copy(
+                        passwordError = passwordResult.errorMessage,
+                    )
+                }
+                return
+            }
             viewModelScope.launch {
                 registerUseCase(
                     name = registerState.value.name,

@@ -81,6 +81,7 @@ fun LoginScreen(
             }
         }
     if (state.isSuccess) {
+        destinationsNavigator.navigateUp()
         destinationsNavigator.navigate(MainScreenDestination)
         Log.d("launch effict", "LoginScreen: ${state.isSuccess}")
     }

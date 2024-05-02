@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import dev.sobhy.healthhubfordoctors.R
 
@@ -24,6 +25,7 @@ fun SecurityInformation(
     modifier: Modifier = Modifier,
     password: () -> String,
     onPasswordChange: (String) -> Unit,
+    passwordError: () -> String?,
     isLoading: () -> Boolean,
     onRegisterClick: () -> Unit,
     errorText: @Composable () -> Unit,
@@ -46,6 +48,17 @@ fun SecurityInformation(
                         .padding(16.dp),
                 label = {
                     Text(text = stringResource(id = R.string.enter_password))
+                },
+                isError = passwordError() != null,
+                supportingText = {
+                    if (passwordError() != null) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = passwordError()!!,
+                            color = MaterialTheme.colorScheme.error,
+                            textAlign = TextAlign.End,
+                        )
+                    }
                 },
             )
         }

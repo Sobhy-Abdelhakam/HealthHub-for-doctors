@@ -85,7 +85,7 @@ fun RegisterScreen(
         return
     }
 
-    val fillAnyField by remember {
+    val failAnyField by remember {
         derivedStateOf {
             state.name.isNotBlank() ||
                 state.email.isNotBlank() ||
@@ -97,7 +97,7 @@ fun RegisterScreen(
 
     var showConfirmationDialog by remember { mutableStateOf(false) }
     BackHandler {
-        if (fillAnyField) {
+        if (failAnyField) {
             showConfirmationDialog = true
         } else {
             destinationsNavigator.navigateUp()
@@ -156,6 +156,7 @@ fun RegisterScreen(
                     SecurityInformation(
                         password = { state.password },
                         onPasswordChange = passwordChange,
+                        passwordError = { state.passwordError },
                         isLoading = { state.isLoading },
                         onRegisterClick = { viewModel.onEvent(RegisterUiEvent.Register) },
                     ) {
