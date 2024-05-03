@@ -30,4 +30,28 @@
     <string name="no_stay_here">لا، أريد البقاء</string>
     <string name="forget_password_text">أدخل البريد الإلكتروني المسجل لدينا لتتمكن من تغيير كلمة المرور الخاصة بك</string>
     <string name="send">إرسل</string>
+
+    <string-array name="doctor_specialties">
+        <item>الطب العام</item>
+        <item>طب الأمراض الباطنية</item>
+        <item>طب الأطفال</item>
+        <item>طب النساء والتوليد</item>
+        <item>الجراحة</item>
+        <item>طب النفسي</item>
+        <item>تخدير</item>
+        <item>التصوير الطبي</item>
+        <item>طب الجلدية</item>
+        <item>طب العظام</item>
+        <item>طب الأعصاب</item>
+        <item>طب القلب</item>
+        <item>أمراض السرطان</item>
+        <item>طب العيون</item>
+        <item>أمراض الأنف والأذن والحنجرة</item>
+        <item>طب المسالك البولية</item>
+        <item>طب الجهاز الهضمي</item>
+        <item>طب الغدد الصماء</item>
+        <item>طب الكلى</item>
+        <item>أمراض الجهاز التنفسي</item>
+    </string-array>
+
 </resources>
