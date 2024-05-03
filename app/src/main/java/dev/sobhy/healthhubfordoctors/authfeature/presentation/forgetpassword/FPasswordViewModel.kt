@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ForgetPasswordUseCase
-import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidateEmail
+import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ForgetPasswordUseCase
+import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ValidateEmail
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

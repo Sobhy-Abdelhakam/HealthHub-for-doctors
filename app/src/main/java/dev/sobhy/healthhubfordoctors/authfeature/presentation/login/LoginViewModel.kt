@@ -4,9 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.LoginUseCase
-import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidateEmail
-import dev.sobhy.healthhubfordoctors.authfeature.domain.use_case.ValidatePassword
+import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.LoginUseCase
+import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ValidateEmail
+import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ValidatePassword
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

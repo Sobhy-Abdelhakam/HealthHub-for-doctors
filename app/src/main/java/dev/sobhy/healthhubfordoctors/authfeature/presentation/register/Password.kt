@@ -1,6 +1,7 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,7 +32,7 @@ fun SecurityInformation(
     errorText: @Composable () -> Unit,
 ) {
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {

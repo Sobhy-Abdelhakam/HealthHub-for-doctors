@@ -1,4 +1,4 @@
-package dev.sobhy.healthhubfordoctors.authfeature.domain.use_case
+package dev.sobhy.healthhubfordoctors.authfeature.domain.usecase
 
 import android.util.Patterns
 

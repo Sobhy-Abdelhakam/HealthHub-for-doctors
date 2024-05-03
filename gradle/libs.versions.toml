@@ -22,7 +22,6 @@ composeBom = "2024.04.01"
 lifecycleViewmodelCompose = "2.7.0"
 loggingInterceptor = "4.10.0"
 navigationCompose = "2.7.7"
-firebaseFirestoreKtx = "24.11.1"
 retrofit = "2.11.0"
 
 [libraries]
@@ -54,7 +53,6 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "ksp" }
-firebase-firestore-ktx = { group = "com.google.firebase", name = "firebase-firestore-ktx", version.ref = "firebaseFirestoreKtx" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
