@@ -1,7 +1,7 @@
-package dev.sobhy.healthhubfordoctors.authfeature.domain.use_case
+package dev.sobhy.healthhubfordoctors.authfeature.domain.usecase
 
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 
 class ForgetPasswordUseCase(private val authRepository: AuthRepository) {
-    operator fun invoke(email: String) = authRepository.forgetPassword(email)
+    suspend operator fun invoke(email: String) = authRepository.forgetPassword(email)
 }

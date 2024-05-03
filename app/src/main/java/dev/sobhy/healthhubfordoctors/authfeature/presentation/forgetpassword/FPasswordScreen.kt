@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -21,15 +22,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
-fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
-    val viewModel = viewModel<FPasswordViewModel>()
+fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
     val state by viewModel.forgetPasswordState.collectAsState()
 
     Scaffold(
@@ -56,7 +57,7 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 text = stringResource(R.string.forget_password_text),
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.padding(18.dp),
             )
             OutlinedTextField(
                 value = viewModel.email,
@@ -64,7 +65,7 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(18.dp),
                 label = {
                     Text(text = stringResource(id = R.string.email))
                 },
@@ -82,16 +83,21 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                 },
             )
             Button(
+                enabled = !state.isLoading,
                 onClick = viewModel::sendEmail,
                 modifier =
                     Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
+                        .padding(18.dp),
             ) {
-                Text(
-                    text = stringResource(R.string.send),
-                    style = MaterialTheme.typography.titleLarge,
-                )
+                if (state.isLoading) {
+                    CircularProgressIndicator()
+                } else {
+                    Text(
+                        text = stringResource(R.string.send),
+                        style = MaterialTheme.typography.titleLarge,
+                    )
+                }
             }
 
             state.error?.let { error ->
@@ -99,6 +105,13 @@ fun ForgetPasswordScreen(modifier: Modifier = Modifier) {
                     text = error,
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.error,
+                )
+            }
+            state.success?.let { success ->
+                Text(
+                    text = success,
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary,
                 )
             }
         }

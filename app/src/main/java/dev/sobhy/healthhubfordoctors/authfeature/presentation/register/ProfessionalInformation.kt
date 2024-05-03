@@ -3,13 +3,19 @@ package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowLeft
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material3.Button
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -17,14 +23,19 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import dev.sobhy.healthhubfordoctors.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfessionalInformation(
     modifier: Modifier = Modifier,
@@ -34,8 +45,12 @@ fun ProfessionalInformation(
     onProfessionalTitleChange: (String) -> Unit,
     onNextClick: () -> Unit,
 ) {
+    var menuExpanded by remember {
+        mutableStateOf(false)
+    }
+    val specialties = stringArrayResource(id = R.array.doctor_specialties)
     LazyColumn(
-        modifier = modifier,
+        modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -46,17 +61,53 @@ fun ProfessionalInformation(
             )
         }
         item {
-            TextField(
-                value = specialization(),
-                onValueChange = onSpecializationChange,
+            ExposedDropdownMenuBox(
+                expanded = menuExpanded,
+                onExpandedChange = { menuExpanded = !menuExpanded },
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                label = {
-                    Text(text = stringResource(R.string.specialization))
-                },
-            )
+            ) {
+                TextField(
+                    value = specialization(),
+                    onValueChange = { },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                    label = {
+                        Text(text = stringResource(R.string.specialization))
+                    },
+                    singleLine = true,
+                    readOnly = true,
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
+                    trailingIcon = {
+                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = menuExpanded)
+                    },
+                    colors = ExposedDropdownMenuDefaults.textFieldColors(),
+                )
+                ExposedDropdownMenu(
+                    expanded = menuExpanded,
+                    onDismissRequest = { menuExpanded = false },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    specialties.forEach { specialty ->
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = specialty)
+                            },
+                            onClick = {
+                                onSpecializationChange(specialty)
+                                menuExpanded = false
+                            },
+                        )
+                    }
+                }
+            }
         }
         item {
             TextField(
@@ -69,6 +120,11 @@ fun ProfessionalInformation(
                 label = {
                     Text(text = stringResource(R.string.professional_title))
                 },
+                singleLine = true,
+                keyboardOptions =
+                    KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                    ),
             )
         }
         item {
