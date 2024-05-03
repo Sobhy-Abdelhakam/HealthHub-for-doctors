@@ -1,8 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,10 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Dialog
 import dev.sobhy.healthhubfordoctors.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,6 +48,7 @@ fun ProfessionalInformation(
     var menuExpanded by remember {
         mutableStateOf(false)
     }
+    val specialties = stringArrayResource(id = R.array.doctor_specialties)
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -65,7 +64,10 @@ fun ProfessionalInformation(
             ExposedDropdownMenuBox(
                 expanded = menuExpanded,
                 onExpandedChange = { menuExpanded = !menuExpanded },
-                modifier = Modifier.fillMaxWidth().padding(16.dp),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
             ) {
                 TextField(
                     value = specialization(),
@@ -93,7 +95,7 @@ fun ProfessionalInformation(
                     onDismissRequest = { menuExpanded = false },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    doctorSpecialties.forEach { specialty ->
+                    specialties.forEach { specialty ->
                         DropdownMenuItem(
                             text = {
                                 Text(text = specialty)
@@ -153,52 +155,3 @@ fun ProfessionalInformation(
         }
     }
 }
-
-@Composable
-fun SpecialtiesDialog(
-    showDialog: Boolean,
-    showChange: (Boolean) -> Unit,
-) {
-//    if (showDialog) {
-    Dialog(
-        onDismissRequest = { showChange(false) },
-    ) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-                    .background(color = MaterialTheme.colorScheme.background),
-        ) {
-            Text(text = "Specialties", style = MaterialTheme.typography.titleLarge)
-            doctorSpecialties.forEach { specialty ->
-                Text(text = specialty, style = MaterialTheme.typography.titleMedium)
-            }
-        }
-    }
-//    }
-}
-
-val doctorSpecialties =
-    listOf(
-        "General Practice",
-        "Internal Medicine",
-        "Pediatrics",
-        "Obstetrics and Gynecology",
-        "Surgery",
-        "Psychiatry",
-        "Anesthesiology",
-        "Radiology",
-        "Dermatology",
-        "Orthopedics",
-        "Neurology",
-        "Cardiology",
-        "Oncology",
-        "Ophthalmology",
-        "Otolaryngology",
-        "Urology",
-        "Gastroenterology",
-        "Endocrinology",
-        "Nephrology",
-        "Pulmonology",
-    )

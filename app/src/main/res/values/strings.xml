@@ -30,4 +30,28 @@
     <string name="no_stay_here">No, Stay Here</string>
     <string name="forget_password_text">Enter the email registered with us to be able to change your password</string>
     <string name="send">Send</string>
+
+    <string-array name="doctor_specialties">
+        <item>General Practice</item>
+        <item>Internal Medicine</item>
+        <item>Pediatrics</item>
+        <item>Obstetrics and Gynecology</item>
+        <item>Surgery</item>
+        <item>Psychiatry</item>
+        <item>Anesthesiology</item>
+        <item>Radiology</item>
+        <item>Dermatology</item>
+        <item>Orthopedics</item>
+        <item>Neurology</item>
+        <item>Cardiology</item>
+        <item>Oncology</item>
+        <item>Ophthalmology</item>
+        <item>Otolaryngology</item>
+        <item>Urology</item>
+        <item>Gastroenterology</item>
+        <item>Endocrinology</item>
+        <item>Nephrology</item>
+        <item>Pulmonology</item>
+    </string-array>
+
 </resources>
