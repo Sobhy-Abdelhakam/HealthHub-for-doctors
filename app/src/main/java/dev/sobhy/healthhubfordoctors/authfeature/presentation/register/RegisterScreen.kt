@@ -172,7 +172,7 @@ fun RegisterScreen(
             Row(
                 modifier =
                     Modifier
-                        .align(Alignment.BottomCenter),
+                        .align(Alignment.BottomCenter).padding(12.dp),
             ) {
                 StepIndicator(
                     modifier = Modifier.weight(1f),
