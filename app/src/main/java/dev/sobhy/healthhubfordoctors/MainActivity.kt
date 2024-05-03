@@ -14,7 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
@@ -36,7 +36,7 @@ class MainActivity : ComponentActivity() {
             runBlocking {
                 startDestination =
                     if (isLoggedIn.value != null) {
-                        MainScreenDestination
+                        ProfileScreenDestination
                     } else {
                         LoginScreenDestination
                     }

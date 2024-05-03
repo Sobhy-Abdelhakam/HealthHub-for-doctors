@@ -47,7 +47,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ForgetPasswordScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.MainScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
@@ -82,7 +82,7 @@ fun LoginScreen(
         }
     if (state.isSuccess) {
         destinationsNavigator.navigateUp()
-        destinationsNavigator.navigate(MainScreenDestination)
+        destinationsNavigator.navigate(ProfileScreenDestination)
         Log.d("launch effict", "LoginScreen: ${state.isSuccess}")
     }
 

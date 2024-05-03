@@ -3,7 +3,6 @@ package dev.sobhy.healthhubfordoctors.profilefeature.presentation.profile
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -58,12 +57,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import dev.sobhy.healthhubfordoctors.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalFoundationApi::class)
-@Destination
+@Destination<RootGraph>(start = true)
 @Composable
 fun ProfileScreen() {
     val viewModel: ProfileViewModel = viewModel()
@@ -113,10 +112,10 @@ fun ProfileScreen() {
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         }
         item {
-            val state = rememberPagerState { 2 }
+            val pagerState = rememberPagerState { 2 }
             val coroutineScope = rememberCoroutineScope()
-            TapRowSection(state, coroutineScope)
-            HorizontalPagerSection(state)
+            TapRowSection(pagerState, coroutineScope)
+            HorizontalPagerSection(pagerState)
         }
     }
 }
@@ -326,7 +325,6 @@ private fun ViewsBookingNumberSection(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun TapRowSection(
     state: PagerState,
@@ -359,7 +357,6 @@ private fun TapRowSection(
 }
 
 @Composable
-@OptIn(ExperimentalFoundationApi::class)
 private fun HorizontalPagerSection(state: PagerState) {
     HorizontalPager(state = state) {
         when (it) {
