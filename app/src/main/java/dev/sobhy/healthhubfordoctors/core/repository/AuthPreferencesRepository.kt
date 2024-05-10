@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 interface AuthPreferencesRepository {
     suspend fun saveUserToken(token: String)
 
-    suspend fun getUserToken(): Flow<String?>
+    fun getUserToken(): Flow<String?>
 
     suspend fun clearUserToken()
 }

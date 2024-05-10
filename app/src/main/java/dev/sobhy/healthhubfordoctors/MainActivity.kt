@@ -15,32 +15,25 @@ import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
-import com.ramcosta.composedestinations.spec.Route
 import dagger.hilt.android.AndroidEntryPoint
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
-import kotlinx.coroutines.runBlocking
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private lateinit var mainViewModel: MainViewModel
-    private lateinit var startDestination: Route
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         super.onCreate(savedInstanceState)
 
         enableEdgeToEdge()
         setContent {
-            mainViewModel = hiltViewModel()
+            val mainViewModel: MainViewModel = hiltViewModel()
             val isLoggedIn = mainViewModel.isLoggedIn.collectAsState()
-            runBlocking {
-                startDestination =
-                    if (isLoggedIn.value != null) {
-                        ProfileScreenDestination
-                    } else {
-                        LoginScreenDestination
-                    }
-            }
+            val startDestination =
+                if (isLoggedIn.value != null) {
+                    ProfileScreenDestination
+                } else {
+                    LoginScreenDestination
+                }
 
             HealthHubForDoctorsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->

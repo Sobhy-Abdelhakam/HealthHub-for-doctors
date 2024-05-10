@@ -10,7 +10,7 @@ class AuthPreferencesRepositoryImpl(
         authPreferencesDataStore.saveUserToken(token)
     }
 
-    override suspend fun getUserToken(): Flow<String?> {
+    override fun getUserToken(): Flow<String?> {
         return authPreferencesDataStore.userToken
     }
 
