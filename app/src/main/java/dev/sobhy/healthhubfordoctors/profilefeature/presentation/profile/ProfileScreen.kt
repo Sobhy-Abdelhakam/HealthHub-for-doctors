@@ -4,6 +4,7 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,15 +19,19 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.House
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Photo
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -44,7 +49,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -102,21 +106,109 @@ fun ProfileScreen() {
             )
         }
         item {
-            Text(
-                text = "this is text show you my bio, it is the string about me",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(8.dp),
-            )
-        }
-        item {
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
         }
+
         item {
-            val pagerState = rememberPagerState { 2 }
-            val coroutineScope = rememberCoroutineScope()
-            TapRowSection(pagerState, coroutineScope)
-            HorizontalPagerSection(pagerState)
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Card {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = "account settings",
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+
+                Text(
+                    text = "Account Settings",
+                    style = MaterialTheme.typography.titleLarge,
+                    modifier = Modifier.weight(1f).padding(8.dp),
+                )
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
+            }
         }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Card {
+                    Icon(
+                        imageVector = Icons.Default.House,
+                        contentDescription = "account settings",
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                Text(
+                    text = "Clinic Settings",
+                    modifier = Modifier.weight(1f).padding(8.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
+            }
+        }
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Card {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = "account settings",
+                        modifier =
+                            Modifier
+                                .padding(8.dp),
+                        tint = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                Text(
+                    text = "Change Password",
+                    modifier = Modifier.weight(1f).padding(8.dp),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+                Icon(imageVector = Icons.Default.ArrowForward, contentDescription = null)
+            }
+        }
+        item {
+            Button(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error,
+                        contentColor = MaterialTheme.colorScheme.onError,
+                    ),
+            ) {
+                Text(text = "Logout")
+            }
+        }
+
+//        item {
+//            Text(
+//                text = "this is text show you my bio, it is the string about me",
+//                style = MaterialTheme.typography.bodyLarge,
+//                modifier = Modifier.padding(8.dp),
+//            )
+//        }
+//        item {
+//            HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
+//        }
+//        item {
+//            val pagerState = rememberPagerState { 2 }
+//            val coroutineScope = rememberCoroutineScope()
+//            TapRowSection(pagerState, coroutineScope)
+//            HorizontalPagerSection(pagerState)
+//        }
     }
 }
 
