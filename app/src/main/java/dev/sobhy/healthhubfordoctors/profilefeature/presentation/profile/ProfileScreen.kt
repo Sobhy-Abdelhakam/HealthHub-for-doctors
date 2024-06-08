@@ -58,19 +58,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Destination<RootGraph>(start = true)
 @Composable
-fun ProfileScreen() {
-    val viewModel: ProfileViewModel = viewModel()
+fun ProfileScreen(
+    destinationsNavigator: DestinationsNavigator,
+    viewModel: ProfileViewModel = hiltViewModel(),
+) {
     val state by viewModel.uiState.collectAsState()
+    if (viewModel.isLoggedOut) {
+        destinationsNavigator.navigateUp()
+        destinationsNavigator.navigate(LoginScreenDestination)
+    }
     LazyColumn(
         modifier =
             Modifier
@@ -181,7 +190,9 @@ fun ProfileScreen() {
         }
         item {
             Button(
-                onClick = { /*TODO*/ },
+                onClick = {
+                    viewModel.onEvent(ProfileUiEvent.Logout)
+                },
                 modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
                 colors =
                     ButtonDefaults.buttonColors(

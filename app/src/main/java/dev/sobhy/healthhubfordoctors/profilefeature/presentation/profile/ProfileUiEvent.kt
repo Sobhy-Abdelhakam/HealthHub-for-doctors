@@ -4,4 +4,6 @@ import android.net.Uri
 
 sealed class ProfileUiEvent {
     data class ChangeProfileImage(val image: Uri?) : ProfileUiEvent()
+
+    data object Logout : ProfileUiEvent()
 }
