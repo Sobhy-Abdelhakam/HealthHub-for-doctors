@@ -22,4 +22,9 @@ interface FirebaseAuthDataSource {
     suspend fun sendEmailVerification(user: FirebaseUser)
 
     suspend fun deleteAccount(user: FirebaseUser)
+
+    suspend fun updatePassword(
+        user: FirebaseUser,
+        password: String,
+    )
 }

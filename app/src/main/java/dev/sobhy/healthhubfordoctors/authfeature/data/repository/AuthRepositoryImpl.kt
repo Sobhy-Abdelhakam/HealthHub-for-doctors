@@ -1,6 +1,8 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
 import android.util.Log
+import com.google.firebase.auth.EmailAuthProvider
+import com.google.firebase.auth.FirebaseAuth
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
@@ -13,6 +15,7 @@ import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.tasks.await
 import java.time.format.DateTimeFormatter
 
 class AuthRepositoryImpl(
@@ -110,6 +113,27 @@ class AuthRepositoryImpl(
             emit(Resource.Success("Password reset link sent to your email"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
+        }
+    }
+
+    override suspend fun changePassword(
+        currentPassword: String,
+        newPassword: String,
+    ): Flow<Resource<String>> {
+        return flow<Resource<String>> {
+            emit(Resource.Loading())
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                emit(Resource.Error("User not logged in"))
+                return@flow
+            }
+
+            val credential = EmailAuthProvider.getCredential(user.email!!, currentPassword)
+            user.reauthenticate(credential).await()
+            user.updatePassword(newPassword).await()
+            emit(Resource.Success("Password changed successfully"))
+        }.catch {
+            emit(Resource.Error("Failed to change password: ${it.message}"))
         }
     }
 }

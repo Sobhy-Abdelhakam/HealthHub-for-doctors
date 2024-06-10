@@ -39,4 +39,11 @@ class FirebaseAuthDataSourceImpl(
     override suspend fun deleteAccount(user: FirebaseUser) {
         user.delete().await()
     }
+
+    override suspend fun updatePassword(
+        user: FirebaseUser,
+        password: String,
+    ) {
+        user.updatePassword(password)
+    }
 }
