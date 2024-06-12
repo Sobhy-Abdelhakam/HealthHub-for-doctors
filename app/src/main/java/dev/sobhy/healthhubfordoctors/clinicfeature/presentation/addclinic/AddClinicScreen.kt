@@ -32,12 +32,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootGraph
 import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination
+@Destination<RootGraph>
 @Composable
 fun AddClinicScreen(modifier: Modifier = Modifier) {
     val viewModel: AddClinicViewModel = viewModel()
@@ -147,7 +148,7 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                             .padding(16.dp),
                     singleLine = true,
                     keyboardOptions =
-                        KeyboardOptions.Default.copy(
+                        KeyboardOptions(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next,
                         ),
