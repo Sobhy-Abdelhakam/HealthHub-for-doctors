@@ -54,4 +54,17 @@
         <item>Pulmonology</item>
     </string-array>
 
+    <string name="no_clinics">No Clinics</string>
+    <string name="examination">"Examination: "</string>
+    <string name="follow_up">"Follow_up: "</string>
+    <string name="add_clinic">Add Clinic</string>
+    <string name="save">Save</string>
+    <string name="clinic_name">Clinic Name</string>
+    <string name="clinic_address">Clinic Address</string>
+    <string name="phone_number_optional">phone number (optional)</string>
+    <string name="examination_egp">Examination (EGP)</string>
+    <string name="follow_up_egp">Follow Up (EGP)</string>
+    <string name="availability">Availability</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
 </resources>
