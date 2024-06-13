@@ -28,13 +28,12 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -62,12 +61,12 @@ import com.google.android.gms.location.SettingsClient
 import com.google.android.gms.tasks.Task
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
-import com.utsman.osmandcompose.DefaultMapProperties
-import com.utsman.osmandcompose.ZoomButtonVisibility
 import kotlinx.coroutines.launch
+import org.osmdroid.events.MapEventsReceiver
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.MapEventsOverlay
 import org.osmdroid.views.overlay.Marker
 import java.util.Locale
 
@@ -115,43 +114,24 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
                 Log.d("appDebug", "Denied")
             }
         }
-//    val cameraState =
-//        rememberCameraState {
-//            geoPoint = location
-//            zoom = 8.0
-//        }
-//    val markerState = rememberMarkerState(geoPoint = location)
 
     LaunchedEffect(Unit) {
         if (locationPermissionState.status.isGranted) {
             fetchCurrentLocation(context) { loc ->
                 location = GeoPoint(loc.latitude, loc.longitude)
-//                cameraState.geoPoint = location
-//                markerState.geoPoint = location
             }
         } else {
             locationPermissionState.launchPermissionRequest()
         }
     }
-    var mapProperties by remember {
-        mutableStateOf(DefaultMapProperties)
-    }
-    SideEffect {
-        mapProperties =
-            mapProperties.copy(
-                isTilesScaledToDpi = true,
-                tileSources = TileSourceFactory.MAPNIK,
-                isEnableRotationGesture = true,
-                zoomButtonVisibility = ZoomButtonVisibility.SHOW_AND_FADEOUT,
-            )
-    }
 
     Box(modifier = modifier.fillMaxSize()) {
         if (locationPermissionState.status.isGranted) {
+            val mapView = MapView(context)
+            val marker = Marker(mapView)
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
                 factory = {
-                    val mapView = MapView(it)
                     mapView.setMultiTouchControls(true)
                     mapView.controller.setZoom(10.0)
                     mapView.controller.setCenter(location)
@@ -160,12 +140,7 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
                     mapView.minZoomLevel = 6.0
                     mapView.maxZoomLevel = 20.0
                     mapView.setTileSource(TileSourceFactory.MAPNIK)
-                    val marker =
-                        Marker(mapView).apply {
-                            position = location
-                            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                        }
-                    mapView.overlays.add(marker)
+
                     mapView
                 },
                 update = {
@@ -174,21 +149,27 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
                         zoom,
                         1000L,
                     )
+                    marker.apply {
+                        position = location
+                        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    }
+                    it.overlays.add(marker)
+                    it.overlayManager.add(
+                        MapEventsOverlay(
+                            object : MapEventsReceiver {
+                                override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
+                                    location = p
+                                    return true
+                                }
+
+                                override fun longPressHelper(p: GeoPoint): Boolean {
+                                    return true
+                                }
+                            },
+                        ),
+                    )
                 },
             )
-//            OpenStreetMap(
-//                modifier = Modifier.fillMaxWidth(),
-//                cameraState = cameraState,
-//                properties = mapProperties,
-//                onMapClick = {
-//                    location = it
-//                    markerState.geoPoint = it
-//                },
-//            ) {
-//                Marker(
-//                    state = markerState,
-//                )
-//            }
             AddressInputField(
                 value = inputAddress,
                 onValueChange = {
@@ -199,9 +180,6 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
                     val address = getAddressByName(context, searchText)
                     if (address != null) {
                         location = GeoPoint(address.latitude, address.longitude)
-//                        cameraState.geoPoint = location
-//                        cameraState.zoom = 10.0
-//                        markerState.geoPoint = location
                     } else {
                         Toast.makeText(context, "No such place found", Toast.LENGTH_SHORT).show()
                     }
@@ -216,10 +194,6 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
                         },
                         onEnabled = {
                             location = GeoPoint(it.latitude, it.longitude)
-                            Toast.makeText(context, "$location", Toast.LENGTH_SHORT).show()
-//                            cameraState.geoPoint = location
-//                            cameraState.zoom = 10.0
-//                            markerState.geoPoint = location
                         },
                     )
                 },
@@ -236,7 +210,6 @@ fun ClinicManagementApp(modifier: Modifier = Modifier) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddressInputField(
     value: String,
@@ -251,8 +224,11 @@ fun AddressInputField(
                 .fillMaxWidth()
                 .padding(16.dp),
         colors =
-            TextFieldDefaults.outlinedTextFieldColors(
-                containerColor = MaterialTheme.colorScheme.background,
+            OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                unfocusedBorderColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                focusedContainerColor = MaterialTheme.colorScheme.background,
+                unfocusedContainerColor = MaterialTheme.colorScheme.background,
             ),
         shape = MaterialTheme.shapes.extraLarge,
         placeholder = { Text("Search here") },
@@ -313,7 +289,6 @@ fun checkLocationSetting(
         client.checkLocationSettings(builder.build())
 
     gpsSettingTask.addOnSuccessListener {
-        Toast.makeText(context, "success listener", Toast.LENGTH_SHORT).show()
         fetchCurrentLocation(context, onEnabled)
     }
     gpsSettingTask.addOnFailureListener { exception ->

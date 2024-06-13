@@ -5,27 +5,27 @@ coilCompose = "2.5.0"
 converterGson = "2.9.0"
 core = "2.1.0-beta02"
 coreSplashscreenVersion = "1.1.0-alpha02"
-datastorePreferences = "1.1.0"
-firebaseAuth = "22.3.1"
-firebaseBom = "32.8.1"
+datastorePreferences = "1.1.1"
+firebaseAuth = "23.0.0"
+firebaseBom = "33.1.0"
 hiltAndroid = "2.51.1"
 hiltAndroidCompiler = "2.51.1"
 hiltNavigationCompose = "1.2.0"
 kotlin = "1.9.23"
-coreKtx = "1.13.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
 kotlinxSerializationJson = "1.6.3"
 ksp = "2.1.0-beta02"
-lifecycleRuntimeKtx = "2.7.0"
+lifecycleRuntimeKtx = "2.8.1"
 activityCompose = "1.9.0"
-composeBom = "2024.04.01"
-lifecycleViewmodelCompose = "2.7.0"
+composeBom = "2024.05.00"
+lifecycleViewmodelCompose = "2.8.1"
 loggingInterceptor = "4.10.0"
 navigationCompose = "2.7.7"
-osmAndrodCompose = "0.0.3"
 osmdroidAndroid = "6.1.18"
+playServicesLocation = "21.3.0"
 retrofit = "2.11.0"
 
 [libraries]
@@ -60,8 +60,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 ksp = { module = "io.github.raamcosta.compose-destinations:ksp", version.ref = "ksp" }
 logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
-osm-androd-compose = { module = "tech.utsmankece:osm-androd-compose", version.ref = "osmAndrodCompose" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]

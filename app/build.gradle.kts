@@ -107,9 +107,9 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     implementation(libs.accompanist.permissions)
+    implementation(libs.play.services.location)
     // origin version of osm android. You may be able to customize the version.
     implementation(libs.osmdroid.android)
-    implementation(libs.osm.androd.compose)
 }
 // Allow references to generated code
 kapt {
