@@ -8,8 +8,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -33,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.ClinicAddressScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -40,7 +46,7 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
-fun AddClinicScreen(modifier: Modifier = Modifier) {
+fun AddClinicScreen(destinationsNavigator: DestinationsNavigator) {
     val viewModel: AddClinicViewModel = viewModel()
     val state by viewModel.addClinicState.collectAsState()
 
@@ -103,10 +109,18 @@ fun AddClinicScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth()
                             .padding(16.dp),
                     singleLine = true,
+                    readOnly = true,
                     keyboardOptions =
                         KeyboardOptions(
                             imeAction = ImeAction.Next,
                         ),
+                    trailingIcon = {
+                        IconButton(onClick = {
+                            destinationsNavigator.navigate(ClinicAddressScreenDestination)
+                        }) {
+                            Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
+                        }
+                    },
                 )
             }
             item {
