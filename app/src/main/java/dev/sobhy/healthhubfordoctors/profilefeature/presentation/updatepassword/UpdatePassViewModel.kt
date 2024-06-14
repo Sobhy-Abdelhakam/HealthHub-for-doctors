@@ -6,6 +6,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ValidatePassword
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.usecases.ChangePassUseCase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -28,20 +29,25 @@ class UpdatePassViewModel
                     _state.update {
                         it.copy(
                             currentPass = event.currentPass,
+                            isButtonEnable = validateInput(event.currentPass, it.newPass, it.confirmPass),
                         )
                     }
                 }
+
                 is ChangePassEvent.NewPassChange -> {
                     _state.update {
                         it.copy(
                             newPass = event.newPass,
+                            isButtonEnable = validateInput(it.currentPass, event.newPass, it.confirmPass),
                         )
                     }
                 }
+
                 is ChangePassEvent.ConfirmPassChange -> {
                     _state.update {
                         it.copy(
                             confirmPass = event.confirmPass,
+                            isButtonEnable = validateInput(it.currentPass, it.newPass, event.confirmPass),
                         )
                     }
                 }
@@ -80,7 +86,7 @@ class UpdatePassViewModel
                 }
                 return
             }
-            viewModelScope.launch {
+            viewModelScope.launch(Dispatchers.IO) {
                 changePassUseCase(currentPass, newPass).collect { result ->
                     when (result) {
                         is Resource.Error -> {
@@ -92,15 +98,18 @@ class UpdatePassViewModel
                                 )
                             }
                         }
+
                         is Resource.Loading -> {
                             _state.update {
                                 it.copy(
                                     isLoading = true,
+                                    isButtonEnable = false,
                                     error = null,
                                     success = null,
                                 )
                             }
                         }
+
                         is Resource.Success -> {
                             _state.update {
                                 it.copy(
@@ -113,5 +122,14 @@ class UpdatePassViewModel
                     }
                 }
             }
+        }
+
+        private fun validateInput(
+            text1: String,
+            text2: String,
+            text3: String,
+        ): Boolean {
+            // Add your validation logic here
+            return text1.isNotEmpty() && text2.isNotEmpty() && text3.isNotEmpty()
         }
     }

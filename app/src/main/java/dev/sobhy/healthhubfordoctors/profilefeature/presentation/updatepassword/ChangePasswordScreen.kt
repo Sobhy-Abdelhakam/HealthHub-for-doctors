@@ -45,7 +45,24 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 @Composable
 fun ChangePasswordScreen(viewModel: UpdatePassViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()
-
+    val currPassChange =
+        remember<(String) -> Unit> {
+            {
+                viewModel.onEvent(ChangePassEvent.CurrentPassChange(it))
+            }
+        }
+    val newPassChange =
+        remember<(String) -> Unit> {
+            {
+                viewModel.onEvent(ChangePassEvent.NewPassChange(it))
+            }
+        }
+    val confPassChange =
+        remember<(String) -> Unit> {
+            {
+                viewModel.onEvent(ChangePassEvent.ConfirmPassChange(it))
+            }
+        }
     val buttonClick =
         remember {
             {
@@ -64,31 +81,22 @@ fun ChangePasswordScreen(viewModel: UpdatePassViewModel = hiltViewModel()) {
     ) {
         CurrentPassTextField(
             currentPass = state.currentPass,
-            onCurrentPassChange = {
-                viewModel.onEvent(ChangePassEvent.CurrentPassChange(it))
-            },
+            onCurrentPassChange = currPassChange,
         )
         NewPassTextField(
             newPass = state.newPass,
-            onNewPassChange = {
-                viewModel.onEvent(ChangePassEvent.NewPassChange(it))
-            },
+            onNewPassChange = newPassChange,
         )
         ConfirmPassTextField(
             confirmPass = state.confirmPass,
-            onConfirmPassChange = {
-                viewModel.onEvent(ChangePassEvent.ConfirmPassChange(it))
-            },
+            onConfirmPassChange = confPassChange,
             buttonClick = buttonClick,
             modifier = Modifier.fillMaxWidth().padding(12.dp),
         )
         Spacer(modifier = Modifier.weight(1f))
         val buttonEnabled by remember {
             derivedStateOf {
-                state.currentPass.isNotEmpty() &&
-                    state.newPass.isNotEmpty() &&
-                    state.confirmPass.isNotEmpty() &&
-                    !state.isLoading
+                state.isButtonEnable
             }
         }
         Button(
@@ -136,7 +144,7 @@ fun CurrentPassTextField(
     currentPass: String,
     onCurrentPassChange: (String) -> Unit,
 ) {
-    var showCurrentPass by rememberSaveable { mutableStateOf(false) }
+    var showCurrentPass by remember { mutableStateOf(false) }
     val focusRequester = remember { FocusRequester() }
     var isFocused by remember { mutableStateOf(false) }
     OutlinedTextField(
