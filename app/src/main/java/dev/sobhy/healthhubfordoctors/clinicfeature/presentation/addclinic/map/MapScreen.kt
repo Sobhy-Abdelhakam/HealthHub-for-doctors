@@ -34,6 +34,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableDoubleStateOf
@@ -58,6 +59,7 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.SettingsClient
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -72,7 +74,7 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Destination<RootGraph>
 @Composable
-fun ClinicAddressScreen() {
+fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<String>) {
     val context = LocalContext.current
     var location by remember { mutableStateOf("") }
     var currentLocation by remember { mutableStateOf(GeoPoint(0.0, 0.0)) }
@@ -110,7 +112,7 @@ fun ClinicAddressScreen() {
                 },
                 actions = {
                     Button(onClick = {
-                        Toast.makeText(context, location, Toast.LENGTH_SHORT).show()
+                        resultNavigator.navigateBack(location)
                     }) {
                         Text(text = "Save")
                     }
@@ -145,42 +147,38 @@ fun ClinicManagementApp(
     val zoom by remember { mutableDoubleStateOf(10.0) }
 
     Box(modifier = modifier.fillMaxSize()) {
-        val mapView = MapView(context)
-        val marker = Marker(mapView)
-        Configuration.getInstance().userAgentValue = BuildConfig.LIBRARY_PACKAGE_NAME
+        val mapView = rememberMapViewWithLifecycle(context = context)
+        val marker = rememberMarkerWithLifecycle(mapView = mapView)
+
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
             factory = {
-                mapView.setMultiTouchControls(true)
-                mapView.controller.setZoom(10.0)
-                mapView.controller.setCenter(currentLocation)
-                mapView.canZoomIn()
-                mapView.canZoomOut()
-                mapView.minZoomLevel = 6.0
-                mapView.maxZoomLevel = 20.0
-                mapView.setTileSource(TileSourceFactory.MAPNIK)
+                mapView.apply {
+                    setMultiTouchControls(true)
+                    controller.setZoom(10.0)
+                    controller.setCenter(currentLocation)
+                    canZoomIn()
+                    canZoomOut()
+                    minZoomLevel = 6.0
+                    maxZoomLevel = 20.0
+                    setTileSource(TileSourceFactory.MAPNIK)
+                    Configuration.getInstance().userAgentValue = BuildConfig.LIBRARY_PACKAGE_NAME
+                }
                 mapView
             },
             update = {
-                it.controller.animateTo(
-                    currentLocation,
-                    zoom,
-                    1000L,
-                )
-                marker.apply {
-                    position = currentLocation
-                    val addressText = getAddressText(context, currentLocation)
-                    textAddress(addressText)
-                    this.title = addressText
-                    this.subDescription = "Current Location"
+                it.controller.animateTo(currentLocation, zoom, 1000L)
+                marker.position = currentLocation
+                val addressText = getAddressText(context, currentLocation)
+                textAddress(addressText)
+                if (!it.overlays.contains(marker)) {
+                    it.overlays.add(marker)
                 }
-                it.overlays.add(marker)
                 it.overlayManager.add(
                     MapEventsOverlay(
                         object : MapEventsReceiver {
                             override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
                                 onCurrentLocationChanged(p)
-//                                currentLocation = p
                                 return true
                             }
 
@@ -200,7 +198,6 @@ fun ClinicManagementApp(
                 val address = getAddressByName(context, searchText)
                 if (address != null) {
                     onCurrentLocationChanged(GeoPoint(address.latitude, address.longitude))
-//                    currentLocation = GeoPoint(address.latitude, address.longitude)
                 } else {
                     Toast.makeText(context, "No such place found", Toast.LENGTH_SHORT).show()
                 }
@@ -216,7 +213,6 @@ fun ClinicManagementApp(
                         },
                         onEnabled = {
                             onCurrentLocationChanged(GeoPoint(it.latitude, it.longitude))
-//                            currentLocation = GeoPoint(it.latitude, it.longitude)
                         },
                     )
                 } else {
@@ -231,6 +227,31 @@ fun ClinicManagementApp(
             Icon(imageVector = Icons.Default.MyLocation, contentDescription = null)
         }
     }
+}
+
+@Composable
+fun rememberMapViewWithLifecycle(context: Context): MapView {
+    val mapView =
+        remember {
+            MapView(context)
+        }
+    DisposableEffect(mapView) {
+        onDispose {
+            mapView.onDetach()
+        }
+    }
+    return mapView
+}
+
+@Composable
+fun rememberMarkerWithLifecycle(mapView: MapView): Marker {
+    val marker =
+        remember {
+            Marker(mapView).apply {
+                setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+            }
+        }
+    return marker
 }
 
 @Composable

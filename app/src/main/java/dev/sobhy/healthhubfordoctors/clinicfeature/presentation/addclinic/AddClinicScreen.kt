@@ -39,6 +39,8 @@ import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClinicAddressScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.result.NavResult
+import com.ramcosta.composedestinations.result.ResultRecipient
 import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -46,9 +48,22 @@ import java.time.LocalTime
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
-fun AddClinicScreen(destinationsNavigator: DestinationsNavigator) {
+fun AddClinicScreen(
+    destinationsNavigator: DestinationsNavigator,
+    resultRecipient: ResultRecipient<ClinicAddressScreenDestination, String>,
+) {
     val viewModel: AddClinicViewModel = viewModel()
     val state by viewModel.addClinicState.collectAsState()
+    resultRecipient.onNavResult { navResult ->
+        when (navResult) {
+            NavResult.Canceled -> {
+                TODO()
+            }
+            is NavResult.Value -> {
+                viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(navResult.value))
+            }
+        }
+    }
 
     val saveBtnEnable by remember {
         derivedStateOf {
