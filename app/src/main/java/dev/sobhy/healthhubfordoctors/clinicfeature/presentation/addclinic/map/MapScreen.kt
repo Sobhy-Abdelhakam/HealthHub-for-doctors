@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.Location
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -74,6 +75,7 @@ import java.util.Locale
 fun ClinicAddressScreen() {
     val context = LocalContext.current
     var location by remember { mutableStateOf("") }
+    var currentLocation by remember { mutableStateOf(GeoPoint(0.0, 0.0)) }
     val locationPermissionState =
         rememberMultiplePermissionsState(
             permissions =
@@ -85,9 +87,12 @@ fun ClinicAddressScreen() {
     val gpsLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                Toast.makeText(context, "GPS Enabled", Toast.LENGTH_SHORT).show()
+                Log.d("GPS", "GPS Enabled")
+                fetchCurrentLocation(context) {
+                    currentLocation = GeoPoint(it.latitude, it.longitude)
+                }
             } else {
-                Toast.makeText(context, "GPS Disabled", Toast.LENGTH_SHORT).show()
+                Log.d("GPS", "GPS Disabled")
             }
         }
 
@@ -116,6 +121,8 @@ fun ClinicAddressScreen() {
         ClinicManagementApp(
             modifier = Modifier.padding(paddingValues),
             textAddress = { location = it },
+            currentLocation = currentLocation,
+            onCurrentLocationChanged = { currentLocation = it },
             locationPermissionState = locationPermissionState,
             gpsLauncher = gpsLauncher,
         )
@@ -127,13 +134,14 @@ fun ClinicAddressScreen() {
 fun ClinicManagementApp(
     modifier: Modifier = Modifier,
     textAddress: (String) -> Unit,
+    currentLocation: GeoPoint,
+    onCurrentLocationChanged: (GeoPoint) -> Unit,
     locationPermissionState: MultiplePermissionsState,
     gpsLauncher: ManagedActivityResultLauncher<IntentSenderRequest, ActivityResult>,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     var userInputLocation by remember { mutableStateOf("") }
-    var currentLocation by remember { mutableStateOf(GeoPoint(0.0, 0.0)) }
     val zoom by remember { mutableDoubleStateOf(10.0) }
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -171,7 +179,8 @@ fun ClinicManagementApp(
                     MapEventsOverlay(
                         object : MapEventsReceiver {
                             override fun singleTapConfirmedHelper(p: GeoPoint): Boolean {
-                                currentLocation = p
+                                onCurrentLocationChanged(p)
+//                                currentLocation = p
                                 return true
                             }
 
@@ -190,7 +199,8 @@ fun ClinicManagementApp(
             coroutineScope.launch {
                 val address = getAddressByName(context, searchText)
                 if (address != null) {
-                    currentLocation = GeoPoint(address.latitude, address.longitude)
+                    onCurrentLocationChanged(GeoPoint(address.latitude, address.longitude))
+//                    currentLocation = GeoPoint(address.latitude, address.longitude)
                 } else {
                     Toast.makeText(context, "No such place found", Toast.LENGTH_SHORT).show()
                 }
@@ -205,7 +215,8 @@ fun ClinicManagementApp(
                             gpsLauncher.launch(intentSenderRequest)
                         },
                         onEnabled = {
-                            currentLocation = GeoPoint(it.latitude, it.longitude)
+                            onCurrentLocationChanged(GeoPoint(it.latitude, it.longitude))
+//                            currentLocation = GeoPoint(it.latitude, it.longitude)
                         },
                     )
                 } else {
