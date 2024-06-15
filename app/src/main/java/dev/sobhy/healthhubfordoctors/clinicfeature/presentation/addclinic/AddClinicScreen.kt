@@ -34,13 +34,13 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ClinicAddressScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.NavResult
 import com.ramcosta.composedestinations.result.ResultRecipient
+import com.ramcosta.composedestinations.result.onResult
 import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
@@ -51,18 +51,11 @@ import java.time.LocalTime
 fun AddClinicScreen(
     destinationsNavigator: DestinationsNavigator,
     resultRecipient: ResultRecipient<ClinicAddressScreenDestination, String>,
+    viewModel: AddClinicViewModel = hiltViewModel(),
 ) {
-    val viewModel: AddClinicViewModel = viewModel()
     val state by viewModel.addClinicState.collectAsState()
-    resultRecipient.onNavResult { navResult ->
-        when (navResult) {
-            NavResult.Canceled -> {
-                TODO()
-            }
-            is NavResult.Value -> {
-                viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(navResult.value))
-            }
-        }
+    resultRecipient.onResult { resultValue ->
+        viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(resultValue))
     }
 
     val saveBtnEnable by remember {
