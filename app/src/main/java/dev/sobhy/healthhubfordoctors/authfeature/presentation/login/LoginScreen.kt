@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.login
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,7 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,6 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.ForgetPasswordScreenDestination
@@ -59,31 +59,10 @@ fun LoginScreen(
     destinationsNavigator: DestinationsNavigator,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.loginState.collectAsState()
-
-    // lambda for each event to reduce recomposition
-    val loginButtonLambda =
-        remember {
-            {
-                viewModel.onEvent(LoginUiEvent.Login)
-            }
-        }
-    val emailChanged =
-        remember<(String) -> Unit> {
-            {
-                viewModel.onEvent(LoginUiEvent.EmailChanged(it))
-            }
-        }
-    val passwordChanged =
-        remember<(String) -> Unit> {
-            {
-                viewModel.onEvent(LoginUiEvent.PasswordChanged(it))
-            }
-        }
+    val state by viewModel.loginState.collectAsStateWithLifecycle()
     if (state.isSuccess) {
         destinationsNavigator.navigateUp()
         destinationsNavigator.navigate(ProfileScreenDestination)
-        Log.d("launch effict", "LoginScreen: ${state.isSuccess}")
     }
 
     Scaffold(
@@ -101,7 +80,10 @@ fun LoginScreen(
         LazyColumn(
             verticalArrangement = Arrangement.SpaceEvenly,
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(paddingValues).padding(18.dp),
+            modifier =
+                Modifier
+                    .padding(paddingValues)
+                    .padding(18.dp),
         ) {
             item {
                 Text(
@@ -114,17 +96,17 @@ fun LoginScreen(
             }
             item {
                 EmailTextField(
-                    email = state.email,
-                    onEmailChange = emailChanged,
-                    emailError = state.emailError,
+                    email = viewModel.email,
+                    onEmailChange = { viewModel.onEvent(LoginUiEvent.UpdateEmail(it)) },
+                    emailError = viewModel.emailError,
                 )
             }
             item {
                 PasswordTextField(
-                    password = state.password,
-                    onPasswordChange = passwordChanged,
-                    passwordError = state.passwordError,
-                    onDoneClick = loginButtonLambda,
+                    password = viewModel.password,
+                    onPasswordChange = { viewModel.onEvent(LoginUiEvent.UpdatePassword(it)) },
+                    passwordError = viewModel.passwordError,
+                    onDoneClick = { viewModel.onEvent(LoginUiEvent.Login) },
                 )
             }
             item {
@@ -141,11 +123,16 @@ fun LoginScreen(
                 }
             }
             item {
+                val loginButtonEnabled by remember {
+                    derivedStateOf {
+                        viewModel.email.isNotBlank() && viewModel.password.isNotBlank() && !state.isLoading
+                    }
+                }
                 Button(
-                    onClick = loginButtonLambda,
+                    onClick = { viewModel.onEvent(LoginUiEvent.Login) },
                     modifier = Modifier.fillMaxWidth(),
                     shape = MaterialTheme.shapes.extraLarge,
-                    enabled = state.email.isNotBlank() && state.password.isNotBlank() && !state.isLoading,
+                    enabled = loginButtonEnabled,
                 ) {
                     Text(
                         text = stringResource(R.string.login),

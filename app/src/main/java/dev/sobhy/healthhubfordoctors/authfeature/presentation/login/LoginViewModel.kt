@@ -1,6 +1,8 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.login
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,70 +25,58 @@ class LoginViewModel
     ) : ViewModel() {
         private val validateEmail: ValidateEmail = ValidateEmail()
         private val validatePassword: ValidatePassword = ValidatePassword()
+        var email by mutableStateOf("")
+            private set
+        var emailError: String? by mutableStateOf(null)
+            private set
+        var password by mutableStateOf("")
+            private set
+        var passwordError: String? by mutableStateOf(null)
+            private set
+
         private val _loginState = MutableStateFlow(LoginState())
         val loginState = _loginState.asStateFlow()
 
         fun onEvent(event: LoginUiEvent) {
             when (event) {
-                is LoginUiEvent.EmailChanged ->
-                    _loginState.update {
-                        it.copy(
-                            email = event.email,
-                            emailError = null,
-                        )
-                    }
-
-                is LoginUiEvent.PasswordChanged ->
-                    _loginState.update {
-                        it.copy(
-                            password = event.password,
-                            passwordError = null,
-                        )
-                    }
-
+                is LoginUiEvent.UpdateEmail -> updateEmail(event.email)
+                is LoginUiEvent.UpdatePassword -> updatePass(event.password)
                 LoginUiEvent.Login -> login()
             }
         }
 
         private fun login() {
-            val emailResult = validateEmail.execute(loginState.value.email)
-            val passwordResult = validatePassword.execute(loginState.value.password)
+            val emailResult = validateEmail.execute(email)
+            val passwordResult = validatePassword.execute(password)
             val hasError = listOf(emailResult, passwordResult).any { !it.successful }
 
             if (hasError) {
-                _loginState.update {
-                    it.copy(
-                        emailError = emailResult.errorMessage,
-                        passwordError = passwordResult.errorMessage,
-                    )
-                }
+                emailError = emailResult.errorMessage
+                passwordError = passwordResult.errorMessage
                 return
             }
             viewModelScope.launch(Dispatchers.IO) {
-                loginUseCase(email = loginState.value.email, password = loginState.value.password)
+                loginUseCase(email = email, password = email)
                     .collectLatest { result ->
                         _loginState.value =
                             when (result) {
-                                is Resource.Loading -> {
-                                    Log.d("loading", "loading..")
-                                    loginState.value.copy(isLoading = true, error = null)
-                                }
+                                is Resource.Loading -> LoginState(isLoading = true)
 
-                                is Resource.Error -> {
-                                    Log.d("error", result.message.toString())
-                                    loginState.value.copy(isLoading = false, error = result.message)
-                                }
+                                is Resource.Error -> LoginState(error = result.message)
 
-                                is Resource.Success -> {
-                                    Log.d("user", result.data.toString())
-                                    loginState.value.copy(
-                                        isLoading = false,
-                                        isSuccess = true,
-                                        error = null,
-                                    )
-                                }
+                                is Resource.Success -> LoginState(isSuccess = true)
                             }
                     }
             }
+        }
+
+        private fun updateEmail(input: String) {
+            emailError = null
+            email = input
+        }
+
+        private fun updatePass(input: String) {
+            passwordError = null
+            password = input
         }
     }
