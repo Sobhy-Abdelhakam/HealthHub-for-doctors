@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -14,8 +15,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,6 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import dev.sobhy.healthhubfordoctors.R
@@ -31,7 +34,7 @@ import dev.sobhy.healthhubfordoctors.R
 @Destination<RootGraph>
 @Composable
 fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
-    val state by viewModel.forgetPasswordState.collectAsState()
+    val state by viewModel.forgetPasswordState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -49,7 +52,8 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
             modifier =
                 Modifier
                     .padding(it)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .imePadding(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -70,9 +74,9 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
                     Text(text = stringResource(id = R.string.email))
                 },
                 singleLine = true,
-                isError = state.emailError != null,
+                isError = viewModel.emailError != null,
                 supportingText = {
-                    state.emailError?.let { emailError ->
+                    viewModel.emailError?.let { emailError ->
                         Text(
                             modifier = Modifier.fillMaxWidth(),
                             text = emailError,
@@ -82,22 +86,26 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
                     }
                 },
             )
+            val buttonEnable by remember {
+                derivedStateOf {
+                    viewModel.email.isNotBlank() && !state.isLoading
+                }
+            }
             Button(
-                enabled = !state.isLoading,
+                enabled = buttonEnable,
                 onClick = viewModel::sendEmail,
                 modifier =
                     Modifier
                         .fillMaxWidth()
                         .padding(18.dp),
             ) {
-                if (state.isLoading) {
-                    CircularProgressIndicator()
-                } else {
-                    Text(
-                        text = stringResource(R.string.send),
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                }
+                Text(
+                    text = stringResource(R.string.send),
+                    style = MaterialTheme.typography.titleLarge,
+                )
+            }
+            if (state.isLoading) {
+                CircularProgressIndicator()
             }
 
             state.error?.let { error ->
