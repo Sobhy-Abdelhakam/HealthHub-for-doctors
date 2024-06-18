@@ -56,7 +56,7 @@ class LoginViewModel
                 return
             }
             viewModelScope.launch(Dispatchers.IO) {
-                loginUseCase(email = email, password = email)
+                loginUseCase(email = email, password = password)
                     .collectLatest { result ->
                         _loginState.value =
                             when (result) {

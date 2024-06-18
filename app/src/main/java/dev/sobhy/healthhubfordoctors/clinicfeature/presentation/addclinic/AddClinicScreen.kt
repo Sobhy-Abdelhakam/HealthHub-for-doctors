@@ -206,23 +206,23 @@ fun AddClinicScreen(
             item {
                 Text(
                     text = stringResource(R.string.availability),
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.padding(16.dp),
                 )
             }
             item {
-                DayOfWeek.entries.forEach { day ->
+                state.availability.dayAvailable.entries.forEach { mapOfDayAndState ->
                     AvailabilityItem(
-                        day = day,
-                        dayState = state.availability.dayAvailable[day]!!,
+                        day = mapOfDayAndState.key,
+                        dayState = mapOfDayAndState.value,
                         onSwitchChange = { switchState ->
-                            viewModel.onEvent(AddClinicUiEvent.UpdateSwitchState(day, switchState))
+                            viewModel.onEvent(AddClinicUiEvent.UpdateSwitchState(mapOfDayAndState.key, switchState))
                         },
                         onFromChange = {
-                            viewModel.onEvent(AddClinicUiEvent.UpdateFrom(day, it))
+                            viewModel.onEvent(AddClinicUiEvent.UpdateFrom(mapOfDayAndState.key, it))
                         },
                         onToChange = {
-                            viewModel.onEvent(AddClinicUiEvent.UpdateTo(day, it))
+                            viewModel.onEvent(AddClinicUiEvent.UpdateTo(mapOfDayAndState.key, it))
                         },
                     )
                 }
@@ -310,7 +310,7 @@ fun TimePicker(
                 initialHour = time.hour,
                 initialMinute = time.minute,
             )
-        Text(text = label, style = MaterialTheme.typography.headlineMedium)
+        Text(text = label, style = MaterialTheme.typography.titleMedium)
         TimeInput(
             state = timePickerState,
             modifier = Modifier.padding(4.dp),
