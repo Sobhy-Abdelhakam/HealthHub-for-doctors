@@ -9,6 +9,7 @@ import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ApiService {
@@ -18,8 +19,9 @@ interface ApiService {
     )
 
     // clinic
-    @POST("clinic")
+    @POST("clinic/{token}")
     suspend fun addClinic(
+        @Path("token") token: String,
         @Body clinic: Clinic,
     ): Response<Void>
 
@@ -29,8 +31,10 @@ interface ApiService {
         @Body clinic: Clinic,
     )
 
-    @GET("clinics")
-    suspend fun getClinics(): List<Clinic>
+    @GET("clinic/by-doctor")
+    suspend fun getClinics(
+        @Query("doctorId") token: String,
+    ): Response<List<Clinic>>
 
     @GET("clinic")
     suspend fun getClinic(id: Int): Clinic

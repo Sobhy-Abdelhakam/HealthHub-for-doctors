@@ -12,7 +12,7 @@ interface ClinicRepository {
         clinic: Clinic,
     )
 
-    suspend fun getClinics(): List<Clinic>
+    suspend fun getClinics(): Flow<Resource<List<Clinic>>>
 
     suspend fun getClinic(id: Int): Clinic
 
