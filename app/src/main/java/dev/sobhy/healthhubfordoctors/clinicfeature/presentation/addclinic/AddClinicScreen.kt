@@ -24,6 +24,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -105,21 +106,7 @@ fun AddClinicScreen(
     if (state.loading) {
         Loader()
     }
-    state.errorMessages?.let {
-        AlertDialog(
-            onDismissRequest = { /*TODO*/ },
-            confirmButton = { /*TODO*/ },
-            title = { Text(text = "Error") },
-            text = { Text(text = it) },
-            dismissButton = { /*TODO*/ },
-            modifier = Modifier.padding(16.dp),
-            containerColor = MaterialTheme.colorScheme.errorContainer,
-            textContentColor = MaterialTheme.colorScheme.error,
-            icon = {
-                Icon(imageVector = Icons.Default.Error, contentDescription = "")
-            },
-        )
-    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -245,6 +232,23 @@ fun AddClinicScreen(
                 )
             }
         }
+    }
+    state.errorMessages?.let {
+        AlertDialog(
+            onDismissRequest = {
+                viewModel.clearErrorMessage()
+            },
+            confirmButton = { /*TODO*/ },
+            title = { Text(text = "Error") },
+            text = { Text(text = it) },
+            dismissButton = { /*TODO*/ },
+            modifier = Modifier.padding(16.dp),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            textContentColor = MaterialTheme.colorScheme.error,
+            icon = {
+                Icon(imageVector = Icons.Default.Error, contentDescription = "")
+            },
+        )
     }
 }
 

@@ -27,8 +27,8 @@ fun AvailabilityState.toAvailability(): Availability {
 
 fun DayStateUi.toDayState(): DayState {
     return DayState(
-        isAvailable = isSwitchOn,
-        from = this.from,
-        to = this.to,
+        status = isSwitchOn,
+        from = this.from.toString(),
+        to = this.to.toString(),
     )
 }

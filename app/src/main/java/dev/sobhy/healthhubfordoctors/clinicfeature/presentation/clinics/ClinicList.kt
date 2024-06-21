@@ -16,8 +16,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -34,6 +36,7 @@ import com.ramcosta.composedestinations.generated.destinations.AvailabilityScree
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
+import dev.sobhy.healthhubfordoctors.ui.composables.Loader
 
 @Destination<RootGraph>
 @Composable
@@ -42,6 +45,9 @@ fun ClinicListScreen(
     viewModel: ClinicsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.clinicsState.collectAsState()
+    if (state.isLoading) {
+        Loader()
+    }
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.clinics.isEmpty()) {
             Text(
@@ -117,7 +123,7 @@ fun ClinicDetailsItem(
                     Text(text = "${clinic.followUp} EGP", style = MaterialTheme.typography.titleMedium)
                 }
             }
-            if (clinic.doctorAvailabilities == null) {
+            if (clinic.doctorAvailabilities!!.isEmpty()) {
                 Button(
                     onClick = setAvailabilityClick,
                     modifier =
@@ -128,10 +134,23 @@ fun ClinicDetailsItem(
                     Text(text = "setAvailability")
                 }
             } else {
-                clinic.doctorAvailabilities.forEach {
-                    Row(modifier = modifier.fillMaxWidth()) {
-                        Text(text = "${it.day}: ")
-                        Text(text = "${it.startTime} - ${it.endTime}")
+                OutlinedCard(
+                    onClick = { /*TODO*/ },
+                    modifier =
+                        Modifier
+                            .padding(12.dp),
+                ) {
+                    clinic.doctorAvailabilities.filter {
+                        it.available
+                    }.forEach {
+                        Row(
+                            modifier = modifier.fillMaxWidth().padding(8.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
+                            Text(text = "${it.day}: ")
+                            Text(text = "${it.startTime} - ${it.endTime}")
+                        }
+                        HorizontalDivider()
                     }
                 }
             }

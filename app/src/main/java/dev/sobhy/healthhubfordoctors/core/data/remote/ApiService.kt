@@ -1,8 +1,8 @@
 package dev.sobhy.healthhubfordoctors.core.data.remote
 
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -12,6 +12,7 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.time.DayOfWeek
 
 interface ApiService {
     @POST("doctor")
@@ -51,7 +52,7 @@ interface ApiService {
     @POST("clinic/{clinicId}/availability")
     suspend fun setAvailability(
         @Path("clinicId") clinicId: Int,
-        @Body availability: Availability,
+        @Body availability: Map<DayOfWeek, DayState>,
     )
 
     // appointments in day

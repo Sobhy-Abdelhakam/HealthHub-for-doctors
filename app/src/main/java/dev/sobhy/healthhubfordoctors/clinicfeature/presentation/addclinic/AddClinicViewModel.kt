@@ -63,7 +63,7 @@ class AddClinicViewModel
                         is Resource.Loading -> {
                         }
                         is Resource.Success -> {
-                            _addClinicState.update { it.copy(isSubmitting = false, errorMessages = null) }
+                            _addClinicState.update { it.copy(loading = false, isSubmitting = false, errorMessages = null) }
                         }
                         is Resource.Error -> {
                             _addClinicState.update { it.copy(isSubmitting = false, errorMessages = result.message) }
@@ -71,5 +71,9 @@ class AddClinicViewModel
                     }
                 }
             }
+        }
+
+        fun clearErrorMessage() {
+            _addClinicState.update { it.copy(errorMessages = null) }
         }
     }
