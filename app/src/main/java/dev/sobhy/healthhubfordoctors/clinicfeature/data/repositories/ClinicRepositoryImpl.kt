@@ -1,6 +1,7 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
@@ -39,7 +40,7 @@ class ClinicRepositoryImpl(
         clinicService.updateClinic(token!!, clinic)
     }
 
-    override suspend fun getClinics(): Flow<Resource<List<Clinic>>> {
+    override suspend fun getClinics(): Flow<Resource<List<GetClinicResponse>>> {
         return flow {
             emit(Resource.Loading())
             val token = authPreferencesRepository.getUserToken().first()

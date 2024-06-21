@@ -3,6 +3,7 @@ package dev.sobhy.healthhubfordoctors.core.data.remote
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -34,7 +35,7 @@ interface ApiService {
     @GET("clinic/by-doctor")
     suspend fun getClinics(
         @Query("doctorId") token: String,
-    ): Response<List<Clinic>>
+    ): Response<List<GetClinicResponse>>
 
     @GET("clinic/by-id")
     suspend fun getClinic(

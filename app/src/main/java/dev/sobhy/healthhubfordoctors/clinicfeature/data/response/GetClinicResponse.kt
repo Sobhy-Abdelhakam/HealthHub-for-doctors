@@ -9,4 +9,5 @@ data class GetClinicResponse(
     val examination: Double,
     val followUp: Double,
     val doctorId: String,
+    val doctorAvailabilities: List<DoctorAvailabilitiesResponse>?,
 )

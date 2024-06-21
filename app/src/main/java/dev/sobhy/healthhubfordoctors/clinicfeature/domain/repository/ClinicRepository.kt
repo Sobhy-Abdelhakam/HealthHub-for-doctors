@@ -1,6 +1,7 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 
@@ -9,7 +10,7 @@ interface ClinicRepository {
 
     suspend fun updateClinic(clinic: Clinic)
 
-    suspend fun getClinics(): Flow<Resource<List<Clinic>>>
+    suspend fun getClinics(): Flow<Resource<List<GetClinicResponse>>>
 
     suspend fun getClinic(id: Int): Clinic
 

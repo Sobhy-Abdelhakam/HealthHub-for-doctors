@@ -27,12 +27,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AddClinicScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AvailabilityScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 
 @Destination<RootGraph>
 @Composable
@@ -73,7 +74,12 @@ fun ClinicListScreen(
             }
             LazyColumn {
                 items(state.clinics) {
-                    ClinicDetailsItem()
+                    ClinicDetailsItem(
+                        clinic = it,
+                        setAvailabilityClick = {
+                            navigator.navigate(AvailabilityScreenDestination)
+                        },
+                    )
                 }
             }
         }
@@ -81,7 +87,11 @@ fun ClinicListScreen(
 }
 
 @Composable
-fun ClinicDetailsItem(modifier: Modifier = Modifier) {
+fun ClinicDetailsItem(
+    modifier: Modifier = Modifier,
+    clinic: GetClinicResponse,
+    setAvailabilityClick: () -> Unit,
+) {
     Card(
         modifier =
             modifier
@@ -91,20 +101,38 @@ fun ClinicDetailsItem(modifier: Modifier = Modifier) {
         elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = "Clinic Name", style = MaterialTheme.typography.headlineSmall)
+            Text(text = clinic.name, style = MaterialTheme.typography.headlineSmall)
             Text(text = "Clinic Number")
-            Text(text = "Clinic Address")
+            Text(text = clinic.address)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 Row {
                     Text(text = stringResource(R.string.examination))
-                    Text(text = "150 EGP", style = MaterialTheme.typography.titleMedium)
+                    Text(text = "${clinic.examination} EGP", style = MaterialTheme.typography.titleMedium)
                 }
                 Row {
                     Text(text = stringResource(R.string.follow_up))
-                    Text(text = "90 EGP", style = MaterialTheme.typography.titleMedium)
+                    Text(text = "${clinic.followUp} EGP", style = MaterialTheme.typography.titleMedium)
+                }
+            }
+            if (clinic.doctorAvailabilities == null) {
+                Button(
+                    onClick = setAvailabilityClick,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                ) {
+                    Text(text = "setAvailability")
+                }
+            } else {
+                clinic.doctorAvailabilities.forEach {
+                    Row(modifier = modifier.fillMaxWidth()) {
+                        Text(text = "${it.day}: ")
+                        Text(text = "${it.startTime} - ${it.endTime}")
+                    }
                 }
             }
         }
