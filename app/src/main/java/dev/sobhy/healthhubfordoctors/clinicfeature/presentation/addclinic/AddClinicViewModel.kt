@@ -1,69 +1,75 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.sobhy.healthhubfordoctors.authfeature.domain.toClinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AddClinicUseCase
+import dev.sobhy.healthhubfordoctors.core.util.Resource
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import java.time.DayOfWeek
-import java.time.LocalTime
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class AddClinicViewModel : ViewModel() {
-    private val _addClinicState = MutableStateFlow(AddClinicState())
-    val addClinicState = _addClinicState.asStateFlow()
+@HiltViewModel
+class AddClinicViewModel
+    @Inject
+    constructor(
+        private val addClinicUseCase: AddClinicUseCase,
+    ) : ViewModel() {
+        private val _addClinicState = MutableStateFlow(AddClinicState())
+        val addClinicState = _addClinicState.asStateFlow()
 
-    fun onEvent(event: AddClinicUiEvent) {
-        when (event) {
-            is AddClinicUiEvent.ClinicNameChange ->
-                _addClinicState.update {
-                    it.copy(clinicName = event.name)
+        fun onEvent(event: AddClinicUiEvent) {
+            when (event) {
+                is AddClinicUiEvent.ClinicNameChange ->
+                    _addClinicState.update {
+                        it.copy(clinicName = event.name)
+                    }
+                is AddClinicUiEvent.ClinicPhoneChange ->
+                    _addClinicState.update {
+                        it.copy(clinicNumber = event.phone)
+                    }
+                is AddClinicUiEvent.ClinicAddressChange ->
+                    _addClinicState.update {
+                        it.copy(clinicAddress = event.address)
+                    }
+                is AddClinicUiEvent.UpdateLocation ->
+                    _addClinicState.update {
+                        it.copy(latitude = event.latitude, longitude = event.longitude)
+                    }
+                is AddClinicUiEvent.ExaminationChange ->
+                    _addClinicState.update {
+                        it.copy(examination = event.examination)
+                    }
+                is AddClinicUiEvent.FollowUpChange ->
+                    _addClinicState.update {
+                        it.copy(followUp = event.followUp)
+                    }
+                AddClinicUiEvent.SaveClinic -> saveClinic()
+            }
+        }
+
+        private fun saveClinic() {
+            viewModelScope.launch(Dispatchers.IO) {
+                _addClinicState.update { it.copy(loading = true) }
+                val clinic = _addClinicState.value.toClinic()
+                Log.d("clinic", clinic.toString())
+                addClinicUseCase(clinic).collect { result ->
+                    when (result) {
+                        is Resource.Loading -> {
+                        }
+                        is Resource.Success -> {
+                            _addClinicState.update { it.copy(isSubmitting = false, errorMessages = null) }
+                        }
+                        is Resource.Error -> {
+                            _addClinicState.update { it.copy(isSubmitting = false, errorMessages = result.message) }
+                        }
+                    }
                 }
-            is AddClinicUiEvent.ClinicPhoneChange ->
-                _addClinicState.update {
-                    it.copy(clinicNumber = event.phone)
-                }
-            is AddClinicUiEvent.ClinicAddressChange ->
-                _addClinicState.update {
-                    it.copy(clinicAddress = event.address)
-                }
-            is AddClinicUiEvent.ExaminationChange ->
-                _addClinicState.update {
-                    it.copy(examination = event.examination)
-                }
-            is AddClinicUiEvent.FollowUpChange ->
-                _addClinicState.update {
-                    it.copy(followUp = event.followUp)
-                }
-            is AddClinicUiEvent.UpdateSwitchState -> updateSwitchState(event.newState, event.day)
-            is AddClinicUiEvent.UpdateFrom -> updateFromText(event.fromText, event.day)
-            is AddClinicUiEvent.UpdateTo -> updateToText(event.toText, event.day)
-            AddClinicUiEvent.SaveClinic -> TODO()
+            }
         }
     }
-
-    private fun updateSwitchState(
-        newState: Boolean,
-        day: DayOfWeek,
-    ) {
-        val updatedDayAvailable = _addClinicState.value.availability.dayAvailable.toMutableMap()
-        updatedDayAvailable[day] = updatedDayAvailable[day]!!.copy(isSwitchOn = newState)
-        _addClinicState.value = _addClinicState.value.copy(availability = Availability(updatedDayAvailable))
-    }
-
-    private fun updateFromText(
-        fromText: LocalTime,
-        day: DayOfWeek,
-    ) {
-        val updatedDayAvailable = _addClinicState.value.availability.dayAvailable.toMutableMap()
-        updatedDayAvailable[day] = updatedDayAvailable[day]!!.copy(from = fromText)
-        _addClinicState.value = _addClinicState.value.copy(availability = Availability(updatedDayAvailable))
-    }
-
-    private fun updateToText(
-        toText: LocalTime,
-        day: DayOfWeek,
-    ) {
-        val updatedDayAvailable = _addClinicState.value.availability.dayAvailable.toMutableMap()
-        updatedDayAvailable[day] = updatedDayAvailable[day]!!.copy(to = toText)
-        _addClinicState.value = _addClinicState.value.copy(availability = Availability(updatedDayAvailable))
-    }
-}

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
@@ -37,25 +38,35 @@ fun ClinicListScreen(
 ) {
     val viewModel: ClinicsViewModel = viewModel()
     Box(modifier = modifier.fillMaxSize()) {
-        FloatingActionButton(
-            onClick = {
-                navigator.navigate(AddClinicScreenDestination)
-            },
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(32.dp),
-        ) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-        }
-
         if (viewModel.clinics.isEmpty()) {
             Text(
                 text = stringResource(R.string.no_clinics),
-                style = MaterialTheme.typography.displayMedium,
+                style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.align(Alignment.Center),
             )
+            Button(
+                onClick = {
+                    navigator.navigate(AddClinicScreenDestination)
+                },
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(32.dp),
+            ) {
+                Text(text = "Add Clinic")
+            }
         } else {
+            FloatingActionButton(
+                onClick = {
+                    navigator.navigate(AddClinicScreenDestination)
+                },
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(32.dp),
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+            }
             LazyColumn {
                 items(viewModel.clinics.size) {
                     ClinicDetailsItem()

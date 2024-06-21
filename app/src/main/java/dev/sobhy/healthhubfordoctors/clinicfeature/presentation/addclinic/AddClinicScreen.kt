@@ -1,15 +1,15 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import android.content.Context
+import android.location.Geocoder
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -17,23 +17,19 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimeInput
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
@@ -42,21 +38,61 @@ import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import com.ramcosta.composedestinations.result.ResultRecipient
 import com.ramcosta.composedestinations.result.onResult
 import dev.sobhy.healthhubfordoctors.R
-import java.time.DayOfWeek
-import java.time.LocalTime
+import dev.sobhy.healthhubfordoctors.ui.composables.Loader
+import org.osmdroid.util.GeoPoint
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Destination<RootGraph>
 @Composable
 fun AddClinicScreen(
     destinationsNavigator: DestinationsNavigator,
-    resultRecipient: ResultRecipient<ClinicAddressScreenDestination, String>,
+    resultRecipient: ResultRecipient<ClinicAddressScreenDestination, GeoPoint>,
     viewModel: AddClinicViewModel = hiltViewModel(),
 ) {
     val state by viewModel.addClinicState.collectAsState()
+    val context = LocalContext.current
     resultRecipient.onResult { resultValue ->
-        viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(resultValue))
+        val latitude = resultValue.latitude
+        val longitude = resultValue.longitude
+        viewModel.onEvent(AddClinicUiEvent.UpdateLocation(latitude, longitude))
+        val addressText = getAddressText(context, resultValue)
+        viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(addressText))
     }
+    val nameChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(AddClinicUiEvent.ClinicNameChange(it)) }
+        }
+    val phoneChange =
+        remember<(String) -> Unit> {
+            { viewModel.onEvent(AddClinicUiEvent.ClinicPhoneChange(it)) }
+        }
+    val examinationChange =
+        remember<(String) -> Unit> {
+            {
+                viewModel.onEvent(
+                    (
+                        AddClinicUiEvent.ExaminationChange(
+                            it.filter { symbol ->
+                                symbol.isDigit()
+                            },
+                        )
+                    ),
+                )
+            }
+        }
+    val followUpChange =
+        remember<(String) -> Unit> {
+            {
+                viewModel.onEvent(
+                    AddClinicUiEvent.FollowUpChange(
+                        it.filter { symbol ->
+                            symbol.isDigit()
+                        },
+                    ),
+                )
+            }
+        }
 
     val saveBtnEnable by remember {
         derivedStateOf {
@@ -66,11 +102,32 @@ fun AddClinicScreen(
                 state.followUp.isNotBlank()
         }
     }
+    if (state.loading) {
+        Loader()
+    }
+    state.errorMessages?.let {
+        AlertDialog(
+            onDismissRequest = { /*TODO*/ },
+            confirmButton = { /*TODO*/ },
+            title = { Text(text = "Error") },
+            text = { Text(text = it) },
+            dismissButton = { /*TODO*/ },
+            modifier = Modifier.padding(16.dp),
+            containerColor = MaterialTheme.colorScheme.errorContainer,
+            textContentColor = MaterialTheme.colorScheme.error,
+            icon = {
+                Icon(imageVector = Icons.Default.Error, contentDescription = "")
+            },
+        )
+    }
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.add_clinic), style = MaterialTheme.typography.displayMedium)
+                    Text(
+                        text = stringResource(R.string.add_clinic),
+                        style = MaterialTheme.typography.displayMedium,
+                    )
                 },
                 actions = {
                     Button(
@@ -90,7 +147,7 @@ fun AddClinicScreen(
             item {
                 OutlinedTextField(
                     value = state.clinicName,
-                    onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicNameChange(it)) },
+                    onValueChange = nameChange,
                     label = {
                         Text(text = stringResource(R.string.clinic_name))
                     },
@@ -134,7 +191,7 @@ fun AddClinicScreen(
             item {
                 OutlinedTextField(
                     value = state.clinicNumber,
-                    onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicPhoneChange(it)) },
+                    onValueChange = phoneChange,
                     label = {
                         Text(text = stringResource(R.string.phone_number_optional))
                     },
@@ -152,15 +209,7 @@ fun AddClinicScreen(
             item {
                 OutlinedTextField(
                     value = state.examination,
-                    onValueChange = {
-                        viewModel.onEvent(
-                            AddClinicUiEvent.ExaminationChange(
-                                it.filter { symbol ->
-                                    symbol.isDigit()
-                                },
-                            ),
-                        )
-                    },
+                    onValueChange = examinationChange,
                     label = {
                         Text(text = stringResource(R.string.examination_egp))
                     },
@@ -179,15 +228,7 @@ fun AddClinicScreen(
             item {
                 OutlinedTextField(
                     value = state.followUp,
-                    onValueChange = {
-                        viewModel.onEvent(
-                            AddClinicUiEvent.FollowUpChange(
-                                it.filter { symbol ->
-                                    symbol.isDigit()
-                                },
-                            ),
-                        )
-                    },
+                    onValueChange = followUpChange,
                     label = {
                         Text(text = stringResource(R.string.follow_up_egp))
                     },
@@ -203,118 +244,22 @@ fun AddClinicScreen(
                         ),
                 )
             }
-            item {
-                Text(
-                    text = stringResource(R.string.availability),
-                    style = MaterialTheme.typography.titleLarge,
-                    modifier = Modifier.padding(16.dp),
-                )
-            }
-            item {
-                state.availability.dayAvailable.entries.forEach { mapOfDayAndState ->
-                    AvailabilityItem(
-                        day = mapOfDayAndState.key,
-                        dayState = mapOfDayAndState.value,
-                        onSwitchChange = { switchState ->
-                            viewModel.onEvent(AddClinicUiEvent.UpdateSwitchState(mapOfDayAndState.key, switchState))
-                        },
-                        onFromChange = {
-                            viewModel.onEvent(AddClinicUiEvent.UpdateFrom(mapOfDayAndState.key, it))
-                        },
-                        onToChange = {
-                            viewModel.onEvent(AddClinicUiEvent.UpdateTo(mapOfDayAndState.key, it))
-                        },
-                    )
-                }
-            }
         }
     }
 }
 
-@Composable
-fun AvailabilityItem(
-    day: DayOfWeek,
-    dayState: DayState,
-    onSwitchChange: (Boolean) -> Unit,
-    onFromChange: (LocalTime) -> Unit,
-    onToChange: (LocalTime) -> Unit,
-) {
-    Column(
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(12.dp),
-    ) {
-        DaySwitch(day, dayState.isSwitchOn, onSwitchChange)
-        TimePickers(dayState, onFromChange, onToChange)
-    }
-}
-
-@Composable
-fun DaySwitch(
-    day: DayOfWeek,
-    isSwitchOn: Boolean,
-    onSwitchChange: (Boolean) -> Unit,
-) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-    ) {
-        Text(text = day.toString(), fontSize = 18.sp)
-        Switch(
-            checked = isSwitchOn,
-            onCheckedChange = onSwitchChange,
-        )
-    }
-}
-
-@Composable
-fun TimePickers(
-    dayState: DayState,
-    onFromChange: (LocalTime) -> Unit,
-    onToChange: (LocalTime) -> Unit,
-) {
-    AnimatedVisibility(visible = dayState.isSwitchOn) {
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            TimePicker(stringResource(R.string.from), onFromChange, dayState.from)
-            TimePicker(stringResource(R.string.to), onToChange, dayState.to)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TimePicker(
-    label: String,
-    onTimeChange: (LocalTime) -> Unit,
-    time: LocalTime,
-) {
-    Row(
-        modifier =
-            Modifier
-                .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        val timePickerState =
-            rememberTimePickerState(
-                initialHour = time.hour,
-                initialMinute = time.minute,
-            )
-        Text(text = label, style = MaterialTheme.typography.titleMedium)
-        TimeInput(
-            state = timePickerState,
-            modifier = Modifier.padding(4.dp),
-        )
-        onTimeChange(LocalTime.of(timePickerState.hour, timePickerState.minute))
-    }
+fun getAddressText(
+    context: Context,
+    geoPoint: GeoPoint,
+): String {
+    val geocoder = Geocoder(context, Locale.getDefault())
+    val addresses =
+        geocoder
+            .getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
+    val address = addresses?.firstOrNull()
+    val locality = address?.locality ?: ""
+    val adminArea = address?.adminArea ?: ""
+    val countryName = address?.countryName ?: ""
+    val subAdminArea = address?.subAdminArea ?: ""
+    return "$locality, $subAdminArea, $adminArea, $countryName"
 }

@@ -5,6 +5,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.datasource.AuthPreferencesState
+import dev.sobhy.healthhubfordoctors.core.util.AuthInterceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -16,12 +18,19 @@ import javax.inject.Singleton
 object ApiModule {
     @Provides
     @Singleton
-    fun provideOkHttp(): OkHttpClient {
+    fun provideAuthInterceptor(authPreferencesState: AuthPreferencesState): AuthInterceptor {
+        return AuthInterceptor(authPreferencesState)
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttp(authInterceptor: AuthInterceptor): OkHttpClient {
         val logging =
             HttpLoggingInterceptor()
                 .setLevel(HttpLoggingInterceptor.Level.BODY)
         return OkHttpClient.Builder()
             .addInterceptor(logging)
+            .addInterceptor(authInterceptor)
             .build()
     }
 

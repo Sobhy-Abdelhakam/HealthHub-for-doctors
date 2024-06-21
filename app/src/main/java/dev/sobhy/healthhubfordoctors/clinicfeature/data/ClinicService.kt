@@ -1,7 +1,5 @@
-package dev.sobhy.healthhubfordoctors.core.data.remote
+package dev.sobhy.healthhubfordoctors.clinicfeature.data
 
-import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
 import retrofit2.Response
 import retrofit2.http.Body
@@ -11,17 +9,11 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Query
 
-interface ApiService {
-    @POST("doctor")
-    suspend fun addDoctor(
-        @Body doctorRequest: DoctorRequest,
-    )
-
-    // clinic
+interface ClinicService {
     @POST("clinic")
     suspend fun addClinic(
         @Body clinic: Clinic,
-    ): Response<Void>
+    ): Response<Clinic>
 
     @PUT("clinic")
     suspend fun updateClinic(
@@ -38,11 +30,5 @@ interface ApiService {
     @DELETE("clinic")
     suspend fun deleteClinic(
         @Query("id") id: Int,
-    )
-
-    // availability
-    @POST("availability")
-    suspend fun setAvailability(
-        @Body availability: Availability,
     )
 }

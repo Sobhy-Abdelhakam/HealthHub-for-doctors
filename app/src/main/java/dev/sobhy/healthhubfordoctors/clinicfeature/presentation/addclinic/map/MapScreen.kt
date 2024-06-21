@@ -74,9 +74,9 @@ import java.util.Locale
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Destination<RootGraph>
 @Composable
-fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<String>) {
+fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<GeoPoint>) {
     val context = LocalContext.current
-    var location by remember { mutableStateOf("") }
+//    var location by remember { mutableStateOf("") }
     var currentLocation by remember { mutableStateOf(GeoPoint(0.0, 0.0)) }
     val locationPermissionState =
         rememberMultiplePermissionsState(
@@ -112,7 +112,7 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<String>) {
                 },
                 actions = {
                     Button(onClick = {
-                        resultNavigator.navigateBack(location)
+                        resultNavigator.navigateBack(currentLocation)
                     }) {
                         Text(text = "Save")
                     }
@@ -122,7 +122,7 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<String>) {
     ) { paddingValues ->
         ClinicManagementApp(
             modifier = Modifier.padding(paddingValues),
-            textAddress = { location = it },
+//            textAddress = { location = it },
             currentLocation = currentLocation,
             onCurrentLocationChanged = { currentLocation = it },
             locationPermissionState = locationPermissionState,
@@ -135,7 +135,7 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<String>) {
 @Composable
 fun ClinicManagementApp(
     modifier: Modifier = Modifier,
-    textAddress: (String) -> Unit,
+//    textAddress: (String) -> Unit,
     currentLocation: GeoPoint,
     onCurrentLocationChanged: (GeoPoint) -> Unit,
     locationPermissionState: MultiplePermissionsState,
@@ -169,8 +169,8 @@ fun ClinicManagementApp(
             update = {
                 it.controller.animateTo(currentLocation, zoom, 1000L)
                 marker.position = currentLocation
-                val addressText = getAddressText(context, currentLocation)
-                textAddress(addressText)
+//                val addressText = getAddressText(context, currentLocation)
+//                textAddress(addressText)
                 if (!it.overlays.contains(marker)) {
                     it.overlays.add(marker)
                 }
@@ -282,22 +282,6 @@ fun AddressInputField(
                 onSearchClick(value)
             }),
     )
-}
-
-fun getAddressText(
-    context: Context,
-    geoPoint: GeoPoint,
-): String {
-    val geocoder = Geocoder(context, Locale.getDefault())
-    val addresses =
-        geocoder
-            .getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
-    val address = addresses?.firstOrNull()
-    val locality = address?.locality ?: ""
-    val adminArea = address?.adminArea ?: ""
-    val countryName = address?.countryName ?: ""
-    val subAdminArea = address?.subAdminArea ?: ""
-    return "$locality, $subAdminArea, $adminArea, $countryName"
 }
 
 fun getAddressByName(

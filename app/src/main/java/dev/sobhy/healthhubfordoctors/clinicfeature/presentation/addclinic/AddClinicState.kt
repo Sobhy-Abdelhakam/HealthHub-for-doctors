@@ -1,32 +1,29 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
-import java.time.DayOfWeek
-import java.time.LocalTime
-
 data class AddClinicState(
     val clinicName: String = "",
     val clinicNumber: String = "",
     val clinicAddress: String = "",
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
     val examination: String = "",
     val followUp: String = "",
-    val availability: Availability = Availability(),
+    val loading: Boolean = false,
+    val isSubmitting: Boolean = false,
+    val errorMessages: String? = null,
 )
 
-data class Availability(
-    val dayAvailable: Map<DayOfWeek, DayState> =
-        mapOf(
-            DayOfWeek.MONDAY to DayState(),
-            DayOfWeek.TUESDAY to DayState(),
-            DayOfWeek.WEDNESDAY to DayState(),
-            DayOfWeek.THURSDAY to DayState(),
-            DayOfWeek.FRIDAY to DayState(),
-            DayOfWeek.SATURDAY to DayState(),
-            DayOfWeek.SUNDAY to DayState(),
-        ),
-)
-
-data class DayState(
-    val isSwitchOn: Boolean = false,
-    val from: LocalTime = LocalTime.of(6, 0),
-    val to: LocalTime = LocalTime.of(6, 0),
-)
+// data class AvailabilityUi(
+//    val dayAvailable: Map<DayOfWeek, DayStateUi> = emptyMap(),
+// )
+//
+// // data class DayStateUi(
+// //    val isSwitchOn: Boolean = false,
+// //    val from: LocalTime = LocalTime.of(6, 0),
+// //    val to: LocalTime = LocalTime.of(6, 0),
+// // )
+// data class DayStateUi(
+//    val isOn: MutableState<Boolean> = mutableStateOf(false),
+//    val from: MutableState<LocalTime> = mutableStateOf(LocalTime.of(6, 0)),
+//    val to: MutableState<LocalTime> = mutableStateOf(LocalTime.of(6, 0)),
+// )
