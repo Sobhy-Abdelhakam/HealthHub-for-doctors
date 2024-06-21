@@ -25,9 +25,9 @@ interface ApiService {
         @Body clinic: Clinic,
     ): Response<Void>
 
-    @PUT("clinic")
+    @PUT("clinic/{token}")
     suspend fun updateClinic(
-        @Query("id") id: Int,
+        @Path("token") token: String,
         @Body clinic: Clinic,
     )
 
@@ -36,8 +36,10 @@ interface ApiService {
         @Query("doctorId") token: String,
     ): Response<List<Clinic>>
 
-    @GET("clinic")
-    suspend fun getClinic(id: Int): Clinic
+    @GET("clinic/by-id")
+    suspend fun getClinic(
+        @Query("clinicId") id: Int,
+    ): Clinic
 
     @DELETE("clinic")
     suspend fun deleteClinic(
@@ -45,8 +47,16 @@ interface ApiService {
     )
 
     // availability
-    @POST("availability")
+    @POST("clinic/{clinicId}/availability")
     suspend fun setAvailability(
+        @Path("clinicId") clinicId: Int,
         @Body availability: Availability,
+    )
+
+    // appointments in day
+    @GET("appointment")
+    suspend fun getAppointmentsInDay(
+        @Query("doctorId") token: String,
+        @Query("dateString") dateOfDay: String,
     )
 }
