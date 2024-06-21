@@ -34,11 +34,9 @@ class ClinicRepositoryImpl(
         }
     }
 
-    override suspend fun updateClinic(
-        id: Int,
-        clinic: Clinic,
-    ) {
-        clinicService.updateClinic(id, clinic)
+    override suspend fun updateClinic(clinic: Clinic) {
+        val token = authPreferencesRepository.getUserToken().first()
+        clinicService.updateClinic(token!!, clinic)
     }
 
     override suspend fun getClinics(): Flow<Resource<List<Clinic>>> {

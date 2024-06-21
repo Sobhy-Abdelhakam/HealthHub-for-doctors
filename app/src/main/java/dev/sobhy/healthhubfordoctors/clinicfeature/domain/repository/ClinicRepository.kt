@@ -7,10 +7,7 @@ import kotlinx.coroutines.flow.Flow
 interface ClinicRepository {
     suspend fun addClinic(clinic: Clinic): Flow<Resource<String>>
 
-    suspend fun updateClinic(
-        id: Int,
-        clinic: Clinic,
-    )
+    suspend fun updateClinic(clinic: Clinic)
 
     suspend fun getClinics(): Flow<Resource<List<Clinic>>>
 
