@@ -4,5 +4,8 @@ import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.AvailabilityRepository
 
 class AvailabilityUseCase(private val availabilityRepository: AvailabilityRepository) {
-    suspend operator fun invoke(availability: Availability) = availabilityRepository.setAvailability(availability)
+    suspend operator fun invoke(
+        availability: Availability,
+        clinicId: Int,
+    ) = availabilityRepository.setAvailability(availability, clinicId)
 }

@@ -47,45 +47,46 @@ fun ClinicListScreen(
     val state by viewModel.clinicsState.collectAsState()
     if (state.isLoading) {
         Loader()
-    }
-    Box(modifier = Modifier.fillMaxSize()) {
-        if (state.clinics.isEmpty()) {
-            Text(
-                text = stringResource(R.string.no_clinics),
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.align(Alignment.Center),
-            )
-            Button(
-                onClick = {
-                    navigator.navigate(AddClinicScreenDestination)
-                },
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(32.dp),
-            ) {
-                Text(text = "Add Clinic")
-            }
-        } else {
-            FloatingActionButton(
-                onClick = {
-                    navigator.navigate(AddClinicScreenDestination)
-                },
-                modifier =
-                    Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(32.dp),
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-            }
-            LazyColumn {
-                items(state.clinics) {
-                    ClinicDetailsItem(
-                        clinic = it,
-                        setAvailabilityClick = {
-                            navigator.navigate(AvailabilityScreenDestination)
-                        },
-                    )
+    } else {
+        Box(modifier = Modifier.fillMaxSize()) {
+            if (state.clinics.isEmpty()) {
+                Text(
+                    text = stringResource(R.string.no_clinics),
+                    style = MaterialTheme.typography.headlineMedium,
+                    modifier = Modifier.align(Alignment.Center),
+                )
+                Button(
+                    onClick = {
+                        navigator.navigate(AddClinicScreenDestination)
+                    },
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(32.dp),
+                ) {
+                    Text(text = "Add Clinic")
+                }
+            } else {
+                FloatingActionButton(
+                    onClick = {
+                        navigator.navigate(AddClinicScreenDestination)
+                    },
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(32.dp),
+                ) {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                }
+                LazyColumn {
+                    items(state.clinics) { clinic ->
+                        ClinicDetailsItem(
+                            clinic = clinic,
+                            setAvailabilityClick = {
+                                navigator.navigate(AvailabilityScreenDestination(clinicId = it))
+                            },
+                        )
+                    }
                 }
             }
         }
@@ -96,7 +97,7 @@ fun ClinicListScreen(
 fun ClinicDetailsItem(
     modifier: Modifier = Modifier,
     clinic: GetClinicResponse,
-    setAvailabilityClick: () -> Unit,
+    setAvailabilityClick: (Int) -> Unit,
 ) {
     Card(
         modifier =
@@ -125,7 +126,7 @@ fun ClinicDetailsItem(
             }
             if (clinic.doctorAvailabilities!!.isEmpty()) {
                 Button(
-                    onClick = setAvailabilityClick,
+                    onClick = { setAvailabilityClick(clinic.id) },
                     modifier =
                         Modifier
                             .fillMaxWidth()
@@ -135,7 +136,9 @@ fun ClinicDetailsItem(
                 }
             } else {
                 OutlinedCard(
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        setAvailabilityClick(clinic.id)
+                    },
                     modifier =
                         Modifier
                             .padding(12.dp),

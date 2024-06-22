@@ -9,13 +9,15 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 class AvailabilityRepositoryImpl(private val apiService: ApiService) : AvailabilityRepository {
-    override suspend fun setAvailability(availability: Availability) =
-        flow {
-            emit(Resource.Loading())
-            Log.d("avail repo: ", "${availability.availability}")
-            val response = apiService.setAvailability(2, availability.availability)
-            emit(Resource.Success("Availability set successfully"))
-        }.catch {
-            emit(Resource.Error(it.localizedMessage ?: "An error occurred"))
-        }
+    override suspend fun setAvailability(
+        availability: Availability,
+        clinicId: Int,
+    ) = flow {
+        emit(Resource.Loading())
+        Log.d("avail repo: ", "${availability.availability}")
+        val response = apiService.setAvailability(clinicId, availability.availability)
+        emit(Resource.Success("Availability set successfully"))
+    }.catch {
+        emit(Resource.Error(it.localizedMessage ?: "An error occurred"))
+    }
 }

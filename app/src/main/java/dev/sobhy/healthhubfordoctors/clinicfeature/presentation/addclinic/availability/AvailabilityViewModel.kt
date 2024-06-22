@@ -55,7 +55,7 @@ class AvailabilityViewModel
             }
         }
 
-        fun setAvailability() {
+        fun setAvailability(clinicId: Int) {
             viewModelScope.launch {
                 _availability.update { it.copy(isLoading = true) }
                 val availabilityMap =
@@ -65,14 +65,9 @@ class AvailabilityViewModel
                             from = it.value.from.toString(),
                             to = it.value.to.toString(),
                         )
-//                        it.value.copy(
-//                            isSwitchOn = it.value.isSwitchOn,
-//                            from = it.value.from,
-//                            to = it.value.to,
-//                        ).toDayState()
                     }
                 Log.d("AvailabilityViewModel", "$availabilityMap")
-                availabilityUseCase(Availability(availabilityMap)).collect { result ->
+                availabilityUseCase(Availability(availabilityMap), clinicId).collect { result ->
                     when (result) {
                         is Resource.Loading -> {}
                         is Resource.Success -> {

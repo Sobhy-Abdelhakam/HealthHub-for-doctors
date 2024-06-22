@@ -37,6 +37,7 @@ import java.time.LocalTime
 @Composable
 fun AvailabilityScreen(
     destinationsNavigator: DestinationsNavigator,
+    clinicId: Int,
     availabilityViewModel: AvailabilityViewModel = hiltViewModel(),
 ) {
     val state by availabilityViewModel.availabilityState.collectAsState()
@@ -63,7 +64,7 @@ fun AvailabilityScreen(
             item {
                 Button(onClick = {
                     destinationsNavigator.navigateUp()
-                    availabilityViewModel.setAvailability()
+                    availabilityViewModel.setAvailability(clinicId)
                 }) {
                     Text(text = "Save Availability")
                 }
