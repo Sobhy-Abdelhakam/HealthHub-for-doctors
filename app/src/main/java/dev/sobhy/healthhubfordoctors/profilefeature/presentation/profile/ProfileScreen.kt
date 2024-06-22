@@ -57,6 +57,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.navigation.BottomBarRoutes
 import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 
 @Composable
@@ -128,7 +129,7 @@ fun ProfileScreen(
                 modifier =
                     Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable {
                         navController.navigate(
-                            ScreenRoutes.ClinicList.route,
+                            BottomBarRoutes.CLINICS.route,
                         )
                     },
                 verticalAlignment = Alignment.CenterVertically,

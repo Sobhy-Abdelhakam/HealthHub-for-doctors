@@ -1,13 +1,11 @@
 package dev.sobhy.healthhubfordoctors.navigation
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Headphones
-import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Schedule
-import androidx.compose.material.icons.outlined.Headphones
-import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Message
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Schedule
@@ -18,20 +16,15 @@ enum class BottomBarRoutes(
     val unselectedIcon: ImageVector,
     val route: String,
 ) {
-    HOME(
-        selectedIcon = Icons.Filled.Home,
-        unselectedIcon = Icons.Outlined.Home,
-        route = "/home",
+    SCHEDULE(
+        selectedIcon = Icons.Filled.CalendarMonth,
+        unselectedIcon = Icons.Outlined.CalendarMonth,
+        route = "/schedule",
     ),
-    SEARCH(
+    CLINICS(
         selectedIcon = Icons.Filled.Schedule,
         unselectedIcon = Icons.Outlined.Schedule,
-        route = "/search",
-    ),
-    CHATBOT(
-        selectedIcon = Icons.Filled.Headphones,
-        unselectedIcon = Icons.Outlined.Headphones,
-        route = "/chatbot",
+        route = "/clinics",
     ),
     MESSAGE(
         selectedIcon = Icons.Filled.Message,

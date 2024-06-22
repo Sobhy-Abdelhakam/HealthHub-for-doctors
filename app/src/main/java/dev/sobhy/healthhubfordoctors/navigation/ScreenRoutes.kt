@@ -5,8 +5,6 @@ sealed class ScreenRoutes(val route: String) {
 
     data object BottomBar : ScreenRoutes("/bottombar")
 
-    data object ClinicList : ScreenRoutes("/cliniclist")
-
     data object AddClinic : ScreenRoutes("/addclinic")
 
     data object AvailabilityOfClinic : ScreenRoutes("/addavailability")
