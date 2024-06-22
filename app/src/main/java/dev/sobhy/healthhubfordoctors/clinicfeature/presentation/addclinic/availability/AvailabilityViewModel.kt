@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic.availability
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -66,7 +65,6 @@ class AvailabilityViewModel
                             to = it.value.to.toString(),
                         )
                     }
-                Log.d("AvailabilityViewModel", "$availabilityMap")
                 availabilityUseCase(Availability(availabilityMap), clinicId).collect { result ->
                     when (result) {
                         is Resource.Loading -> {}

@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
-import android.util.Log
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
@@ -36,7 +35,6 @@ class AuthRepositoryImpl(
             }
             // prepare data for API call
             val doctorRequest = createDoctorRequest(registerRequest, userId)
-            Log.d("DoctorRequest", doctorRequest.toString())
             // send data to API
             try {
                 apiService.addDoctor(doctorRequest)

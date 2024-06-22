@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,7 +56,6 @@ class AddClinicViewModel
             viewModelScope.launch(Dispatchers.IO) {
                 _addClinicState.update { it.copy(loading = true) }
                 val clinic = _addClinicState.value.toClinic()
-                Log.d("clinic", clinic.toString())
                 addClinicUseCase(clinic).collect { result ->
                     when (result) {
                         is Resource.Loading -> {

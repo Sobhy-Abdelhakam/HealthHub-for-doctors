@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.register
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,13 +75,11 @@ class RegisterViewModel
                         is Resource.Loading -> {
                             _registerState.value =
                                 registerState.value.copy(isLoading = true)
-                            Log.d("loading", "loading..")
                         }
 
                         is Resource.Error -> {
                             _registerState.value =
                                 registerState.value.copy(isLoading = false, error = result.message)
-                            Log.e("error", result.message.toString())
                         }
 
                         is Resource.Success -> {
@@ -92,7 +89,6 @@ class RegisterViewModel
                                     success = true,
                                     error = null,
                                 )
-                            Log.d("user", result.data.toString())
                         }
                     }
                 }

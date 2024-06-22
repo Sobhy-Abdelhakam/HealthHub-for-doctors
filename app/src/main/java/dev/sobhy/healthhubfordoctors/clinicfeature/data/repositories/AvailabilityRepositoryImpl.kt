@@ -1,6 +1,5 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories
 
-import android.util.Log
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.AvailabilityRepository
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
@@ -14,7 +13,6 @@ class AvailabilityRepositoryImpl(private val apiService: ApiService) : Availabil
         clinicId: Int,
     ) = flow {
         emit(Resource.Loading())
-        Log.d("avail repo: ", "${availability.availability}")
         val response = apiService.setAvailability(clinicId, availability.availability)
         emit(Resource.Success("Availability set successfully"))
     }.catch {
