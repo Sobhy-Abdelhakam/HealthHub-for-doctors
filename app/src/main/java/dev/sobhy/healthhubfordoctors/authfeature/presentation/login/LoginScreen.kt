@@ -44,25 +44,21 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ForgetPasswordScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.RegisterScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.navigation.AuthenticationRoutes
+import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>
 @Composable
 fun LoginScreen(
-    destinationsNavigator: DestinationsNavigator,
+    navController: NavController,
     viewModel: LoginViewModel = hiltViewModel(),
 ) {
     val state by viewModel.loginState.collectAsStateWithLifecycle()
     if (state.isSuccess) {
-        destinationsNavigator.navigateUp()
-        destinationsNavigator.navigate(ProfileScreenDestination)
+        navController.popBackStack()
+        navController.navigate(ScreenRoutes.BottomBar.route)
     }
 
     Scaffold(
@@ -113,7 +109,7 @@ fun LoginScreen(
                 Row {
                     Spacer(modifier = Modifier.weight(1f))
                     TextButton(onClick = {
-                        destinationsNavigator.navigate(ForgetPasswordScreenDestination)
+                        navController.navigate(AuthenticationRoutes.FORGOTPASSWORD.route)
                     }) {
                         Text(
                             text = stringResource(R.string.forgot_password),
@@ -162,7 +158,7 @@ fun LoginScreen(
                 ) {
                     Text(text = stringResource(R.string.don_t_have_an_account))
                     TextButton(onClick = {
-                        destinationsNavigator.navigate(RegisterScreenDestination)
+                        navController.navigate(AuthenticationRoutes.REGISTER.route)
                     }) {
                         Text(text = stringResource(R.string.sign_up), fontWeight = FontWeight.Bold)
                     }

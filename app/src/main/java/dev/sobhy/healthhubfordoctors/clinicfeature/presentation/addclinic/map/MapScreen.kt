@@ -49,6 +49,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -57,9 +58,6 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.SettingsClient
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.result.ResultBackNavigator
 import kotlinx.coroutines.launch
 import org.osmdroid.config.Configuration
 import org.osmdroid.events.MapEventsReceiver
@@ -72,11 +70,9 @@ import org.osmdroid.views.overlay.Marker
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
-@Destination<RootGraph>
 @Composable
-fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<GeoPoint>) {
+fun ClinicAddressScreen(navController: NavController) {
     val context = LocalContext.current
-//    var location by remember { mutableStateOf("") }
     var currentLocation by remember { mutableStateOf(GeoPoint(0.0, 0.0)) }
     val locationPermissionState =
         rememberMultiplePermissionsState(
@@ -112,7 +108,8 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<GeoPoint>) {
                 },
                 actions = {
                     Button(onClick = {
-                        resultNavigator.navigateBack(currentLocation)
+                        navController.previousBackStackEntry?.savedStateHandle?.set("clinic_address", currentLocation)
+                        navController.navigateUp()
                     }) {
                         Text(text = "Save")
                     }
@@ -122,7 +119,6 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<GeoPoint>) {
     ) { paddingValues ->
         ClinicManagementApp(
             modifier = Modifier.padding(paddingValues),
-//            textAddress = { location = it },
             currentLocation = currentLocation,
             onCurrentLocationChanged = { currentLocation = it },
             locationPermissionState = locationPermissionState,
@@ -135,7 +131,6 @@ fun ClinicAddressScreen(resultNavigator: ResultBackNavigator<GeoPoint>) {
 @Composable
 fun ClinicManagementApp(
     modifier: Modifier = Modifier,
-//    textAddress: (String) -> Unit,
     currentLocation: GeoPoint,
     onCurrentLocationChanged: (GeoPoint) -> Unit,
     locationPermissionState: MultiplePermissionsState,
@@ -343,4 +338,20 @@ private fun fetchCurrentLocation(
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         location?.let { onLocationRetrieved(it) }
     }
+}
+
+fun getAddressText(
+    context: Context,
+    geoPoint: GeoPoint,
+): String {
+    val geocoder = Geocoder(context, Locale.getDefault())
+    val addresses =
+        geocoder
+            .getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
+    val address = addresses?.firstOrNull()
+    val locality = address?.locality ?: ""
+    val adminArea = address?.adminArea ?: ""
+    val countryName = address?.countryName ?: ""
+    val subAdminArea = address?.subAdminArea ?: ""
+    return "$locality, $subAdminArea, $adminArea, $countryName"
 }

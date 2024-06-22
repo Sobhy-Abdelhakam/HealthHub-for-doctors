@@ -20,11 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,33 +31,41 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ClinicAddressScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
-import com.ramcosta.composedestinations.result.ResultRecipient
-import com.ramcosta.composedestinations.result.onResult
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
+import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 import dev.sobhy.healthhubfordoctors.ui.composables.Loader
 import org.osmdroid.util.GeoPoint
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>
 @Composable
 fun AddClinicScreen(
-    destinationsNavigator: DestinationsNavigator,
-    resultRecipient: ResultRecipient<ClinicAddressScreenDestination, GeoPoint>,
+    navController: NavController,
     viewModel: AddClinicViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.addClinicState.collectAsState()
+    val state by viewModel.addClinicState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    resultRecipient.onResult { resultValue ->
-        val latitude = resultValue.latitude
-        val longitude = resultValue.longitude
-        viewModel.onEvent(AddClinicUiEvent.UpdateLocation(latitude, longitude))
-        val addressText = getAddressText(context, resultValue)
-        viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(addressText))
+
+    val geoPointStateFlow =
+        remember {
+            navController.currentBackStackEntry?.savedStateHandle?.getStateFlow<GeoPoint>(
+                "clinic_address",
+                GeoPoint(0.0, 0.0),
+            )
+        }
+
+    val geoPointState = geoPointStateFlow?.collectAsStateWithLifecycle()
+
+    LaunchedEffect(geoPointState) {
+        geoPointState?.value?.let {
+            if (it != GeoPoint(0.0, 0.0)) {
+                viewModel.onEvent(AddClinicUiEvent.UpdateLocation(it.latitude, it.longitude))
+                val addressText = getAddressText(context, it)
+                viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(addressText))
+            }
+        }
     }
     val nameChange =
         remember<(String) -> Unit> {
@@ -152,7 +159,7 @@ fun AddClinicScreen(
             item {
                 OutlinedTextField(
                     value = state.clinicAddress,
-                    onValueChange = { viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(it)) },
+                    onValueChange = { },
                     label = {
                         Text(text = stringResource(R.string.clinic_address))
                     },
@@ -168,7 +175,7 @@ fun AddClinicScreen(
                         ),
                     trailingIcon = {
                         IconButton(onClick = {
-                            destinationsNavigator.navigate(ClinicAddressScreenDestination)
+                            navController.navigate(ScreenRoutes.MapScreen.route)
                         }) {
                             Icon(imageVector = Icons.Default.LocationOn, contentDescription = null)
                         }

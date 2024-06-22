@@ -11,11 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ramcosta.composedestinations.DestinationsNavHost
-import com.ramcosta.composedestinations.generated.NavGraphs
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ProfileScreenDestination
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import dev.sobhy.healthhubfordoctors.navigation.NavigationGraph
+import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 import dev.sobhy.healthhubfordoctors.ui.theme.HealthHubForDoctorsTheme
 
 @AndroidEntryPoint
@@ -30,16 +29,16 @@ class MainActivity : ComponentActivity() {
             val isLoggedIn = mainViewModel.isLoggedIn.collectAsState()
             val startDestination =
                 if (isLoggedIn.value != null) {
-                    ProfileScreenDestination
+                    ScreenRoutes.BottomBar.route
                 } else {
-                    LoginScreenDestination
+                    ScreenRoutes.Authentication.route
                 }
-
+            val navController = rememberNavController()
             HealthHubForDoctorsTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DestinationsNavHost(
-                        startRoute = startDestination,
-                        navGraph = NavGraphs.root,
+                    NavigationGraph(
+                        navController = navController,
+                        startDestination = startDestination,
                         modifier = Modifier.padding(innerPadding),
                     )
                 }

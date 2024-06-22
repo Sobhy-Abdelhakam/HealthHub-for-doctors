@@ -38,10 +38,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
 
-@Destination<RootGraph>
 @Composable
 fun ChangePasswordScreen(viewModel: UpdatePassViewModel = hiltViewModel()) {
     val state by viewModel.state.collectAsStateWithLifecycle()

@@ -65,6 +65,7 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.lifecycle.runtime.compose.android)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
@@ -90,9 +91,7 @@ dependencies {
 
     // material icons
     implementation(libs.androidx.material.icons.extended)
-    // compose destinations
-    implementation(libs.core)
-    ksp(libs.ksp)
+
     // coil
     implementation(libs.coil.compose)
 

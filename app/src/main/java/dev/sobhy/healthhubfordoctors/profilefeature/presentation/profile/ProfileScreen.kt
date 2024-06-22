@@ -54,26 +54,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.generated.destinations.ChangePasswordScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.ClinicListScreenDestination
-import com.ramcosta.composedestinations.generated.destinations.LoginScreenDestination
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import dev.sobhy.healthhubfordoctors.R
-import kotlinx.coroutines.launch
+import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 
-@Destination<RootGraph>(start = true)
 @Composable
 fun ProfileScreen(
-    destinationsNavigator: DestinationsNavigator,
+    navController: NavController,
     viewModel: ProfileViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     if (viewModel.isLoggedOut) {
-        destinationsNavigator.navigateUp()
-        destinationsNavigator.navigate(LoginScreenDestination)
+        navController.popBackStack()
+        navController.navigate(ScreenRoutes.Authentication.route)
     }
     LazyColumn(
         modifier =
@@ -133,8 +127,8 @@ fun ProfileScreen(
             Row(
                 modifier =
                     Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable {
-                        destinationsNavigator.navigate(
-                            ClinicListScreenDestination,
+                        navController.navigate(
+                            ScreenRoutes.ClinicList.route,
                         )
                     },
                 verticalAlignment = Alignment.CenterVertically,
@@ -161,7 +155,7 @@ fun ProfileScreen(
             Row(
                 modifier =
                     Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable {
-                        destinationsNavigator.navigate(ChangePasswordScreenDestination)
+                        navController.navigate(ScreenRoutes.ChangePassword.route)
                     },
                 verticalAlignment = Alignment.CenterVertically,
             ) {

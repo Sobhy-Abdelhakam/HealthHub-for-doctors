@@ -19,24 +19,20 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
 import java.time.DayOfWeek
 import java.time.LocalTime
 
-@Destination<RootGraph>
 @Composable
 fun AvailabilityScreen(
-    destinationsNavigator: DestinationsNavigator,
+    navController: NavController,
     clinicId: Int,
     availabilityViewModel: AvailabilityViewModel = hiltViewModel(),
 ) {
@@ -63,7 +59,7 @@ fun AvailabilityScreen(
             }
             item {
                 Button(onClick = {
-                    destinationsNavigator.navigateUp()
+                    navController.navigateUp()
                     availabilityViewModel.setAvailability(clinicId)
                 }) {
                     Text(text = "Save Availability")

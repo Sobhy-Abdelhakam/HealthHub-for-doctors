@@ -31,17 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.ramcosta.composedestinations.annotation.Destination
-import com.ramcosta.composedestinations.annotation.RootGraph
-import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
 import java.time.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Destination<RootGraph>
 @Composable
 fun RegisterScreen(
-    destinationsNavigator: DestinationsNavigator,
+    navController: NavController,
     viewModel: RegisterViewModel = hiltViewModel(),
 ) {
     val state by viewModel.registerState.collectAsState()
@@ -81,7 +78,7 @@ fun RegisterScreen(
         }
 
     if (state.success) {
-        destinationsNavigator.navigateUp()
+        navController.navigateUp()
         return
     }
 
@@ -100,12 +97,12 @@ fun RegisterScreen(
         if (failAnyField) {
             showConfirmationDialog = true
         } else {
-            destinationsNavigator.navigateUp()
+            navController.navigateUp()
         }
     }
     if (showConfirmationDialog) {
         ConfirmationDialog(
-            onNavigateUp = destinationsNavigator::navigateUp,
+            onNavigateUp = { navController.navigateUp() },
             dismissDialog = { showConfirmationDialog = false },
         )
     }
@@ -124,7 +121,12 @@ fun RegisterScreen(
             )
         },
     ) { paddingValue ->
-        Box(modifier = Modifier.padding(paddingValue).fillMaxSize()) {
+        Box(
+            modifier =
+                Modifier
+                    .padding(paddingValue)
+                    .fillMaxSize(),
+        ) {
             when (currentStep) {
                 1 -> {
                     PersonalInformation(
@@ -172,7 +174,8 @@ fun RegisterScreen(
             Row(
                 modifier =
                     Modifier
-                        .align(Alignment.BottomCenter).padding(12.dp),
+                        .align(Alignment.BottomCenter)
+                        .padding(12.dp),
             ) {
                 StepIndicator(
                     modifier = Modifier.weight(1f),
