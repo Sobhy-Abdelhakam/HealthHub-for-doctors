@@ -27,13 +27,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
 import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 import dev.sobhy.healthhubfordoctors.ui.composables.Loader
+import dev.sobhy.healthhubfordoctors.ui.theme.sdp
 
 @Composable
 fun ClinicListScreen(
@@ -58,11 +58,21 @@ fun ClinicListScreen(
                     modifier =
                         Modifier
                             .align(Alignment.BottomCenter)
-                            .padding(32.dp),
+                            .padding(32.sdp),
                 ) {
                     Text(text = "Add Clinic")
                 }
             } else {
+                LazyColumn {
+                    items(state.clinics) { clinic ->
+                        ClinicDetailsItem(
+                            clinic = clinic,
+                            setAvailabilityClick = {
+                                navController.navigate("${ScreenRoutes.AvailabilityOfClinic.route}/$it")
+                            },
+                        )
+                    }
+                }
                 FloatingActionButton(
                     onClick = {
                         navController.navigate(ScreenRoutes.AddClinic.route)
@@ -70,19 +80,9 @@ fun ClinicListScreen(
                     modifier =
                         Modifier
                             .align(Alignment.BottomEnd)
-                            .padding(32.dp),
+                            .padding(32.sdp),
                 ) {
                     Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                }
-                LazyColumn {
-                    items(state.clinics) { clinic ->
-                        ClinicDetailsItem(
-                            clinic = clinic,
-                            setAvailabilityClick = {
-                                navController.navigate("${ScreenRoutes.AvailabilityOfClinic.route}/it")
-                            },
-                        )
-                    }
                 }
             }
         }
@@ -100,25 +100,40 @@ fun ClinicDetailsItem(
             modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .padding(16.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 12.dp),
+                .padding(16.sdp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 12.sdp),
     ) {
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = clinic.name, style = MaterialTheme.typography.headlineSmall)
-            Text(text = "Clinic Number")
+        Column(modifier = Modifier.padding(8.sdp)) {
+            Text(
+                text = clinic.name,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onBackground,
+            )
+            if (clinic.phone.isNotEmpty()) {
+                Text(text = clinic.phone)
+            }
             Text(text = clinic.address)
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Row {
-                    Text(text = stringResource(R.string.examination))
-                    Text(text = "${clinic.examination} EGP", style = MaterialTheme.typography.titleMedium)
-                }
-                Row {
-                    Text(text = stringResource(R.string.follow_up))
-                    Text(text = "${clinic.followUp} EGP", style = MaterialTheme.typography.titleMedium)
-                }
+            Row {
+                Text(
+                    text = stringResource(R.string.examination),
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    text = "${clinic.examination} EGP",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+            }
+            Row {
+                Text(
+                    text = stringResource(R.string.follow_up),
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    text = "${clinic.followUp} EGP",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
             }
             if (clinic.doctorAvailabilities!!.isEmpty()) {
                 Button(
@@ -126,7 +141,7 @@ fun ClinicDetailsItem(
                     modifier =
                         Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(16.sdp),
                 ) {
                     Text(text = "setAvailability")
                 }
@@ -137,17 +152,23 @@ fun ClinicDetailsItem(
                     },
                     modifier =
                         Modifier
-                            .padding(12.dp),
+                            .padding(12.sdp),
                 ) {
                     clinic.doctorAvailabilities.filter {
                         it.available
                     }.forEach {
                         Row(
-                            modifier = modifier.fillMaxWidth().padding(8.dp),
+                            modifier = modifier.fillMaxWidth().padding(8.sdp),
                             horizontalArrangement = Arrangement.SpaceEvenly,
                         ) {
-                            Text(text = "${it.day}: ")
-                            Text(text = "${it.startTime} - ${it.endTime}")
+                            Text(
+                                text = "${it.day}: ",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                text = "${it.startTime} - ${it.endTime}",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
                         }
                         HorizontalDivider()
                     }
