@@ -79,6 +79,9 @@ fun ProfileScreen(
         item {
             PhotoNameSpecialityRateSection(
                 imageUri = state.image,
+                name = state.doctorInfo.name,
+                specialty = state.doctorInfo.specialization,
+                rating = state.doctorInfo.rating,
                 imageChanged = {
                     viewModel.onEvent(ProfileUiEvent.ChangeProfileImage(it))
                 },
@@ -217,6 +220,9 @@ fun ProfileScreen(
 @Composable
 fun PhotoNameSpecialityRateSection(
     imageUri: Uri?,
+    name: String,
+    specialty: String,
+    rating: Double,
     imageChanged: (Uri?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -365,12 +371,12 @@ fun PhotoNameSpecialityRateSection(
 
         Column(modifier = Modifier.padding(start = 16.dp)) {
             Text(
-                text = "Sobhy Abdel Hakam",
+                text = name,
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
             )
             Text(
-                text = "Female Doctor",
+                text = specialty,
                 style = MaterialTheme.typography.titleMedium,
             )
             Row {
@@ -378,7 +384,7 @@ fun PhotoNameSpecialityRateSection(
                     Icon(
                         imageVector = Icons.Default.Star,
                         contentDescription = null,
-                        tint = if (it < 3) Color.Yellow else Color.Gray,
+                        tint = if (it < rating) Color.Yellow else Color.Gray,
                         modifier = Modifier.padding(2.dp),
                     )
                 }

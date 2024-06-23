@@ -4,6 +4,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
+import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfile
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -19,6 +20,11 @@ interface ApiService {
     suspend fun addDoctor(
         @Body doctorRequest: DoctorRequest,
     )
+
+    @GET("doctor/{token}")
+    suspend fun getDoctor(
+        @Path("token") token: String,
+    ): DoctorProfile
 
     // clinic
     @POST("clinic/{token}")
