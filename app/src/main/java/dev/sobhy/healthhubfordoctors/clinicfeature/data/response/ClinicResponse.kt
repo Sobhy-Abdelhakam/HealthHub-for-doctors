@@ -1,6 +1,6 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.response
 
-data class GetClinicResponse(
+data class ClinicResponse(
     val id: Int,
     val name: String,
     val phone: String,
@@ -9,5 +9,5 @@ data class GetClinicResponse(
     val longitude: Double,
     val examination: Double,
     val followUp: Double,
-    val doctorAvailabilities: List<DoctorAvailabilitiesResponse>?,
+    val doctorAvailabilities: List<AvailabilityResponse>?,
 )

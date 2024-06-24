@@ -4,21 +4,44 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.sobhy.healthhubfordoctors.core.data.model.DoctorProfile
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfileUiModel
+import androidx.room.Update
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
+import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface DoctorInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDoctorProfile(doctorProfile: DoctorProfile)
+    suspend fun insertDoctorProfile(doctor: DoctorEntity)
 
-    @Query("SELECT * FROM doctor_profile WHERE uid = :id")
-    fun getAllDoctorInfo(id: String): Flow<DoctorProfile?>
+    @Query("SELECT * FROM doctors WHERE uid = :id")
+    fun getAllDoctorInfo(id: String): Flow<DoctorEntity?>
 
-    @Query("DELETE FROM doctor_profile WHERE uid = :id")
-    suspend fun deleteDoctorInfo(id: String)
+    @Update
+    fun updateDoctor(doctor: DoctorEntity)
 
-    @Query("SELECT name, specialty, imgPath, rating FROM doctor_profile WHERE uid = :id")
-    fun getProfileInfo(id: String): Flow<DoctorProfileUiModel?>
+    @Query("SELECT * FROM clinics WHERE doctorId = :doctorId")
+    fun getClinicsForDoctor(doctorId: String): Flow<List<ClinicEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertClinic(clinic: ClinicEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertClinics(clinics: List<ClinicEntity>)
+
+    @Update
+    suspend fun updateClinic(clinic: ClinicEntity)
+
+    @Query("SELECT * FROM availabilities WHERE clinicId = :clinicId")
+    fun getAvailabilityForClinic(clinicId: Int): Flow<List<AvailabilityEntity>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAvailability(availability: AvailabilityEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAvailabilities(availabilities: List<AvailabilityEntity>)
+
+    @Update
+    suspend fun updateAvailability(availability: AvailabilityEntity)
 }

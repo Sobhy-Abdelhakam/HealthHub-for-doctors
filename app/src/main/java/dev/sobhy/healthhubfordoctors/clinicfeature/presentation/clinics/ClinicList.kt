@@ -30,7 +30,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import dev.sobhy.healthhubfordoctors.R
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.ClinicResponse
 import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
 import dev.sobhy.healthhubfordoctors.ui.composables.Loader
 import dev.sobhy.healthhubfordoctors.ui.theme.sdp
@@ -92,7 +92,7 @@ fun ClinicListScreen(
 @Composable
 fun ClinicDetailsItem(
     modifier: Modifier = Modifier,
-    clinic: GetClinicResponse,
+    clinic: ClinicResponse,
     setAvailabilityClick: (Int) -> Unit,
 ) {
     Card(

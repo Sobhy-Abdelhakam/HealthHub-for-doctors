@@ -1,6 +1,6 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.response
 
-data class DoctorAvailabilitiesResponse(
+data class AvailabilityResponse(
     val id: Int,
     val day: String,
     val startTime: String,

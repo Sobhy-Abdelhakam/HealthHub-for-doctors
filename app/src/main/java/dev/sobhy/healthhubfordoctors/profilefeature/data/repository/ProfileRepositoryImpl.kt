@@ -1,10 +1,11 @@
 package dev.sobhy.healthhubfordoctors.profilefeature.data.repository
 
+import dev.sobhy.healthhubfordoctors.core.Doctor
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfileUiModel
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.toDoctorProfileUiModel
+import dev.sobhy.healthhubfordoctors.core.toDoctor
+import dev.sobhy.healthhubfordoctors.core.toEntity
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.repository.ProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,17 +17,17 @@ class ProfileRepositoryImpl(
     private val apiService: ApiService,
     private val preferencesRepository: AuthPreferencesRepository,
 ) : ProfileRepository {
-    override suspend fun getProfileInfo(): Flow<Result<DoctorProfileUiModel>> {
-        val userId = preferencesRepository.getUserToken().first()
-        return doctorInfoDao.getProfileInfo(userId!!).map { userEntity ->
-            if (userEntity != null) {
-                Result.success(userEntity)
+    override suspend fun getProfileInfo(): Flow<Result<Doctor>> {
+        val userId = preferencesRepository.getUserToken().first() ?: ""
+        return doctorInfoDao.getAllDoctorInfo(userId).map { doctorEntity ->
+            if (doctorEntity != null) {
+                Result.success(doctorEntity.toDoctor())
             } else {
                 try {
                     val response = apiService.getDoctor(userId)
-                    val user = response.toDoctorProfileUiModel()
-                    doctorInfoDao.insertDoctorProfile(response)
-                    Result.success(user)
+                    val doctor = response.toDoctor()
+                    doctorInfoDao.insertDoctorProfile(doctor.toEntity())
+                    Result.success(doctor)
                 } catch (e: Exception) {
                     Result.failure(e)
                 }

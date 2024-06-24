@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.core.util.Resource
+import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfileUiModel
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.usecases.LogoutUseCase
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.usecases.ProfileInfoUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,7 +57,13 @@ class ProfileViewModel
                             _uiState.update {
                                 it.copy(
                                     isLoading = false,
-                                    doctorInfo = result.getOrNull()!!,
+                                    doctorInfo =
+                                        DoctorProfileUiModel(
+                                            result.getOrNull()!!.name,
+                                            result.getOrNull()!!.specialty,
+                                            result.getOrNull()!!.imgPath,
+                                            result.getOrNull()!!.rating,
+                                        ),
                                 )
                             }
                         } else {

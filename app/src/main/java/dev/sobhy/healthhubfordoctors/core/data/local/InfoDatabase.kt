@@ -2,12 +2,18 @@ package dev.sobhy.healthhubfordoctors.core.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
-import dev.sobhy.healthhubfordoctors.core.data.model.Converters
-import dev.sobhy.healthhubfordoctors.core.data.model.DoctorProfile
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
+import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 
-@Database(entities = [DoctorProfile::class], version = 1)
-@TypeConverters(Converters::class)
+@Database(
+    entities = [
+        DoctorEntity::class,
+        ClinicEntity::class,
+        AvailabilityEntity::class,
+    ],
+    version = 1,
+)
 abstract class InfoDatabase : RoomDatabase() {
     abstract fun doctorProfileDao(): DoctorInfoDao
 }
