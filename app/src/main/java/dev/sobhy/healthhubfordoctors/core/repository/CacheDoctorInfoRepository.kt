@@ -9,7 +9,7 @@ class CacheDoctorInfoRepository(
     private val doctorProfileDao: DoctorInfoDao,
     private val authPreferences: AuthPreferencesRepository,
 ) {
-    suspend fun getDoctorProfile() {
+    suspend fun getDoctorInfo() {
         val doctorId = authPreferences.getUserToken().first()
 
         try {

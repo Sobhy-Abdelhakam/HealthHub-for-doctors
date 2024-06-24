@@ -59,6 +59,7 @@ import coil.compose.rememberAsyncImagePainter
 import dev.sobhy.healthhubfordoctors.R
 import dev.sobhy.healthhubfordoctors.navigation.BottomBarRoutes
 import dev.sobhy.healthhubfordoctors.navigation.ScreenRoutes
+import dev.sobhy.healthhubfordoctors.ui.composables.Loader
 
 @Composable
 fun ProfileScreen(
@@ -70,6 +71,9 @@ fun ProfileScreen(
         navController.popBackStack()
         navController.navigate(ScreenRoutes.Authentication.route)
     }
+    if (state.isLoading) {
+        Loader()
+    }
     LazyColumn(
         modifier =
             Modifier
@@ -79,9 +83,9 @@ fun ProfileScreen(
         item {
             PhotoNameSpecialityRateSection(
                 imageUri = state.image,
-                name = "state.doctorInfo.name",
-                specialty = "state.doctorInfo.specialization",
-                rating = 0.0,
+                name = state.doctorInfo.name,
+                specialty = state.doctorInfo.specialty,
+                rating = state.doctorInfo.rating,
                 imageChanged = {
                     viewModel.onEvent(ProfileUiEvent.ChangeProfileImage(it))
                 },
