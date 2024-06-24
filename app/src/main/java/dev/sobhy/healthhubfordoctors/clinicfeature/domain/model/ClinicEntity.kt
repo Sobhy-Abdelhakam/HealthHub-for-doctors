@@ -22,7 +22,7 @@ data class ClinicEntity(
     @PrimaryKey val id: Int,
     val doctorId: String,
     val name: String,
-    val phone: String,
+    val phone: String?,
     val examination: Double,
     val followUp: Double,
     val latitude: Double,

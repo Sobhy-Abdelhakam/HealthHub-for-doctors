@@ -24,7 +24,7 @@ data class Clinic(
     val id: Int,
     val doctorId: String,
     val name: String,
-    val phone: String,
+    val phone: String?,
     val examination: Double,
     val followUp: Double,
     val latitude: Double,
@@ -55,6 +55,17 @@ fun Availability.toEntity() = AvailabilityEntity(id, clinicId, day, startTime, e
 
 fun DoctorResponse.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
 
-fun ClinicResponse.toClinic(doctorId: String) = Clinic(id, doctorId, name, phone, examination, followUp, latitude, longitude, address)
+fun ClinicResponse.toClinic(doctorId: String) =
+    Clinic(
+        id = id,
+        doctorId = doctorId,
+        name = name,
+        phone = phone,
+        examination = examination,
+        followUp = followUp,
+        latitude = latitude,
+        longitude = longitude,
+        address = address,
+    )
 
 fun AvailabilityResponse.toAvailability(clinicId: Int) = Availability(id, clinicId, day, startTime, endTime, available)

@@ -1,14 +1,14 @@
 package dev.sobhy.healthhubfordoctors.authfeature.domain
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.ClinicRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
 import dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic.AddClinicState
 import dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic.availability.AvailabilityState
 import dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic.availability.DayStateUi
 
-fun AddClinicState.toClinic(): Clinic {
-    return Clinic(
+fun AddClinicState.toClinic(): ClinicRequest {
+    return ClinicRequest(
         name = this.clinicName,
         address = this.clinicAddress,
         phone = this.clinicNumber,

@@ -11,6 +11,7 @@ import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepos
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AddClinicUseCase
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AvailabilityUseCase
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.GetAllClinicsUseCase
+import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 
@@ -20,9 +21,10 @@ object ClinicModule {
     @Provides
     fun provideClinicRepository(
         clinicService: ApiService,
+        doctorInfoDao: DoctorInfoDao,
         authPreferencesRepository: AuthPreferencesRepository,
     ): ClinicRepository {
-        return ClinicRepositoryImpl(clinicService, authPreferencesRepository)
+        return ClinicRepositoryImpl(clinicService, doctorInfoDao, authPreferencesRepository)
     }
 
     @Provides
@@ -31,7 +33,7 @@ object ClinicModule {
     }
 
     @Provides
-    fun provideClinicsUseCase(clinicRepository: ClinicRepository): GetAllClinicsUseCase  {
+    fun provideClinicsUseCase(clinicRepository: ClinicRepository): GetAllClinicsUseCase {
         return GetAllClinicsUseCase(clinicRepository)
     }
 

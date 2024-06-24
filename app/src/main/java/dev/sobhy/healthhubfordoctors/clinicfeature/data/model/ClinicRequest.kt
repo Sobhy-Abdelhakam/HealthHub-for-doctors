@@ -1,6 +1,6 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.model
 
-data class Clinic(
+data class ClinicRequest(
     val name: String,
     val phone: String,
     val address: String,

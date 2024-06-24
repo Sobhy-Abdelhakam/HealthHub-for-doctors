@@ -1,9 +1,10 @@
 package dev.sobhy.healthhubfordoctors.core.data.remote
 
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.ClinicRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.ClinicResponse
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
 import dev.sobhy.healthhubfordoctors.core.data.model.DoctorResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -30,13 +31,13 @@ interface ApiService {
     @POST("clinic/{token}")
     suspend fun addClinic(
         @Path("token") token: String,
-        @Body clinic: Clinic,
-    ): Response<Void>
+        @Body clinic: ClinicRequest,
+    ): Response<ClinicResponse>
 
     @PUT("clinic/{token}")
     suspend fun updateClinic(
         @Path("token") token: String,
-        @Body clinic: Clinic,
+        @Body clinic: ClinicRequest,
     )
 
     @GET("clinic/by-doctor")
@@ -47,7 +48,7 @@ interface ApiService {
     @GET("clinic/by-id")
     suspend fun getClinic(
         @Query("clinicId") id: Int,
-    ): Clinic
+    ): ClinicRepository
 
     @DELETE("clinic")
     suspend fun deleteClinic(
