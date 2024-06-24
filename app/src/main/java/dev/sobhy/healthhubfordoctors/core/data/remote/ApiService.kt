@@ -4,7 +4,7 @@ import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Clinic
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.GetClinicResponse
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfile
+import dev.sobhy.healthhubfordoctors.core.data.model.DoctorProfile
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

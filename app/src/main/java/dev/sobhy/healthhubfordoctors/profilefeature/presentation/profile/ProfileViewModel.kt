@@ -7,10 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.sobhy.healthhubfordoctors.core.util.Resource
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.usecases.GetDoctorProfileUseCase
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.usecases.LogoutUseCase
-import dev.sobhy.healthhubfordoctors.profilefeature.presentation.mapToUiModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -21,17 +18,12 @@ import javax.inject.Inject
 class ProfileViewModel
     @Inject
     constructor(
-        private val getDoctorProfileUseCase: GetDoctorProfileUseCase,
         private val logoutUseCase: LogoutUseCase,
     ) : ViewModel() {
         private val _uiState = MutableStateFlow(ProfileUiState())
         val uiState: StateFlow<ProfileUiState> = _uiState
 
         var isLoggedOut: Boolean by mutableStateOf(false)
-
-        init {
-            fetchProfile()
-        }
 
         fun onEvent(event: ProfileUiEvent) {
             when (event) {
@@ -41,16 +33,6 @@ class ProfileViewModel
                     }
 
                 ProfileUiEvent.Logout -> logOut()
-            }
-        }
-
-        fun fetchProfile() {
-            viewModelScope.launch(Dispatchers.IO) {
-                getDoctorProfileUseCase().collect { doctorResponse ->
-                    _uiState.update {
-                        it.copy(doctorInfo = doctorResponse.mapToUiModel())
-                    }
-                }
             }
         }
 

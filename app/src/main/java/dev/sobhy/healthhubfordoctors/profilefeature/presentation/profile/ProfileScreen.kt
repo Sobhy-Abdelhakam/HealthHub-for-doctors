@@ -79,9 +79,9 @@ fun ProfileScreen(
         item {
             PhotoNameSpecialityRateSection(
                 imageUri = state.image,
-                name = state.doctorInfo.name,
-                specialty = state.doctorInfo.specialization,
-                rating = state.doctorInfo.rating,
+                name = "state.doctorInfo.name",
+                specialty = "state.doctorInfo.specialization",
+                rating = 0.0,
                 imageChanged = {
                     viewModel.onEvent(ProfileUiEvent.ChangeProfileImage(it))
                 },

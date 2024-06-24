@@ -1,13 +1,13 @@
-package dev.sobhy.healthhubfordoctors.profilefeature.data.local
+package dev.sobhy.healthhubfordoctors.core.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorProfile
+import dev.sobhy.healthhubfordoctors.core.data.model.DoctorProfile
 
 @Dao
-interface DoctorProfileDao {
+interface DoctorInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDoctorProfile(doctorProfile: DoctorProfile)
 

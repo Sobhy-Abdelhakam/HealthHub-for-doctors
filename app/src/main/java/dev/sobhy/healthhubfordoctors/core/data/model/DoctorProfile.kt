@@ -1,4 +1,4 @@
-package dev.sobhy.healthhubfordoctors.profilefeature.domain.model
+package dev.sobhy.healthhubfordoctors.core.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
