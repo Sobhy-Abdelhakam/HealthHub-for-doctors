@@ -2,6 +2,7 @@ package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.addclinic
 
 import android.content.Context
 import android.location.Geocoder
+import android.widget.Toast
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -60,10 +61,14 @@ fun AddClinicScreen(
 
     LaunchedEffect(geoPointState) {
         geoPointState?.value?.let {
-            if (it != GeoPoint(0.0, 0.0)) {
-                viewModel.onEvent(AddClinicUiEvent.UpdateLocation(it.latitude, it.longitude))
-                val addressText = getAddressText(context, it)
-                viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(addressText))
+            try {
+                if (it != GeoPoint(0.0, 0.0)) {
+                    viewModel.onEvent(AddClinicUiEvent.UpdateLocation(it.latitude, it.longitude))
+                    val addressText = getAddressText(context, it)
+                    viewModel.onEvent(AddClinicUiEvent.ClinicAddressChange(addressText))
+                }
+            } catch (e: Exception) {
+                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
             }
         }
     }

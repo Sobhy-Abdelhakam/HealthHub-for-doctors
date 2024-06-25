@@ -190,11 +190,15 @@ fun ClinicManagementApp(
             onValueChange = { userInputLocation = it },
         ) { searchText ->
             coroutineScope.launch {
-                val address = getAddressByName(context, searchText)
-                if (address != null) {
-                    onCurrentLocationChanged(GeoPoint(address.latitude, address.longitude))
-                } else {
-                    Toast.makeText(context, "No such place found", Toast.LENGTH_SHORT).show()
+                try {
+                    val address = getAddressByName(context, searchText)
+                    if (address != null) {
+                        onCurrentLocationChanged(GeoPoint(address.latitude, address.longitude))
+                    } else {
+                        Toast.makeText(context, "No such place found", Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -338,20 +342,4 @@ private fun fetchCurrentLocation(
     fusedLocationClient.lastLocation.addOnSuccessListener { location ->
         location?.let { onLocationRetrieved(it) }
     }
-}
-
-fun getAddressText(
-    context: Context,
-    geoPoint: GeoPoint,
-): String {
-    val geocoder = Geocoder(context, Locale.getDefault())
-    val addresses =
-        geocoder
-            .getFromLocation(geoPoint.latitude, geoPoint.longitude, 1)
-    val address = addresses?.firstOrNull()
-    val locality = address?.locality ?: ""
-    val adminArea = address?.adminArea ?: ""
-    val countryName = address?.countryName ?: ""
-    val subAdminArea = address?.subAdminArea ?: ""
-    return "$locality, $subAdminArea, $adminArea, $countryName"
 }
