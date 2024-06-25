@@ -127,6 +127,7 @@ fun AddClinicScreen(
                     Button(
                         onClick = {
                             viewModel.onEvent(AddClinicUiEvent.SaveClinic)
+                            navController.popBackStack()
                         },
                         modifier = Modifier.padding(8.dp),
                         enabled = saveBtnEnable,
