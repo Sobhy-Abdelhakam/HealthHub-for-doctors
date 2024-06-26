@@ -1,5 +1,6 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.presentation.clinics
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,8 +16,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -132,45 +135,45 @@ fun ClinicDetailsItem(
                     color = MaterialTheme.colorScheme.onBackground,
                 )
             }
-//            if (clinic.doctorAvailabilities!!.isEmpty()) {
-//                Button(
-//                    onClick = { setAvailabilityClick(clinic.id) },
-//                    modifier =
-//                        Modifier
-//                            .fillMaxWidth()
-//                            .padding(16.sdp),
-//                ) {
-//                    Text(text = "setAvailability")
-//                }
-//            } else {
-//                OutlinedCard(
-//                    onClick = {
-//                        setAvailabilityClick(clinic.id)
-//                    },
-//                    modifier =
-//                        Modifier
-//                            .padding(12.sdp),
-//                ) {
-//                    clinic.doctorAvailabilities.filter {
-//                        it.available
-//                    }.forEach {
-//                        Row(
-//                            modifier = modifier.fillMaxWidth().padding(8.sdp),
-//                            horizontalArrangement = Arrangement.SpaceEvenly,
-//                        ) {
-//                            Text(
-//                                text = "${it.day}: ",
-//                                style = MaterialTheme.typography.titleSmall,
-//                            )
-//                            Text(
-//                                text = "${it.startTime} - ${it.endTime}",
-//                                style = MaterialTheme.typography.titleSmall,
-//                            )
-//                        }
-//                        HorizontalDivider()
-//                    }
-//                }
-//            }
+            if (clinic.availabilities.isEmpty()) {
+                Button(
+                    onClick = { setAvailabilityClick(clinic.id) },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.sdp),
+                ) {
+                    Text(text = "setAvailability")
+                }
+            } else {
+                OutlinedCard(
+                    onClick = {
+                        setAvailabilityClick(clinic.id)
+                    },
+                    modifier =
+                        Modifier
+                            .padding(12.sdp),
+                ) {
+                    clinic.availabilities.filter {
+                        it.available
+                    }.forEach {
+                        Row(
+                            modifier = modifier.fillMaxWidth().padding(8.sdp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                        ) {
+                            Text(
+                                text = "${it.day}: ",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                            Text(
+                                text = "${it.startTime} - ${it.endTime}",
+                                style = MaterialTheme.typography.titleSmall,
+                            )
+                        }
+                        HorizontalDivider()
+                    }
+                }
+            }
         }
     }
 }

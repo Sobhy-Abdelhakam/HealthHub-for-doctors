@@ -1,12 +1,15 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.ClinicRequest
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
+import dev.sobhy.healthhubfordoctors.core.Availability
 import dev.sobhy.healthhubfordoctors.core.Clinic
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
+import dev.sobhy.healthhubfordoctors.core.toAvailability
 import dev.sobhy.healthhubfordoctors.core.toClinic
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -61,42 +64,80 @@ class ClinicRepositoryImpl(
 
     override suspend fun getClinics(): Flow<Resource<List<Clinic>>> {
         val doctorId = authPreferencesRepository.getUserToken().first() ?: ""
-        return doctorInfoDao.getClinicsForDoctor(doctorId).map { clinics ->
-            if (clinics.isNotEmpty()) {
-                Resource.Success(clinics.map { it.toClinic() })
+        return doctorInfoDao.getClinicsWithAvailabilities(doctorId).map { clinicsWithAvailabilities ->
+            if (clinicsWithAvailabilities.isNotEmpty()) {
+                val clinics =
+                    clinicsWithAvailabilities.map { clinicWithAvailabilities ->
+                        clinicWithAvailabilities.clinic.toClinic(
+                            clinicWithAvailabilities.availabilities.map { it.toAvailability() },
+                        )
+                    }
+                Resource.Success(clinics)
             } else {
                 val response = clinicService.getClinics(doctorId)
                 val clinicsList =
-                    response.body()!!.map {
+                    response.body()!!.map { clinicResponse ->
                         Clinic(
-                            id = it.id,
+                            id = clinicResponse.id,
                             doctorId = doctorId,
-                            name = it.name,
-                            phone = it.phone,
-                            examination = it.examination,
-                            followUp = it.followUp,
-                            latitude = it.latitude,
-                            longitude = it.longitude,
-                            address = it.address,
+                            name = clinicResponse.name,
+                            phone = clinicResponse.phone,
+                            examination = clinicResponse.examination,
+                            followUp = clinicResponse.followUp,
+                            latitude = clinicResponse.latitude,
+                            longitude = clinicResponse.longitude,
+                            address = clinicResponse.address,
+                            availabilities =
+                                clinicResponse.doctorAvailabilities!!.map {
+                                    Availability(
+                                        id = it.id,
+                                        clinicId = clinicResponse.id,
+                                        day = it.day,
+                                        startTime = it.startTime,
+                                        endTime = it.endTime,
+                                        available = it.available,
+                                    )
+                                },
                         )
                     }
+
                 val clinicsToStore =
-                    response.body()!!.map { clinic ->
+                    response.body()!!.map { clinicResponse ->
                         ClinicEntity(
-                            id = clinic.id,
-                            doctorId = clinic.doctorId,
-                            name = clinic.name,
-                            phone = clinic.phone,
-                            examination = clinic.examination,
-                            followUp = clinic.followUp,
-                            latitude = clinic.latitude,
-                            longitude = clinic.longitude,
-                            address = clinic.address,
+                            id = clinicResponse.id,
+                            doctorId = doctorId,
+                            name = clinicResponse.name,
+                            phone = clinicResponse.phone,
+                            examination = clinicResponse.examination,
+                            followUp = clinicResponse.followUp,
+                            latitude = clinicResponse.latitude,
+                            longitude = clinicResponse.longitude,
+                            address = clinicResponse.address,
                         )
                     }
+
+                val availabilitiesToStore =
+                    response.body()!!.flatMap { clinicResponse ->
+                        clinicResponse.doctorAvailabilities!!.map { availabilityResponse ->
+                            AvailabilityEntity(
+                                id = availabilityResponse.id,
+                                clinicId = clinicResponse.id,
+                                day = availabilityResponse.day,
+                                startTime = availabilityResponse.startTime,
+                                endTime = availabilityResponse.endTime,
+                                available = availabilityResponse.available,
+                            )
+                        }
+                    }
+
                 clinicsToStore.forEach {
                     doctorInfoDao.insertClinic(it)
                 }
+
+                availabilitiesToStore.forEach {
+                    doctorInfoDao.insertAvailability(it)
+                }
+
                 Resource.Success(clinicsList)
             }
         }
@@ -109,22 +150,4 @@ class ClinicRepositoryImpl(
     override suspend fun deleteClinic(id: Int) {
         TODO("Not yet implemented")
     }
-//        return flow {
-//            emit(Resource.Loading())
-//            val token = authPreferencesRepository.getUserToken().first()
-//            if (token == null) {
-//                emit(Resource.Error("User not logged in"))
-//                return@flow
-//            }
-//            val clinics = doctorInfoDao.getClinicsForDoctor(token)
-//            val response = clinicService.getClinics(token)
-//            if (response.isSuccessful) {
-//                emit(Resource.Success(response.body()!!))
-//                return@flow
-//            } else {
-//                emit(Resource.Error(response.message()))
-//            }
-//        }.catch {
-//            emit(Resource.Error(it.message ?: "An error occurred"))
-//        }
 }

@@ -4,9 +4,11 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicWithAvailabilities
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -44,4 +46,8 @@ interface DoctorInfoDao {
 
     @Update
     suspend fun updateAvailability(availability: AvailabilityEntity)
+
+    @Transaction
+    @Query("SELECT * FROM clinics WHERE doctorId = :doctorId")
+    fun getClinicsWithAvailabilities(doctorId: String): Flow<List<ClinicWithAvailabilities>>
 }

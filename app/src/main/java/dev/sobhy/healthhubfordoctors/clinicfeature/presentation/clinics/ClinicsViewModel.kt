@@ -25,19 +25,20 @@ class ClinicsViewModel
 
         fun getClinics() {
             viewModelScope.launch(Dispatchers.IO) {
-                clinicsUseCase().collect { result ->
-                    when (result) {
-                        is Resource.Loading -> {
-                            _clinicsState.value = ClinicsListState(isLoading = true)
-                        }
-                        is Resource.Error -> {
-                            _clinicsState.value = ClinicsListState(error = result.message)
-                        }
-                        is Resource.Success -> {
-                            _clinicsState.value = ClinicsListState(clinics = result.data ?: emptyList())
+                clinicsUseCase()
+                    .collect { result ->
+                        when (result) {
+                            is Resource.Loading -> {
+                                _clinicsState.value = ClinicsListState(isLoading = true)
+                            }
+                            is Resource.Error -> {
+                                _clinicsState.value = ClinicsListState(error = result.message)
+                            }
+                            is Resource.Success -> {
+                                _clinicsState.value = ClinicsListState(clinics = result.data ?: emptyList())
+                            }
                         }
                     }
-                }
             }
         }
     }

@@ -1,7 +1,5 @@
 package dev.sobhy.healthhubfordoctors.core
 
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.AvailabilityResponse
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.ClinicResponse
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
 import dev.sobhy.healthhubfordoctors.core.data.model.DoctorResponse
@@ -30,6 +28,7 @@ data class Clinic(
     val latitude: Double,
     val longitude: Double,
     val address: String,
+    val availabilities: List<Availability>,
 )
 
 data class Availability(
@@ -41,22 +40,8 @@ data class Availability(
     val available: Boolean,
 )
 
-fun DoctorEntity.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
-
-fun Doctor.toEntity() = DoctorEntity(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
-
-fun ClinicEntity.toClinic() = Clinic(id, doctorId, name, phone, examination, followUp, latitude, longitude, address)
-
-fun Clinic.toEntity() = ClinicEntity(id, doctorId, name, phone, examination, followUp, latitude, longitude, address)
-
-fun AvailabilityEntity.toAvailability() = Availability(id, clinicId, day, startTime, endTime, available)
-
-fun Availability.toEntity() = AvailabilityEntity(id, clinicId, day, startTime, endTime, available)
-
-fun DoctorResponse.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
-
-fun ClinicResponse.toClinic(doctorId: String) =
-    Clinic(
+fun ClinicEntity.toClinic(availabilities: List<Availability>): Clinic {
+    return Clinic(
         id = id,
         doctorId = doctorId,
         name = name,
@@ -66,6 +51,23 @@ fun ClinicResponse.toClinic(doctorId: String) =
         latitude = latitude,
         longitude = longitude,
         address = address,
+        availabilities = availabilities,
     )
+}
 
-fun AvailabilityResponse.toAvailability(clinicId: Int) = Availability(id, clinicId, day, startTime, endTime, available)
+fun AvailabilityEntity.toAvailability(): Availability {
+    return Availability(
+        id = id,
+        clinicId = clinicId,
+        day = day,
+        startTime = startTime,
+        endTime = endTime,
+        available = available,
+    )
+}
+
+fun DoctorEntity.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
+
+fun Doctor.toEntity() = DoctorEntity(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
+
+fun DoctorResponse.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
