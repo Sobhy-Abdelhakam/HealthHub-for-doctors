@@ -9,4 +9,6 @@ interface AvailabilityRepository {
         availability: Availability,
         clinicId: Int,
     ): Flow<Resource<String>>
+
+    suspend fun getAvailability(clinicId: Int): Flow<Resource<Availability>>
 }

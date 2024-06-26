@@ -17,6 +17,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TimeInput
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -36,7 +37,10 @@ fun AvailabilityScreen(
     clinicId: Int,
     availabilityViewModel: AvailabilityViewModel = hiltViewModel(),
 ) {
-    val state by availabilityViewModel.availabilityState.collectAsState()
+    val state by availabilityViewModel.availabilityStateFlow.collectAsState()
+    LaunchedEffect(Unit) {
+        availabilityViewModel.getCurrentAvailability(clinicId)
+    }
 
     Scaffold { paddingValues ->
         LazyColumn(modifier = Modifier.padding(paddingValues)) {

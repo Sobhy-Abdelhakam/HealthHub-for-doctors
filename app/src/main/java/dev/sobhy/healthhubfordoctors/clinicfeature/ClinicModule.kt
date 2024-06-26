@@ -10,6 +10,7 @@ import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.Availabilit
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AddClinicUseCase
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AvailabilityUseCase
+import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.CurrentAvailabilityUseCase
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.GetAllClinicsUseCase
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
 import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
@@ -38,12 +39,20 @@ object ClinicModule {
     }
 
     @Provides
-    fun provideAvailabilityRepository(apiService: ApiService): AvailabilityRepository {
-        return AvailabilityRepositoryImpl(apiService)
+    fun provideAvailabilityRepository(
+        apiService: ApiService,
+        doctorInfoDao: DoctorInfoDao,
+    ): AvailabilityRepository {
+        return AvailabilityRepositoryImpl(apiService, doctorInfoDao)
     }
 
     @Provides
     fun provideAddAvailabilityUseCase(availabilityRepository: AvailabilityRepository): AvailabilityUseCase {
         return AvailabilityUseCase(availabilityRepository)
+    }
+
+    @Provides
+    fun provideCurrentAvailabilityUseCase(availabilityRepository: AvailabilityRepository): CurrentAvailabilityUseCase {
+        return CurrentAvailabilityUseCase(availabilityRepository)
     }
 }

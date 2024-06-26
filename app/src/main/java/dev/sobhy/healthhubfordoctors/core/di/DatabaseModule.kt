@@ -27,7 +27,8 @@ object DatabaseModule {
             context,
             InfoDatabase::class.java,
             "profile_database",
-        ).build()
+        ).allowMainThreadQueries()
+            .build()
     }
 
     @Singleton

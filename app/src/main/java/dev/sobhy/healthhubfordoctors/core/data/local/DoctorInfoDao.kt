@@ -47,6 +47,9 @@ interface DoctorInfoDao {
     @Update
     suspend fun updateAvailability(availability: AvailabilityEntity)
 
+    @Query("SELECT * FROM availabilities where clinicId = :clinicId")
+    fun getAllAvailabilities(clinicId: Int): List<AvailabilityEntity>
+
     @Transaction
     @Query("SELECT * FROM clinics WHERE doctorId = :doctorId")
     fun getClinicsWithAvailabilities(doctorId: String): Flow<List<ClinicWithAvailabilities>>
