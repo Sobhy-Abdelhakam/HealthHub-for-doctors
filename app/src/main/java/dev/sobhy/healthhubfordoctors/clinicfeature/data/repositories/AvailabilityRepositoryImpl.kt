@@ -2,9 +2,9 @@ package dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.Availability
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.remote.ClinicService
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.AvailabilityRepository
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flow
 import java.time.DayOfWeek
 
 class AvailabilityRepositoryImpl(
-    private val apiService: ApiService,
+    private val clinicService: ClinicService,
     private val doctorInfoDao: DoctorInfoDao,
 ) : AvailabilityRepository {
     override suspend fun setAvailability(
@@ -20,7 +20,7 @@ class AvailabilityRepositoryImpl(
         clinicId: Int,
     ) = flow {
         emit(Resource.Loading())
-        val response = apiService.setAvailability(clinicId, availability.availability)
+        val response = clinicService.setAvailability(clinicId, availability.availability)
         // TODO: Save the response to local database
         emit(Resource.Success("Availability set successfully"))
     }.catch {

@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.datasource.AuthPreferencesState
 import dev.sobhy.healthhubfordoctors.core.util.AuthInterceptor
 import okhttp3.OkHttpClient
@@ -46,7 +46,7 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideApiService(retrofit: Retrofit): ApiService {
-        return retrofit.create(ApiService::class.java)
+    fun provideApiService(retrofit: Retrofit): DoctorService {
+        return retrofit.create(DoctorService::class.java)
     }
 }

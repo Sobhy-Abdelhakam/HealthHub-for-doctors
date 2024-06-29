@@ -1,13 +1,13 @@
 package dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories
 
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.ClinicRequest
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.remote.ClinicService
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
 import dev.sobhy.healthhubfordoctors.core.Availability
 import dev.sobhy.healthhubfordoctors.core.Clinic
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.toAvailability
 import dev.sobhy.healthhubfordoctors.core.toClinic
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class ClinicRepositoryImpl(
-    private val clinicService: ApiService,
+    private val clinicService: ClinicService,
     private val doctorInfoDao: DoctorInfoDao,
     private val authPreferencesRepository: AuthPreferencesRepository,
 ) : ClinicRepository {

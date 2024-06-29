@@ -1,9 +1,10 @@
-package dev.sobhy.healthhubfordoctors.clinicfeature
+package dev.sobhy.healthhubfordoctors.clinicfeature.di
 
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.remote.ClinicService
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories.AvailabilityRepositoryImpl
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.repositories.ClinicRepositoryImpl
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.AvailabilityRepository
@@ -13,15 +14,22 @@ import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.AvailabilityU
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.CurrentAvailabilityUseCase
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.usecases.GetAllClinicsUseCase
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
+import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object ClinicModule {
     @Provides
+    @Singleton
+    fun provideClinicService(retrofit: Retrofit): ClinicService {
+        return retrofit.create(ClinicService::class.java)
+    }
+
+    @Provides
     fun provideClinicRepository(
-        clinicService: ApiService,
+        clinicService: ClinicService,
         doctorInfoDao: DoctorInfoDao,
         authPreferencesRepository: AuthPreferencesRepository,
     ): ClinicRepository {
@@ -40,10 +48,10 @@ object ClinicModule {
 
     @Provides
     fun provideAvailabilityRepository(
-        apiService: ApiService,
+        clinicService: ClinicService,
         doctorInfoDao: DoctorInfoDao,
     ): AvailabilityRepository {
-        return AvailabilityRepositoryImpl(apiService, doctorInfoDao)
+        return AvailabilityRepositoryImpl(clinicService, doctorInfoDao)
     }
 
     @Provides

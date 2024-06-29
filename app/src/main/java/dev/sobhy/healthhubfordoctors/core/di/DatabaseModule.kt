@@ -9,7 +9,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
 import dev.sobhy.healthhubfordoctors.core.data.local.InfoDatabase
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.repository.CacheDoctorInfoRepository
 import dev.sobhy.healthhubfordoctors.schedulefeature.domain.CacheInfoUseCase
@@ -39,11 +39,11 @@ object DatabaseModule {
 
     @Provides
     fun provideProfileRepository(
-        apiService: ApiService,
+        doctorService: DoctorService,
         profileDao: DoctorInfoDao,
         authPreferences: AuthPreferencesRepository,
     ): CacheDoctorInfoRepository {
-        return CacheDoctorInfoRepository(apiService, profileDao, authPreferences)
+        return CacheDoctorInfoRepository(doctorService, profileDao, authPreferences)
     }
 
     @Provides

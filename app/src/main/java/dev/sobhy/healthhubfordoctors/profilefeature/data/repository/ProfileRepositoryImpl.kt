@@ -2,7 +2,7 @@ package dev.sobhy.healthhubfordoctors.profilefeature.data.repository
 
 import dev.sobhy.healthhubfordoctors.core.Doctor
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.toDoctor
 import dev.sobhy.healthhubfordoctors.core.toEntity
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.map
 
 class ProfileRepositoryImpl(
     private val doctorInfoDao: DoctorInfoDao,
-    private val apiService: ApiService,
+    private val doctorService: DoctorService,
     private val preferencesRepository: AuthPreferencesRepository,
 ) : ProfileRepository {
     override suspend fun getProfileInfo(): Flow<Result<Doctor>> {
@@ -24,7 +24,7 @@ class ProfileRepositoryImpl(
                 Result.success(doctorEntity.toDoctor())
             } else {
                 try {
-                    val response = apiService.getDoctor(userId)
+                    val response = doctorService.getDoctor(userId)
                     val doctor = response.toDoctor()
                     doctorInfoDao.insertDoctorProfile(doctor.toEntity())
                     Result.success(doctor)

@@ -3,12 +3,12 @@ package dev.sobhy.healthhubfordoctors.core.repository
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.AvailabilityEntity
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.model.ClinicEntity
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 import kotlinx.coroutines.flow.first
 
 class CacheDoctorInfoRepository(
-    private val apiService: ApiService,
+    private val doctorService: DoctorService,
     private val doctorProfileDao: DoctorInfoDao,
     private val authPreferences: AuthPreferencesRepository,
 ) {
@@ -16,7 +16,7 @@ class CacheDoctorInfoRepository(
         val doctorId = authPreferences.getUserToken().first()
 
         try {
-            val response = apiService.getDoctor(doctorId!!)
+            val response = doctorService.getDoctor(doctorId!!)
             val doctor =
                 DoctorEntity(
                     uid = response.uid,

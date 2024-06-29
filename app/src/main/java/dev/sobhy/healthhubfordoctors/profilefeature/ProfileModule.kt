@@ -6,7 +6,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 import dev.sobhy.healthhubfordoctors.core.data.local.DoctorInfoDao
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.profilefeature.data.repository.ProfileRepositoryImpl
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.repository.ProfileRepository
@@ -20,12 +20,12 @@ object ProfileModule {
     @Provides
     fun provideProfileRepository(
         doctorInfoDao: DoctorInfoDao,
-        apiService: ApiService,
+        doctorService: DoctorService,
         authPreferencesRepository: AuthPreferencesRepository,
     ): ProfileRepository {
         return ProfileRepositoryImpl(
             doctorInfoDao,
-            apiService,
+            doctorService,
             authPreferencesRepository,
         )
     }
@@ -41,7 +41,7 @@ object ProfileModule {
     }
 
     @Provides
-    fun provideProfileInfoUseCase(profileInfoRepository: ProfileRepository): ProfileInfoUseCase  {
+    fun provideProfileInfoUseCase(profileInfoRepository: ProfileRepository): ProfileInfoUseCase {
         return ProfileInfoUseCase(profileInfoRepository)
     }
 }

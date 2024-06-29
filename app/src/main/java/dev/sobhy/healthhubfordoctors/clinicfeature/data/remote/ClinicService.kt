@@ -1,11 +1,9 @@
-package dev.sobhy.healthhubfordoctors.core.data.remote
+package dev.sobhy.healthhubfordoctors.clinicfeature.data.remote
 
-import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.ClinicRequest
 import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.DayState
-import dev.sobhy.healthhubfordoctors.clinicfeature.data.response.ClinicResponse
+import dev.sobhy.healthhubfordoctors.clinicfeature.data.model.response.ClinicResponse
 import dev.sobhy.healthhubfordoctors.clinicfeature.domain.repository.ClinicRepository
-import dev.sobhy.healthhubfordoctors.core.data.model.DoctorResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -16,18 +14,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 import java.time.DayOfWeek
 
-interface ApiService {
-    @POST("doctor")
-    suspend fun addDoctor(
-        @Body doctorRequest: DoctorRequest,
-    )
-
-    @GET("doctor/{token}")
-    suspend fun getDoctor(
-        @Path("token") token: String,
-    ): DoctorResponse
-
-    // clinic
+interface ClinicService {
     @POST("clinic/{token}")
     suspend fun addClinic(
         @Path("token") token: String,
@@ -60,12 +47,5 @@ interface ApiService {
     suspend fun setAvailability(
         @Path("clinicId") clinicId: Int,
         @Body availability: Map<DayOfWeek, DayState>,
-    )
-
-    // appointments in day
-    @GET("appointment")
-    suspend fun getAppointmentsInDay(
-        @Query("doctorId") token: String,
-        @Query("dateString") dateOfDay: String,
     )
 }

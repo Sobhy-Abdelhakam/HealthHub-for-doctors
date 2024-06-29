@@ -3,12 +3,12 @@ package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
-import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
+import dev.sobhy.healthhubfordoctors.authfeature.data.request.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Specialty
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
-import dev.sobhy.healthhubfordoctors.core.data.remote.ApiService
+import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter
 
 class AuthRepositoryImpl(
     private val auth: FirebaseAuthDataSource,
-    private val apiService: ApiService,
+    private val doctorService: DoctorService,
     private val authPreferences: AuthPreferencesRepository,
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<String>> {
@@ -37,7 +37,7 @@ class AuthRepositoryImpl(
             val doctorRequest = createDoctorRequest(registerRequest, userId)
             // send data to API
             try {
-                apiService.addDoctor(doctorRequest)
+                doctorService.addDoctor(doctorRequest)
             } catch (e: Exception) {
                 authResult.user?.let { user -> auth.deleteAccount(user) }
                 emit(Resource.Error("Registration failed"))

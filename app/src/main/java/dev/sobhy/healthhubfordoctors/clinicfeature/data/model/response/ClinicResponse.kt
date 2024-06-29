@@ -1,4 +1,4 @@
-package dev.sobhy.healthhubfordoctors.clinicfeature.data.response
+package dev.sobhy.healthhubfordoctors.clinicfeature.data.model.response
 
 data class ClinicResponse(
     val id: Int,
