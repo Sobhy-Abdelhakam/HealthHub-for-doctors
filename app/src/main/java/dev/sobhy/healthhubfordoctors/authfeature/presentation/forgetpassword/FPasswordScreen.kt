@@ -89,7 +89,9 @@ fun ForgetPasswordScreen(viewModel: FPasswordViewModel = hiltViewModel()) {
             }
             Button(
                 enabled = buttonEnable,
-                onClick = viewModel::sendEmail,
+                onClick = {
+//                    viewModel::sendEmail
+                },
                 modifier =
                     Modifier
                         .fillMaxWidth()

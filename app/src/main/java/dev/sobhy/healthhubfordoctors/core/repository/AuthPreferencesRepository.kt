@@ -12,4 +12,6 @@ interface AuthPreferencesRepository {
     fun getUserToken(): Flow<String?>
 
     suspend fun clearUserToken()
+
+    suspend fun clearUserId()
 }

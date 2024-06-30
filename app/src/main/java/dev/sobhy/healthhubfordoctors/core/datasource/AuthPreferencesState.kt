@@ -34,4 +34,10 @@ class AuthPreferencesState(
             preferences.remove(DataStoreKeys.authToken)
         }
     }
+
+    suspend fun clearUserId()  {
+        context.dataStore.edit { preferences ->
+            preferences.remove(DataStoreKeys.userId)
+        }
+    }
 }

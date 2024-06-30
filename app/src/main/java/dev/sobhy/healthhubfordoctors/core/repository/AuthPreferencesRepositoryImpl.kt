@@ -25,4 +25,8 @@ class AuthPreferencesRepositoryImpl(
     override suspend fun clearUserToken() {
         authPreferencesDataStore.clearUserToken()
     }
+
+    override suspend fun clearUserId() {
+        authPreferencesDataStore.clearUserId()
+    }
 }
