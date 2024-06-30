@@ -38,7 +38,7 @@ object ApiModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://healthhub-production-1b15.up.railway.app/")
+            .baseUrl("https://healthhub-production-5029.up.railway.app/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

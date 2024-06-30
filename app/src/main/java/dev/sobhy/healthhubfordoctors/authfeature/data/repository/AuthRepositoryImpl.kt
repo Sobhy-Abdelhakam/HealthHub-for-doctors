@@ -1,8 +1,11 @@
 package dev.sobhy.healthhubfordoctors.authfeature.data.repository
 
+import android.util.Log
 import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
+import dev.sobhy.healthhubfordoctors.authfeature.data.remote.AuthService
+import dev.sobhy.healthhubfordoctors.authfeature.data.request.LoginRequest
 import dev.sobhy.healthhubfordoctors.authfeature.data.request.RegisterRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.DoctorRequest
 import dev.sobhy.healthhubfordoctors.authfeature.domain.model.Gender
@@ -20,31 +23,40 @@ import java.time.format.DateTimeFormatter
 class AuthRepositoryImpl(
     private val auth: FirebaseAuthDataSource,
     private val doctorService: DoctorService,
+    private val authService: AuthService,
     private val authPreferences: AuthPreferencesRepository,
 ) : AuthRepository {
     override suspend fun register(registerRequest: RegisterRequest): Flow<Resource<String>> {
         return flow {
             emit(Resource.Loading())
-            // Firebase authentication
-            val authResult =
-                auth.signUpWithEmailPassword(registerRequest.email, registerRequest.password)
-            val userId = authResult.user?.uid
-            if (userId == null) {
-                emit(Resource.Error("User ID is null"))
+
+            val authResult = authService.register(registerRequest)
+            if (!authResult.ok) {
+                emit(Resource.Error(authResult.error ?: "An error occurred"))
                 return@flow
             }
-            // prepare data for API call
-            val doctorRequest = createDoctorRequest(registerRequest, userId)
-            // send data to API
-            try {
-                doctorService.addDoctor(doctorRequest)
-            } catch (e: Exception) {
-                authResult.user?.let { user -> auth.deleteAccount(user) }
-                emit(Resource.Error("Registration failed"))
-                return@flow
-            }
-            auth.sendEmailVerification(authResult.user!!)
-            emit(Resource.Success("Registration successful"))
+            emit(Resource.Success(authResult.message!!))
+
+//            // Firebase authentication
+//            val authResult =
+//                auth.signUpWithEmailPassword(registerRequest.email, registerRequest.password)
+//            val userId = authResult.user?.uid
+//            if (userId == null) {
+//                emit(Resource.Error("User ID is null"))
+//                return@flow
+//            }
+//            // prepare data for API call
+//            val doctorRequest = createDoctorRequest(registerRequest, userId)
+//            // send data to API
+//            try {
+//                doctorService.addDoctor(doctorRequest)
+//            } catch (e: Exception) {
+//                authResult.user?.let { user -> auth.deleteAccount(user) }
+//                emit(Resource.Error("Registration failed"))
+//                return@flow
+//            }
+//            auth.sendEmailVerification(authResult.user!!)
+//            emit(Resource.Success("Registration successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
         }
@@ -65,7 +77,7 @@ class AuthRepositoryImpl(
             birthDate = dateOfBirthString,
             gender = Gender.valueOf(registerRequest.gender),
             profTitle = registerRequest.professionalTitle,
-            specialty = Specialty(registerRequest.specialization),
+            specialty = Specialty(registerRequest.specialty.name),
         )
     }
 
@@ -75,19 +87,32 @@ class AuthRepositoryImpl(
     ): Flow<Resource<String>> {
         return flow {
             emit(Resource.Loading())
-            val loginResult = auth.signInWithEmailPassword(email, password)
-            val userId = loginResult.user?.uid
-            if (userId == null) {
-                emit(Resource.Error("User ID is null"))
+            val loginRequest = LoginRequest(email, password)
+
+            val loginResult = authService.login(loginRequest)
+            if (!loginResult.ok) {
+                Log.e("login", loginResult.error ?: "An error occurred")
+                emit(Resource.Error(loginResult.error ?: "An error occurred"))
                 return@flow
             }
-            if (!loginResult.user!!.isEmailVerified) {
-                auth.sendEmailVerification(loginResult.user!!)
-                emit(Resource.Error("Email is not verified"))
-                return@flow
-            }
-            authPreferences.saveUserToken(userId)
-            emit(Resource.Success("login successful"))
+            Log.e("login", loginResult.message ?: "An error occurred")
+            authPreferences.saveUserToken(loginResult.body?.accessToken!!)
+            authPreferences.saveUserId(loginResult.body.userId)
+            emit(Resource.Success(loginResult.message!!))
+
+//            val loginResult = auth.signInWithEmailPassword(email, password)
+//            val userId = loginResult.user?.uid
+//            if (userId == null) {
+//                emit(Resource.Error("User ID is null"))
+//                return@flow
+//            }
+//            if (!loginResult.user!!.isEmailVerified) {
+//                auth.sendEmailVerification(loginResult.user!!)
+//                emit(Resource.Error("Email is not verified"))
+//                return@flow
+//            }
+//            authPreferences.saveUserToken(userId)
+//            emit(Resource.Success("login successful"))
         }.catch {
             emit(Resource.Error(it.message ?: "An error occurred"))
         }

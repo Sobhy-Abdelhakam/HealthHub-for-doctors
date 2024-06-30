@@ -12,10 +12,20 @@ class AuthPreferencesState(
         context.dataStore.data.map { preferences ->
             preferences[DataStoreKeys.authToken]
         }
+    val userId: Flow<Int?> =
+        context.dataStore.data.map { preferences ->
+            preferences[DataStoreKeys.userId]
+        }
 
     suspend fun saveUserToken(token: String) {
         context.dataStore.edit { preferences ->
             preferences[DataStoreKeys.authToken] = token
+        }
+    }
+
+    suspend fun saveUserId(id: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[DataStoreKeys.userId] = id
         }
     }
 

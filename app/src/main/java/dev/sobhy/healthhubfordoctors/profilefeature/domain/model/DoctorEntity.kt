@@ -5,11 +5,11 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "doctors")
 data class DoctorEntity(
-    @PrimaryKey val uid: String,
+    @PrimaryKey val id: Int,
     val name: String,
     val birthDate: String,
     val phoneNumber: String,
-    val email: String,
+    val email: String?,
     val gender: String,
     val imgPath: String?,
     val specialty: String,

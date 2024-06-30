@@ -2,7 +2,7 @@ package dev.sobhy.healthhubfordoctors.clinicfeature.data.model.response
 
 data class ClinicResponse(
     val id: Int,
-    val doctorId: String,
+    val doctorId: Int,
     val name: String,
     val phone: String,
     val address: String,

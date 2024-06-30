@@ -11,7 +11,7 @@ import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
     foreignKeys = [
         ForeignKey(
             entity = DoctorEntity::class,
-            parentColumns = ["uid"],
+            parentColumns = ["id"],
             childColumns = ["doctorId"],
             onDelete = ForeignKey.CASCADE,
         ),
@@ -20,7 +20,7 @@ import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 )
 data class ClinicEntity(
     @PrimaryKey val id: Int,
-    val doctorId: String,
+    val doctorId: Int,
     val name: String,
     val phone: String?,
     val examination: Double,

@@ -18,7 +18,7 @@ class ProfileRepositoryImpl(
     private val preferencesRepository: AuthPreferencesRepository,
 ) : ProfileRepository {
     override suspend fun getProfileInfo(): Flow<Result<Doctor>> {
-        val userId = preferencesRepository.getUserToken().first() ?: ""
+        val userId = preferencesRepository.getUserId().first() ?: 1
         return doctorInfoDao.getAllDoctorInfo(userId).map { doctorEntity ->
             if (doctorEntity != null) {
                 Result.success(doctorEntity.toDoctor())

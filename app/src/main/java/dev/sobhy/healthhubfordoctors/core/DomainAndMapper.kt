@@ -6,11 +6,11 @@ import dev.sobhy.healthhubfordoctors.core.data.model.DoctorResponse
 import dev.sobhy.healthhubfordoctors.profilefeature.domain.model.DoctorEntity
 
 data class Doctor(
-    val uid: String,
+    val uid: Int,
     val name: String,
     val birthDate: String,
     val phoneNumber: String,
-    val email: String,
+    val email: String?,
     val gender: String,
     val imgPath: String?,
     val specialty: String,
@@ -20,7 +20,7 @@ data class Doctor(
 
 data class Clinic(
     val id: Int,
-    val doctorId: String,
+    val doctorId: Int,
     val name: String,
     val phone: String?,
     val examination: Double,
@@ -66,8 +66,8 @@ fun AvailabilityEntity.toAvailability(): Availability {
     )
 }
 
-fun DoctorEntity.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
+fun DoctorEntity.toDoctor() = Doctor(id, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
 
 fun Doctor.toEntity() = DoctorEntity(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
 
-fun DoctorResponse.toDoctor() = Doctor(uid, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)
+fun DoctorResponse.toDoctor() = Doctor(id, name, birthDate, phoneNumber, email, gender, imgPath, specialty, profTitle, rating)

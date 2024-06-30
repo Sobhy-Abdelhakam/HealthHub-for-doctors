@@ -17,8 +17,8 @@ interface DoctorInfoDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertDoctorProfile(doctor: DoctorEntity)
 
-    @Query("SELECT * FROM doctors WHERE uid = :id")
-    fun getAllDoctorInfo(id: String): Flow<DoctorEntity?>
+    @Query("SELECT * FROM doctors WHERE id = :id")
+    fun getAllDoctorInfo(id: Int): Flow<DoctorEntity?>
 
     @Update
     fun updateDoctor(doctor: DoctorEntity)
@@ -52,5 +52,5 @@ interface DoctorInfoDao {
 
     @Transaction
     @Query("SELECT * FROM clinics WHERE doctorId = :doctorId")
-    fun getClinicsWithAvailabilities(doctorId: String): Flow<List<ClinicWithAvailabilities>>
+    fun getClinicsWithAvailabilities(doctorId: Int): Flow<List<ClinicWithAvailabilities>>
 }

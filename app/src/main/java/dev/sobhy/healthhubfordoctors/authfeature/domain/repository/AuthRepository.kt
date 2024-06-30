@@ -1,6 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.domain.repository
 
-import dev.sobhy.healthhubfordoctors.authfeature.data.remote.RegisterRequest
+import dev.sobhy.healthhubfordoctors.authfeature.data.request.RegisterRequest
 import dev.sobhy.healthhubfordoctors.core.util.Resource
 import kotlinx.coroutines.flow.Flow
 

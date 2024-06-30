@@ -10,6 +10,14 @@ class AuthPreferencesRepositoryImpl(
         authPreferencesDataStore.saveUserToken(token)
     }
 
+    override suspend fun saveUserId(id: Int) {
+        authPreferencesDataStore.saveUserId(id)
+    }
+
+    override fun getUserId(): Flow<Int?> {
+        return authPreferencesDataStore.userId
+    }
+
     override fun getUserToken(): Flow<String?> {
         return authPreferencesDataStore.userToken
     }

@@ -7,6 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSource
 import dev.sobhy.healthhubfordoctors.authfeature.data.datasource.FirebaseAuthDataSourceImpl
+import dev.sobhy.healthhubfordoctors.authfeature.data.remote.AuthService
 import dev.sobhy.healthhubfordoctors.authfeature.data.repository.AuthRepositoryImpl
 import dev.sobhy.healthhubfordoctors.authfeature.domain.repository.AuthRepository
 import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.ForgetPasswordUseCase
@@ -14,11 +15,18 @@ import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.LoginUseCase
 import dev.sobhy.healthhubfordoctors.authfeature.domain.usecase.RegisterUseCase
 import dev.sobhy.healthhubfordoctors.core.data.remote.DoctorService
 import dev.sobhy.healthhubfordoctors.core.repository.AuthPreferencesRepository
+import retrofit2.Retrofit
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AuthModule {
+    @Provides
+    @Singleton
+    fun provideAuthService(retrofit: Retrofit): AuthService {
+        return retrofit.create(AuthService::class.java)
+    }
+
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth {
@@ -35,9 +43,10 @@ object AuthModule {
     fun provideAuthRepository(
         authDataSource: FirebaseAuthDataSource,
         doctorService: DoctorService,
+        authService: AuthService,
         authPreferences: AuthPreferencesRepository,
     ): AuthRepository {
-        return AuthRepositoryImpl(authDataSource, doctorService, authPreferences)
+        return AuthRepositoryImpl(authDataSource, doctorService, authService, authPreferences)
     }
 
     @Provides

@@ -15,21 +15,21 @@ import retrofit2.http.Query
 import java.time.DayOfWeek
 
 interface ClinicService {
-    @POST("clinic/{token}")
+    @POST("clinic/{doctorId}")
     suspend fun addClinic(
-        @Path("token") token: String,
+        @Path("doctorId") doctorId: Int,
         @Body clinic: ClinicRequest,
     ): Response<ClinicResponse>
 
-    @PUT("clinic/{token}")
+    @PUT("clinic/{doctorId}")
     suspend fun updateClinic(
-        @Path("token") token: String,
+        @Path("doctorId") doctorId: Int,
         @Body clinic: ClinicRequest,
     )
 
     @GET("clinic/by-doctor")
     suspend fun getClinics(
-        @Query("doctorId") token: String,
+        @Query("doctorId") doctorId: Int,
     ): Response<List<ClinicResponse>>
 
     @GET("clinic/by-id")

@@ -13,8 +13,8 @@ interface DoctorService {
         @Body doctorRequest: DoctorRequest,
     )
 
-    @GET("doctor/{token}")
+    @GET("doctor/{id}")
     suspend fun getDoctor(
-        @Path("token") token: String,
+        @Path("id") id: Int,
     ): DoctorResponse
 }

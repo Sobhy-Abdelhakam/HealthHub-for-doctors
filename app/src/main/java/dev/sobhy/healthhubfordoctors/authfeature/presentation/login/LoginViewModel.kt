@@ -1,5 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.login
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -62,7 +63,10 @@ class LoginViewModel
                             when (result) {
                                 is Resource.Loading -> LoginState(isLoading = true)
 
-                                is Resource.Error -> LoginState(error = result.message)
+                                is Resource.Error -> {
+                                    Log.e("LoginViewModel", result.message ?: "error")
+                                    LoginState(error = result.message)
+                                }
 
                                 is Resource.Success -> LoginState(isSuccess = true)
                             }
