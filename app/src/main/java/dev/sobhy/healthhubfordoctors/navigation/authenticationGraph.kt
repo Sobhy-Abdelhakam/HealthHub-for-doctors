@@ -17,7 +17,7 @@ fun NavGraphBuilder.authGraph(navController: NavHostController) {
             RegisterScreen(navController)
         }
         composable(route = AuthenticationRoutes.FORGOTPASSWORD.route) {
-            ForgetPasswordScreen()
+            ForgetPasswordScreen(navController)
         }
     }
 }

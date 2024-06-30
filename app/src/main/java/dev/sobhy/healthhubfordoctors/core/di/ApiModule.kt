@@ -1,5 +1,6 @@
 package dev.sobhy.healthhubfordoctors.core.di
 
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -37,10 +38,15 @@ object ApiModule {
     @Provides
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val gson =
+            GsonBuilder()
+                .setLenient()
+                .create()
         return Retrofit.Builder()
             .baseUrl("https://healthhub-production-5029.up.railway.app/")
             .client(okHttpClient)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(StringResponseConverterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
     }
 

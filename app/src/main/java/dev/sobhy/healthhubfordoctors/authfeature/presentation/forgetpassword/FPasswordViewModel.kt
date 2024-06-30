@@ -1,7 +1,6 @@
 package dev.sobhy.healthhubfordoctors.authfeature.presentation.forgetpassword
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -23,35 +23,94 @@ class FPasswordViewModel
         private val forgetPasswordUseCase: ForgetPasswordUseCase,
     ) : ViewModel() {
         private val validateEmail: ValidateEmail = ValidateEmail()
+
         private val _forgetPasswordState = MutableStateFlow(ForgetPasswordState())
         val forgetPasswordState = _forgetPasswordState.asStateFlow()
-        var email by mutableStateOf("")
-            private set
-        var emailError by mutableStateOf<String?>(null)
-            private set
 
-        fun sendEmail() {
-            val emailResult = validateEmail.execute(email)
+        fun onEvent(event: ForgotPasswordEvent) {
+            when (event) {
+                is ForgotPasswordEvent.EnterEmail -> {
+                    _forgetPasswordState.value = _forgetPasswordState.value.copy(email = event.email)
+                }
+
+                is ForgotPasswordEvent.EnterOtp -> {
+                    _forgetPasswordState.value = _forgetPasswordState.value.copy(otp = event.otp)
+                }
+
+                is ForgotPasswordEvent.EnterNewPassword -> {
+                    _forgetPasswordState.value =
+                        _forgetPasswordState.value.copy(newPassword = event.newPassword)
+                }
+
+                ForgotPasswordEvent.SendOtp -> {
+                    sendOtp()
+                }
+
+                ForgotPasswordEvent.SubmitNewPassword -> {
+                    submitNewPassword()
+                }
+            }
+        }
+
+        fun sendOtp() {
+            val emailResult = validateEmail.execute(forgetPasswordState.value.email)
             if (!emailResult.successful) {
-                emailError = emailResult.errorMessage
+                _forgetPasswordState.update {
+                    it.copy(error = emailResult.errorMessage)
+                }
                 return
             }
             viewModelScope.launch(Dispatchers.IO) {
-                forgetPasswordUseCase(email).collectLatest { result ->
+                _forgetPasswordState.value = _forgetPasswordState.value.copy(isLoading = true)
+                forgetPasswordUseCase(forgetPasswordState.value.email).collectLatest { result ->
                     _forgetPasswordState.value =
                         when (result) {
-                            is Resource.Error -> ForgetPasswordState(error = result.message)
+                            is Resource.Error -> {
+                                _forgetPasswordState.value.copy(
+                                    isLoading = false,
+                                    error = result.message,
+                                )
+                            }
 
-                            is Resource.Loading -> ForgetPasswordState(isLoading = true)
+                            is Resource.Loading -> {
+                                _forgetPasswordState.value.copy(isLoading = true)
+                            }
 
-                            is Resource.Success -> ForgetPasswordState(success = result.data)
+                            is Resource.Success -> {
+                                _forgetPasswordState.value.copy(isLoading = false, isOtpSent = true)
+                            }
                         }
                 }
             }
         }
 
-        fun onEmailChange(input: String) {
-            email = input
-            emailError = null
+        private fun submitNewPassword() {
+            viewModelScope.launch {
+                _forgetPasswordState.value = _forgetPasswordState.value.copy(isLoading = true)
+                try {
+                    forgetPasswordUseCase.submitNewPassword(
+                        _forgetPasswordState.value.email,
+                        _forgetPasswordState.value.otp,
+                        _forgetPasswordState.value.newPassword,
+                    ).collectLatest { result ->
+                        when (result) {
+                            is Resource.Error -> {
+                                _forgetPasswordState.update {
+                                    it.copy(isLoading = false, error = result.message)
+                                }
+                            }
+                            is Resource.Loading -> {}
+                            is Resource.Success -> {
+                                _forgetPasswordState.update {
+                                    it.copy(isLoading = false, changeSuccess = true)
+                                }
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    _forgetPasswordState.value =
+                        _forgetPasswordState.value.copy(isLoading = false, error = e.message)
+                }
+            }
         }
     }

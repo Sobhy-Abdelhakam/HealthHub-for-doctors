@@ -63,7 +63,7 @@ fun ChangePasswordScreen(viewModel: UpdatePassViewModel = hiltViewModel()) {
     val buttonClick =
         remember {
             {
-//                viewModel.onEvent(ChangePassEvent.SavePass)
+                viewModel.onEvent(ChangePassEvent.SavePass)
             }
         }
 
